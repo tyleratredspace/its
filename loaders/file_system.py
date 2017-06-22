@@ -1,15 +1,13 @@
-from base_loader import BaseLoader
-import os, sys
-import Image 
+from .base import BaseLoader
+from PIL import Image
+
 
 class FileSystemLoader(BaseLoader):
-	
-	def __init__(self, arg):
-		super(FileSystemLoader, self).__init__()
 
-	def load_file(namespace, filename):
-		
-		image = Image.open(filename)
+    def load_image(namespace, filename):
+        """
+        Loads image from file system
+        """
+        image = Image.open(namespace + "/" + filename)
 
-		return image
-
+        return image
