@@ -23,7 +23,7 @@ def transform_image(namespace, filename):
         abort(404)
 
     # transformation processor call
-    return process_transforms(image, query)
+    return process_transforms(image, query, filename)
 
 if __name__ == '__main__':
     app.run(debug=True)

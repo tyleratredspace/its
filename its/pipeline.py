@@ -5,22 +5,21 @@ Script to apply transformations to validated images.
 from transformations import BaseTransform, ResizeTransform
 
 
-def process_transforms(img, *transforms):
+def process_transforms(img, transforms, *args):
 
     """
     View that returns an image transformed according to the
     query options in the request string.
     Return URI to transformed image.
     """
-    new_img = None
     transform_classes = BaseTransform.__subclasses__()
     first_applied = ['resize']
-    transforms = transforms[0]
+    img_info = args
+
     # check if a similar transform on the same image is already in cache
 
     if len(transforms) == 0:  # no transforms; return image as is
-        new_img = img
-        return new_img
+        return img
 
     # apply necessary/easily applicable transforms
     # according to preset precedence
