@@ -36,7 +36,7 @@ def process_transforms(img, *transforms):
     # result_img = ITSTransformer.apply_transformations(transforms_dict)
     # cache resulting image
     # return the image in browser
-    return new_img
+    return "completed"
 
 
 def apply_multiple_transforms(img, transformations_dict):
