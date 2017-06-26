@@ -17,7 +17,6 @@ def index():
 @app.route('/<namespace>/<path:filename>', methods=['GET'])
 def transform_image(namespace, filename):
     query = request.args
-    print(query)
     image = loader(namespace, filename)
     image.show()
     if image is None:
@@ -25,7 +24,6 @@ def transform_image(namespace, filename):
 
     # transformation processor call
     return process_transforms(image, query)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
