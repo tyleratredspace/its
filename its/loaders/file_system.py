@@ -2,6 +2,7 @@ from .base import BaseLoader
 from PIL import Image
 from pathlib import Path
 
+
 class FileSystemLoader(BaseLoader):
 
     slug = "file_system"
