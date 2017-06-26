@@ -2,7 +2,7 @@
 
 from flask import Flask, request, abort
 from pipeline import process_transforms
-from loader import load_image
+from loader import loader
 
 app = Flask(__name__)
 
@@ -16,11 +16,10 @@ def index():
 # image transform command
 @app.route('/<namespace>/<path:filename>', methods=['GET'])
 def transform_image(namespace, filename):
-    query = request.args
+    query = request.args.to_dict()
+    image = loader(namespace, filename)
 
-    image = load_image(namespace, filename)
-
-    if image:
+    if image is None:
         abort(404)
 
     # transformation processor call
