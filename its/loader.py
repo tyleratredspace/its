@@ -5,6 +5,7 @@ Script to validate images being submitted for transformation.
 from loaders import BaseLoader, FileSystemLoader
 import settings
 
+
 def loader(namespace, filename):
 
     """
@@ -13,7 +14,6 @@ def loader(namespace, filename):
     image = None
 
     loader_classes = BaseLoader.__subclasses__()
-
 
     image_loader = [loader 
         for loader in loader_classes 
