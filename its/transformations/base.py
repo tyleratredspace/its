@@ -9,7 +9,7 @@ class BaseTransform(object):
         super(BaseTransform, self).__init__()
         self.arg = arg
 
-    def apply_transformation(img, *args):
+    def apply_transform(img, *args):
 
         pass
 
