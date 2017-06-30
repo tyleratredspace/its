@@ -1,42 +1,38 @@
 from .base import BaseTransform
 from PIL import Image
 from math import floor
-from flask import Flask, abort
 
 
 class ResizeTransform(BaseTransform):
 
     slug = "resize"
 
-    def apply_transform(img, *args):
+    def apply_transform(img, resize_size):
         """
         Resizes input image while maintaining aspect ratio.
         """
 
         try:
-            rwidth= args[0].split('x')[0]
-            rheight = args[0].split('x')[1]
-            size_ratio = img.size[0] / img.size[1]
-        except Exception as e:
-            # print("Resize takes WWxHH, WWx, or xHH, where WW is the requested width and HH is the requested height.")
-            abort(400)
+            width, height = resize_size.split('x')
+            ratio = img.width / img.height
+        except (ZeroDivisionError, ValueError) as e:
+            print("Resize takes WWxHH, WWx, or xHH, where WW is the requested width and HH is the requested height.")
+
+        # converts arguments to ints and calculates
+        # rwdith/riheight if missing an argument
+        if width != '' and height != '':
+            width = int(width)
+            height = int(height)
+        elif width == '' and height != '':
+            height = int(height)
+            width = floor(ratio * height)
+        elif height == '' and width != '':
+            width = int(width)
+            height = floor(ratio * width)
 
         try:
-            if rwidth != '' and rheight != '':
-                rwidth = int(rwidth)
-                rheight = int(rheight)
-            elif rwidth == '' and rheight != '':
-                rheight = int(rheight)
-                rwidth = floor(size_ratio * rheight)
-            elif rheight == '' and rwidth != '':
-                rwidth = int(rwidth)
-                rheight = floor(size_ratio * rwidth)
+            img = img.resize([width,height], Image.ANTIALIAS)
         except Exception as e:
-            abort(400)
-        
-        try:
-            img.thumbnail([rwidth,rheight], Image.ANTIALIAS)
-        except Exception as e:
-            abort(304)
+            print("Failed to resize image.")
 
         return img

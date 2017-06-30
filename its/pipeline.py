@@ -25,22 +25,12 @@ def process_transforms(img, *transforms):
     # apply necessary/easily applicable transforms
     # according to preset precedence
     if "resize" in transforms.keys():
-        new_img = ResizeTransform.apply_transform(img, transforms['resize'])
+        img = ResizeTransform.apply_transform(img, transforms['resize'])
 
     for tclass in transform_classes:
-        if tclass.slug in transforms.keys():
-            if tclass.slug not in first_applied:
-                new_img = tclass.apply_transform(img, transforms[tclass.slug])
+        if tclass.slug in transforms.keys() and tclass.slug not in first_applied:
+            img = tclass.apply_transform(img, transforms[tclass.slug])
 
-    # recursively apply transformations all other transformations
-    # result_img = ITSTransformer.apply_transformations(transforms_dict)
     # cache resulting image
     # return the image in browser
     return "completed"
-
-
-def apply_multiple_transforms(img, transformations_dict):
-
-    """
-    Recursively applies image transformations.
-    """
