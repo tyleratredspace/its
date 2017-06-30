@@ -4,17 +4,15 @@ from pathlib import Path
 
 class FileSystemLoader(BaseLoader):
 
-    loader_slug = "FileSystem"
+    slug = "file_system"
 
     def load_image(namespace, filename):
         """
         Loads image from file system
         """
-
-        try:
-            its_root = Path(__file__).parents[3]
-            image = Image.open(its_root/namespace/filename)
-        except Exception as e:
-            raise e
+        # Need some error handling here
+        # Path to the great grandparent directory of this file
+        api_root = Path(__file__).parents[3]
+        image = Image.open(api_root / namespace / filename)
 
         return image

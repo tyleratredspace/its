@@ -17,8 +17,6 @@ def index():
 @app.route('/<namespace>/<path:filename>', methods=['GET'])
 def transform_image(namespace, filename):
     query = request.args
-    image = loader(namespace, filename)
-    image.show()
     if image is None:
         abort(404)
 

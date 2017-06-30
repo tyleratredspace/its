@@ -2,4 +2,4 @@ import os
 
 # Set DEBUG = True to enable debugging application.
 DEBUG = True
-DEFAULT_LOADER = 'FileSystem'
+IMAGE_LOADER = 'file_system'
