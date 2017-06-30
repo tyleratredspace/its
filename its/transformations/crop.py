@@ -1,5 +1,9 @@
 from .base import BaseTransform
 from PIL import Image
+<<<<<<< HEAD
+=======
+from flask import Flask, abort
+>>>>>>> 6e8a35dd6fd04b26f059e764538c3f9721415a50
 from math import floor
 
 class CropTransform(BaseTransform):
