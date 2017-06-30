@@ -1,20 +1,24 @@
 from .base import BaseTransform
 from PIL import Image
-from flask import Flask, abort
 from math import floor
 
 class CropTransform(BaseTransform):
 
     slug = "crop"
 
-    def apply_transform(img, *args):
+    def apply_transform(img, crop_size, focal_point=None):
         """
         Crops input img about a focal point.
         The default focal point is the center of the image.
-        """
-        crop_args = args[0].split('x')
         
-        if len(args) == 2 and len(crop_args) == 2:  # smart crop
+        crop : image.png?crop=WWxHH
+        focal crop : image.png?crop=WWxHHxFXxFY
+        smart crop : image_focus-FXxFY.png?crop=WWxHH
+        """
+        crop_x, crop_y = crop_size.split('x')
+        
+        # smart crop
+        if len(args) == 2 and len(crop_args) == 2:
             filename = args[1][0]
             fname_split = filename.find("focus-")
             fname_args = filename[fname_split + len("focus-"):].split('_')
@@ -52,5 +56,4 @@ class CropTransform(BaseTransform):
             print(e)
             abort(400)
 
-        img.show()
         return img

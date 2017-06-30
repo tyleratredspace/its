@@ -14,7 +14,6 @@ def process_transforms(img, transforms, *args):
     """
     transform_classes = BaseTransform.__subclasses__()
     first_applied = ['resize']
-    img_info = args
 
     # check if a similar transform on the same image is already in cache
 
