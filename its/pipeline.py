@@ -27,6 +27,8 @@ def process_transforms(img, transforms, *args):
 
     for tclass in transform_classes:
         if tclass.slug in transforms.keys() and tclass.slug not in first_applied:
+            # split the query string for the class
+            transforms[tclass.slug] = transforms[tclass.slug].split('x')
             img = tclass.apply_transform(img, transforms[tclass.slug])
 
     # cache resulting image
