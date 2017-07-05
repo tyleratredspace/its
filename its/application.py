@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 
 from flask import Flask, request, abort
+from statistics import mode, StatisticsError
 from pipeline import process_transforms
 from loader import loader
 
 app = Flask(__name__)
 
 def process_request(namespace, query, filename):
-    query['filename'] = filename
     image = loader(namespace, filename)
-
+    image.info['filename'] = filename
+    
     if image is None:
         abort(404)
 
