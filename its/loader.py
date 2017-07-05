@@ -2,23 +2,29 @@
 Script to validate images being submitted for transformation.
 """
 
-from loaders import BaseLoader
+from loaders import BaseLoader, FileSystemLoader
+import settings
 
 
-def load_image(namespace, filename):
+def loader(namespace, filename):
 
     """
-    Cycles through the available loaders and
-    attempts to load filename from namespace.
-    if DEBUG=true, only uses FileSystemLoader
+    Loads image using the IMAGE_LOADER specified in settings.
     """
     image = None
+
     loader_classes = BaseLoader.__subclasses__()
 
-    for lclass in loader_classes:
-        image = lclass.load_file(namespace, filename)
-
-        if image:
-            break
+    image_loader = [loader 
+        for loader in loader_classes 
+        if loader.slug == settings.IMAGE_LOADER
+    ]
+    
+    if len(image_loader) == 1:
+        image = image_loader[0].load_image(namespace, filename)
+    elif len(image_loader) == 0:
+        print("Not Found Error: Image loader not found.")
+    elif len(image_loader) > 1:
+        print("Configuration Error: Two or more loaders have the same slug.")
 
     return image
