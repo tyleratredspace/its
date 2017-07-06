@@ -6,10 +6,11 @@ class ITSError(Exception):
     """
 
     status_code = 400
+    message = ""
 
-    def __init__(self, message, status_code=None, payload=None, *args):
+    def __init__(self, error, status_code=None, payload=None, *args):
 
-        self.message = message
+        self.message = self.message + error
 
         if status_code is not None:
             self.status_code = status_code
