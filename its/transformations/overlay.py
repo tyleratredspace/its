@@ -26,18 +26,17 @@ class OverlayTransform(BaseTransform):
         api_root = Path(__file__).parents[2]
         its_root = Path(__file__).parents[1]
 
-        if overlay.lower() not in OVERLAYS.keys():
+        if overlay.lower() not in OVERLAYS:
             overlay_image = Image.open(Path(api_root / overlay))
         else:
-            overlay_image = Image.open(its_root / OVERLAYS[overlay.lower()])
+            overlay_image = Image.open(Path(its_root / OVERLAYS[overlay.lower()]))
 
         # placement of top left corner of overlay
-        if len(overlay_position) != 0:
-            x_coord = floor((int(overlay_position[0]) / 100) * img.width)
-            y_coord = floor((int(overlay_position[1]) / 100) * img.height)
-        else: # default placement
-            x_coord = floor((int(OVERLAY_PLACEMENT[0]) / 100) * img.width)
-            y_coord = floor((int(OVERLAY_PLACEMENT[1]) / 100) * img.height)
+        if len(overlay_position) == 0:
+            overlay_position = OVERLAY_PLACEMENT
+
+        x_coord = floor((int(overlay_position[0]) / 100) * img.width)
+        y_coord = floor((int(overlay_position[1]) / 100) * img.height)
 
         # Only the overlay has an alpha channel
         if(img.mode != "RGBA"):
