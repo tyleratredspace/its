@@ -2,7 +2,7 @@ from .base import BaseTransform
 from PIL import Image
 from math import floor
 from pathlib import Path
-from settings import OVERLAYS
+from settings import OVERLAYS, OVERLAY_PLACEMENT
 
 
 class OverlayTransform(BaseTransform):
@@ -35,7 +35,9 @@ class OverlayTransform(BaseTransform):
         if len(overlay_position) != 0:
             x_coord = floor((int(overlay_position[0]) / 100) * img.width)
             y_coord = floor((int(overlay_position[1]) / 100) * img.height)
-        # else: # default placement
+        else: # default placement
+            x_coord = floor((int(OVERLAY_PLACEMENT[0]) / 100) * img.width)
+            y_coord = floor((int(OVERLAY_PLACEMENT[1]) / 100) * img.height)
 
         # Only the overlay has an alpha channel
         if(img.mode != "RGBA"):
