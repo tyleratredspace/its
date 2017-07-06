@@ -4,6 +4,7 @@ class BaseTransform(object):
     """
     Generic image transform type class
     """
+    slug = None # unique string that identifies a given transform
 
     def __init__(self, arg):
         super(BaseTransform, self).__init__()
@@ -12,6 +13,3 @@ class BaseTransform(object):
     def apply_transform(img, *args):
 
         pass
-
-        # if(len(transformation_list) == 0):
-        # 	return img
