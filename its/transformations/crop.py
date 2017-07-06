@@ -27,11 +27,13 @@ class CropTransform(BaseTransform):
 
         # no focal crop args, so check if focal args in filename
         if len(focal_point) == 0:
-            # Match and remove the non-argument filename parts using the patterns defined above
-            filename = re.sub(pre_keyword_pattern, '', filename, flags=re.IGNORECASE)
-            filename = re.sub(file_ext_patten, '', filename, flags=re.IGNORECASE)
-            filename_focal = re.split(delims, filename)
-            if len(filename_focal) > 0: # smart crop
+
+            # if FOCUS_KEYWORD is present in filename, do smart crop
+            if filename.find(FOCUS_KEYWORD) >= 0: # smart crop
+                # Match and remove the non-argument filename parts using the patterns defined above
+                filename = re.sub(pre_keyword_pattern, '', filename, flags=re.IGNORECASE)
+                filename = re.sub(file_ext_patten, '', filename, flags=re.IGNORECASE)
+                filename_focal = re.split(delims, filename)
                 focal_point = filename_focal
             else: # default crop, focal point is the center so 50% on the x & y axes
                 focal_point = [50, 50]
