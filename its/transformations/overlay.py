@@ -19,9 +19,7 @@ class OverlayTransform(BaseTransform):
 
     def apply_transform(img, overlay, overlay_position=None):
 
-        # overlay args should be split in pipeline instead
-        overlay = overlay.split('x')
-        overlay, *overlay_position = overlay
+        *overlay_position, overlay = overlay
 
         api_root = Path(__file__).parents[2]
         its_root = Path(__file__).parents[1]

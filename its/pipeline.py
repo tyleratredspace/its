@@ -4,7 +4,6 @@ Script to apply transformations to validated images.
 
 from transformations import BaseTransform, ResizeTransform
 
-
 def process_transforms(img, transforms, *args):
 
     """
@@ -13,6 +12,7 @@ def process_transforms(img, transforms, *args):
     Return URI to transformed image.
     """
     transform_classes = BaseTransform.__subclasses__()
+    img_info = img.info
     first_applied = ['resize']
 
     # check if a similar transform on the same image is already in cache
@@ -31,6 +31,7 @@ def process_transforms(img, transforms, *args):
             transforms[tclass.slug] = transforms[tclass.slug].split('x')
             img = tclass.apply_transform(img, transforms[tclass.slug])
 
-    # cache resulting image
-    # return the image in browser
-    return "completed"
+    img.info = img_info # some transformations might overwrite the info dict
+    # image conversion and compression
+    # cache result
+    return img
