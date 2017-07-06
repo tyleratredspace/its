@@ -25,9 +25,9 @@ class OverlayTransform(BaseTransform):
         its_root = Path(__file__).parents[1]
 
         if overlay.lower() not in OVERLAYS:
-            overlay_image = Image.open(Path(api_root / overlay))
+            overlay_image = Image.open(api_root / overlay)
         else:
-            overlay_image = Image.open(Path(its_root / OVERLAYS[overlay.lower()]))
+            overlay_image = Image.open(its_root / OVERLAYS[overlay.lower()])
 
         # placement of top left corner of overlay
         if len(overlay_position) == 0:

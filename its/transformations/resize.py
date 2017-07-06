@@ -1,4 +1,5 @@
 from .base import BaseTransform
+from errors import ITSTransformError
 from PIL import Image
 from math import floor
 
@@ -16,7 +17,8 @@ class ResizeTransform(BaseTransform):
             width, height = resize_size.split('x')
             ratio = img.width / img.height
         except (ZeroDivisionError, ValueError) as e:
-            print("Resize takes WWxHH, WWx, or xHH, where WW is the requested width and HH is the requested height.")
+            error = ITSTransformError(error="Resize takes WWxHH, WWx, or xHH, where WW is the requested width and HH is the requested height.")
+            raise error
 
         # converts arguments to ints and calculates
         # rwdith/riheight if missing an argument
@@ -30,9 +32,6 @@ class ResizeTransform(BaseTransform):
             width = int(width)
             height = floor(ratio * width)
 
-        try:
-            img = img.resize([width,height], Image.ANTIALIAS)
-        except Exception as e:
-            print("Failed to resize image.")
+        img = img.resize([width,height], Image.ANTIALIAS)
 
         return img

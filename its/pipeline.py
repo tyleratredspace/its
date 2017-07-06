@@ -3,6 +3,7 @@ Script to apply transformations to validated images.
 """
 
 from transformations import BaseTransform, ResizeTransform
+from errors import ITSTransformError
 
 def process_transforms(img, transforms, *args):
 

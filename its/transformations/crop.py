@@ -45,7 +45,7 @@ class CropTransform(BaseTransform):
         # make sure focal args are percentages
         if (focal_x < 0 or focal_x > 100) or (focal_y < 0 or focal_y > 100):
             error = ITSTransformError(error="Focus arguments should be between 0 and 100")
-            result = error
+            raise error
         else:    
             focal_x = floor((focal_x / 100) * img.width)
             focal_y = floor((focal_y / 100) * img.height)
