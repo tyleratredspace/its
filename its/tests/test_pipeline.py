@@ -35,6 +35,13 @@ def eu_norm(image):
 
     return norm
 
+def assert_images_equal(self, expected, actual):
+    # convert to 'L' b/c some image modes can't be used with ImageChops functions
+    diff = ImageChops.difference(expected.convert('L'), actual.convert('L'))
+    diff_gray = diff.convert('L') # convert to grayscale, 'LA' for L with alpha channel
+    norm = eu_norm(diff_gray) # calculate the norm
+    self.assertAlmostEqual(0, norm) # the difference would be 0 if they were the same
+
 class TestCropTransform(TestCase):
 
     @classmethod
@@ -48,32 +55,41 @@ class TestCropTransform(TestCase):
         query = {'crop':'1x1'}
         expected = Image.open(self.img_dir / "expected/blue_pixel.png")
         actual = process_transforms(test_image, query)
-        diff = ImageChops.difference(expected, actual)
-        diff_gray = diff.convert('L') # convert to grayscale, 'LA' for L with alpha channel
-        norm = eu_norm(diff_gray) # calculate the norm
-        self.assertNotAlmostEqual(0, norm) # the difference would be 0 if they were the same
+        assert_images_equal(self, expected, actual)
 
     def test_focal_crop_no_alpha(self):
         test_image = Image.open(self.img_dir / "top_left.png")
         test_image.info['filename'] = "top_left.png"
-        query = {'crop':'1x1x0x0'}
+        query = {'crop':'1x1x1x1'}
         expected = Image.open(self.img_dir / "expected/blue_pixel.png")
         actual = process_transforms(test_image, query)
-        diff = ImageChops.difference(expected, actual)
-        diff_gray = diff.convert('L') # convert to grayscale, 'LA' for L with alpha channel
-        norm = eu_norm(diff_gray) # calculate the norm
-        self.assertAlmostEqual(0, norm)
+        assert_images_equal(self, expected, actual)
 
-    def test_smart_crop_no_alpha(self):
-        test_image = Image.open(self.img_dir / "bottom_right_focus-99x99.png")
-        test_image.info['filename'] = "bottom_right_focus-99x99.png"
-        query = {'crop':'1x1'}
+    def test_focal_1x1_no_alpha(self):
+        test_image = Image.open(self.img_dir / "abstract.png")
+        test_image.info['filename'] = "abstract.png"
+        query = {'crop':'28x34x1x1'}
+        expected = Image.open(self.img_dir / "expected/rectangle_28x34.png")
+        actual = process_transforms(test_image, query)
+        assert_images_equal(self, expected, actual)
+
+    def test_focal_100x100_no_alpha(self):
+        test_image = Image.open(self.img_dir / "abstract.png")
+        test_image.info['filename'] = "abstract.png"
+        query = {'crop':'1x1x100x100'}
         expected = Image.open(self.img_dir / "expected/blue_pixel.png")
         actual = process_transforms(test_image, query)
-        diff = ImageChops.difference(expected, actual)
-        diff_gray = diff.convert('L') # convert to grayscale, 'LA' for L with alpha channel
-        norm = eu_norm(diff_gray) # calculate the norm
-        self.assertAlmostEqual(0, norm)
+        actual.show()
+        assert_images_equal(self, expected, actual)
+
+
+    def test_smart_70x1_no_alpha(self):
+        test_image = Image.open(self.img_dir / "abstract_focus-70x1.png")
+        test_image.info['filename'] = "abstract_focus-70x1.png"
+        query = {'crop':'5x100'}
+        expected = Image.open(self.img_dir / "expected/rectangle_5x100.png")
+        actual = process_transforms(test_image, query)
+        assert_images_equal(self, expected, actual)
 
 class TestOverlayTransform(TestCase):
     
@@ -88,10 +104,7 @@ class TestOverlayTransform(TestCase):
         query = {'overlay':'45x45xits/tests/images/five.png'}
         expected = Image.open(self.img_dir / "expected/abstract_overlay_five.png")
         actual = process_transforms(test_image, query)
-        diff = ImageChops.difference(expected, actual)
-        diff_gray = diff.convert('L') # convert to grayscale, 'LA' for L with alpha channel
-        norm = eu_norm(diff_gray) # calculate the norm
-        self.assertAlmostEqual(0, norm)
+        assert_images_equal(self, expected, actual)
 
 class TestResizeTransform(TestCase):
 
@@ -114,6 +127,7 @@ class TestResizeTransform(TestCase):
         query = {'resize':'100x100'}
         expected = Image.open(self.img_dir / "expected/test_resize.png")
         actual = process_transforms(test_image, query)
+        # can't use norm since resizing can cause noise
         comparison = compare_pixels(expected, actual)
         self.assertGreaterEqual(comparison, self.threshold)
 
