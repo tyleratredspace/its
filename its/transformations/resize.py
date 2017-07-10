@@ -17,8 +17,7 @@ class ResizeTransform(BaseTransform):
             width, height = resize_size.split('x')
             ratio = img.width / img.height
         except (ZeroDivisionError, ValueError) as e:
-            error = ITSTransformError(error="Resize takes WWxHH, WWx, or xHH, where WW is the requested width and HH is the requested height.")
-            raise error
+            raise ITSTransformError(error="Resize takes WWxHH, WWx, or xHH, where WW is the requested width and HH is the requested height.")
 
         # converts arguments to ints and calculates
         # rwdith/riheight if missing an argument
