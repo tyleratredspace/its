@@ -24,15 +24,16 @@ class CropTransform(BaseTransform):
         pre_keyword_pattern = '.+?(' + FOCUS_KEYWORD + ')' # match everything before and including the keyword
         file_ext_patten = '(\.).+' # match everything after and including the '.' in a filename
 
-        # if FOCUS_KEYWORD is present in filename, do smart crop
-        if filename.find(FOCUS_KEYWORD) >= 0: # smart crop
-            # Match and remove the non-argument filename parts using the patterns defined above
-            filename = re.sub(pre_keyword_pattern, '', filename, flags=re.IGNORECASE)
-            filename = re.sub(file_ext_patten, '', filename, flags=re.IGNORECASE)
-            filename_focal = re.split(DELIMITERS_RE, filename)
-            focal_point = filename_focal
-        else: # default crop, focal point is the center so 50% on the x & y axes
-            focal_point = [50, 50]
+        if len(focal_point) == 0:
+            # if FOCUS_KEYWORD is present in filename, do smart crop
+            if filename.find(FOCUS_KEYWORD) >= 0: # smart crop
+                # Match and remove the non-argument filename parts using the patterns defined above
+                filename = re.sub(pre_keyword_pattern, '', filename, flags=re.IGNORECASE)
+                filename = re.sub(file_ext_patten, '', filename, flags=re.IGNORECASE)
+                filename_focal = re.split(DELIMITERS_RE, filename)
+                focal_point = filename_focal
+            else: # default crop, focal point is the center so 50% on the x & y axes
+                focal_point = [50, 50]
 
         # convert all arguments to ints since they're strings
         crop_width = int(crop_width)
@@ -47,9 +48,9 @@ class CropTransform(BaseTransform):
             focal_x = floor(((focal_x - 1) / 100) * img.width)
             focal_y = floor(((focal_y - 1) / 100) * img.height)
 
-            try:
-                img = img.crop([focal_x, focal_y, focal_x + crop_width, focal_y + crop_height])
-            except ITSTransformError as e:
-                raise e(error="Crop transform with requested size %sx%s and requested focal point [%s, %s] failed." %(crop_width, crop_height, focal_x, focal_y))
-                
+        try:
+            img = img.crop([focal_x, focal_y, focal_x + crop_width, focal_y + crop_height])
+        except ITSTransformError as e:
+            raise e(error="Crop transform with requested size %sx%s and requested focal point [%s, %s] failed." %(crop_width, crop_height, focal_x, focal_y))
+            
         return img

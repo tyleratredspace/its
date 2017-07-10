@@ -79,9 +79,7 @@ class TestCropTransform(TestCase):
         query = {'crop':'1x1x100x100'}
         expected = Image.open(self.img_dir / "expected/blue_pixel.png")
         actual = process_transforms(test_image, query)
-        actual.show()
         assert_images_equal(self, expected, actual)
-
 
     def test_smart_70x1_no_alpha(self):
         test_image = Image.open(self.img_dir / "abstract_focus-70x1.png")
@@ -106,6 +104,15 @@ class TestOverlayTransform(TestCase):
         actual = process_transforms(test_image, query)
         assert_images_equal(self, expected, actual)
 
+    def test_overlay_12x78(self):
+        test_image = Image.open(self.img_dir / "abstract.png")
+        test_image.info['filename'] = "abstract.png"
+        query = {'overlay':'12x78xits/tests/images/five.png'}
+        expected = Image.open(self.img_dir / "expected/abstract_five_12x78.png")
+        actual = process_transforms(test_image, query)
+        assert_images_equal(self, expected, actual)
+
+
 class TestResizeTransform(TestCase):
 
     @classmethod
@@ -121,13 +128,22 @@ class TestResizeTransform(TestCase):
         result = process_transforms(test_image, query)
         self.assertEqual(result.size, (10, 10))
 
-    def test_resize_integrity(self):
+    def test_resize_integrity_smaller(self):
         test_image = Image.open(self.img_dir / "test.png")
         test_image.info['filename'] = "test.png"
         query = {'resize':'100x100'}
         expected = Image.open(self.img_dir / "expected/test_resize.png")
         actual = process_transforms(test_image, query)
         # can't use norm since resizing can cause noise
+        comparison = compare_pixels(expected, actual)
+        self.assertGreaterEqual(comparison, self.threshold)
+
+    def test_resize_integrity_larger(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        test_image.info['filename'] = "test.png"
+        query = {'resize':'700x550'}
+        expected = Image.open(self.img_dir / "expected/test_resize_700x550.png")
+        actual = process_transforms(test_image, query)
         comparison = compare_pixels(expected, actual)
         self.assertGreaterEqual(comparison, self.threshold)
 
