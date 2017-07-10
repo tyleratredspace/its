@@ -14,4 +14,4 @@ OVERLAY_PLACEMENT = [50, 50]
 # the keyword used to recognize focal point args in filenames
 FOCUS_KEYWORD = "focus-" 
 
-SMART_CROP_DELIMITERS = "x_,"
+DELIMITERS_RE = "[x_,]"
