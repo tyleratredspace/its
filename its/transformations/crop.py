@@ -1,6 +1,6 @@
 from .base import BaseTransform
 from errors import ITSTransformError
-from settings import SMART_CROP_DELIMITERS, FOCUS_KEYWORD
+from settings import DELIMITERS_RE, FOCUS_KEYWORD
 from PIL import Image
 from math import floor
 import re
@@ -23,20 +23,16 @@ class CropTransform(BaseTransform):
         filename = img.info['filename']
         pre_keyword_pattern = '.+?(' + FOCUS_KEYWORD + ')' # match everything before and including the keyword
         file_ext_patten = '(\.).+' # match everything after and including the '.' in a filename
-        delims = '[' + SMART_CROP_DELIMITERS + ']' # match the set of delimiters ([pbs] matches 'p', 'b' and 's')
 
-        # no focal crop args, so check if focal args in filename
-        if len(focal_point) == 0:
-
-            # if FOCUS_KEYWORD is present in filename, do smart crop
-            if filename.find(FOCUS_KEYWORD) >= 0: # smart crop
-                # Match and remove the non-argument filename parts using the patterns defined above
-                filename = re.sub(pre_keyword_pattern, '', filename, flags=re.IGNORECASE)
-                filename = re.sub(file_ext_patten, '', filename, flags=re.IGNORECASE)
-                filename_focal = re.split(delims, filename)
-                focal_point = filename_focal
-            else: # default crop, focal point is the center so 50% on the x & y axes
-                focal_point = [50, 50]
+        # if FOCUS_KEYWORD is present in filename, do smart crop
+        if filename.find(FOCUS_KEYWORD) >= 0: # smart crop
+            # Match and remove the non-argument filename parts using the patterns defined above
+            filename = re.sub(pre_keyword_pattern, '', filename, flags=re.IGNORECASE)
+            filename = re.sub(file_ext_patten, '', filename, flags=re.IGNORECASE)
+            filename_focal = re.split(DELIMITERS_RE, filename)
+            focal_point = filename_focal
+        else: # default crop, focal point is the center so 50% on the x & y axes
+            focal_point = [50, 50]
 
         # convert all arguments to ints since they're strings
         crop_width = int(crop_width)
