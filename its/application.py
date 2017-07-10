@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-from flask import Flask, request, abort
+from flask import Flask, request, abort, Response
 from statistics import mode, StatisticsError
 from pipeline import process_transforms
 from loader import loader
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -14,7 +15,17 @@ def process_request(namespace, query, filename):
     if image is None:
         abort(404)
 
-    return process_transforms(image, query)
+    result = process_transforms(image, query)
+
+    if result.format is None:
+        result.format = image.format
+ 
+    mime_type = "image/" + result.format.lower()
+
+    output = BytesIO()
+    result.save(output, format=result.format.upper())
+
+    return Response(response=output.getvalue(),mimetype=mime_type)
 
 def query_resize(width, height, ext):
     query = {'resize':'x', 'format':str(ext)}
