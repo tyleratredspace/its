@@ -14,7 +14,7 @@ def process_transforms(img, transforms, *args):
     """
     transform_classes = BaseTransform.__subclasses__()
     img_info = img.info
-    first_applied = ['resize']
+    # first_applied = ['resize']
 
     # check if a similar transform on the same image is already in cache
 
@@ -24,6 +24,7 @@ def process_transforms(img, transforms, *args):
     # apply necessary/easily applicable transforms
     # according to preset precedence
     if "resize" in transforms.keys():
+        transforms['resize'] = transforms['resize'].split('x')
         img = ResizeTransform.apply_transform(img, transforms['resize'])
 
     for tclass in transform_classes:
