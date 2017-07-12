@@ -2,9 +2,9 @@
 Script to validate images being submitted for transformation.
 """
 
-from ..loaders import BaseLoader, FileSystemLoader
-from ..errors import ITSLoaderError
-from .. import settings
+from .loaders import BaseLoader, FileSystemLoader
+from .errors import ITSLoaderError
+from . import settings
 
 
 def loader(namespace, filename):

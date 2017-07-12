@@ -3,8 +3,8 @@
 from io import BytesIO
 from statistics import mode, StatisticsError
 from flask import Flask, request, abort, Response
-from its.pipeline.pipeline import process_transforms
-from its.loader.loader import loader
+from its.pipeline import process_transforms
+from its.loader import loader
 
 app = Flask(__name__)
 
