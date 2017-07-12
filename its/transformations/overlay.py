@@ -1,8 +1,8 @@
-from .base import BaseTransform
-from PIL import Image
 from math import floor
 from pathlib import Path
-from settings import OVERLAYS, OVERLAY_PLACEMENT
+from PIL import Image
+from .base import BaseTransform
+from ..settings import OVERLAYS, OVERLAY_PLACEMENT
 
 
 class OverlayTransform(BaseTransform):

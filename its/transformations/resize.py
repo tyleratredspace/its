@@ -1,7 +1,7 @@
-from .base import BaseTransform
-from errors import ITSTransformError
-from PIL import Image
 from math import floor
+from PIL import Image
+from .base import BaseTransform
+from ..errors import ITSTransformError
 
 
 class ResizeTransform(BaseTransform):

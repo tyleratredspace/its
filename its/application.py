@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-from flask import Flask, request, abort, Response
-from statistics import mode, StatisticsError
-from pipeline.pipeline import process_transforms
-from loader.loader import loader
 from io import BytesIO
+from statistics import mode, StatisticsError
+from flask import Flask, request, abort, Response
+from its.pipeline.pipeline import process_transforms
+from its.loader.loader import loader
 
 app = Flask(__name__)
 
