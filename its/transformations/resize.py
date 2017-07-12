@@ -14,7 +14,11 @@ class ResizeTransform(BaseTransform):
         """
 
         width, height = resize_size
-        ratio = img.width / img.height
+
+        if img.width == 0 or img.height == 0:
+            raise ITSTransformError(error="Input image cannot have zero width nor zero height.")
+        else:
+            ratio = img.width / img.height
 
         try:
             width = int(width) if width != '' else None
