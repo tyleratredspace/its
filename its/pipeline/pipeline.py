@@ -24,6 +24,7 @@ def process_transforms(img, transforms, *args):
     # apply necessary/easily applicable transforms
     # according to preset precedence
     if "resize" in transforms.keys():
+        transforms['resize'] = transforms['resize'].split('x')
         img = ResizeTransform.apply_transform(img, transforms['resize'])
 
     for tclass in transform_classes:
