@@ -3,7 +3,7 @@
 # Set DEBUG = True to enable debugging application.
 DEBUG = True
 
-IMAGE_LOADER = 'file_system'
+IMAGE_LOADER = 's3'
 
 OVERLAYS = {
 	'passport': "static/Passport_Compass_Rose.png",
