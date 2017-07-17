@@ -97,23 +97,27 @@ def run_pngcrush(pngs, method=None):
     num_pngs = 0
 
     for img in pngs.iterdir():
-        print(img.name)
-        start = time.time()
-        command = copy.deepcopy(base)
-        command.append(img)
-        command.append(out_folder / img.name)
-        Path.touch(out_folder / img.name)
+        if img.name.lower().find("png") != -1:
+            print(img.name)
+            start = time.time()
+            command = copy.deepcopy(base)
+            command.append(img)
+            command.append(out_folder / img.name)
+            try:
+                Path.touch(out_folder / img.name)
 
-        output = subprocess.check_output(command, stderr=subprocess.STDOUT)
-        # output is a bytes-like object, so decode into a string
-        decoded_output = output.decode('ascii')
-        # find index of relevant data i.e. best method, compression percentage, etc.
-        relevant_index = decoded_output.find("Best")
-        # store relevant data for later processing
-        if relevant_index != -1:
-            saved_output.append(decoded_output[relevant_index:])
-        mean_time.append(time.time() - start)
-    
+                output = subprocess.check_output(command, stderr=subprocess.STDOUT)
+                # output is a bytes-like object, so decode into a string
+                decoded_output = output.decode('ascii')
+                # find index of relevant data i.e. best method, compression percentage, etc.
+                relevant_index = decoded_output.find("Best")
+                # store relevant data for later processing
+                if relevant_index != -1:
+                    saved_output.append(decoded_output[relevant_index:])
+                mean_time.append(time.time() - start)
+            except Exception as e:
+                print("An error occurred with PNGCrush:" + str(e))
+
     for line in saved_output:
         # best method number is after the first '=' and before the first '('
         best_method = int(line[line.find('=') + 1: line.find('(')])
@@ -150,7 +154,7 @@ def run_pngquant(pngs, speed=3): #default speed for pngquant is 3
     out_folder = mk_folder("pngquant_results/speed_" + str(speed))
     speed = "-s" + str(speed)
     for img in pngs.iterdir():
-        if img.name.find('png') != -1:
+        if img.name.lower().find('png') != -1:
             print(img.name)
             start = time.time()
             command = copy.deepcopy(base)
@@ -158,14 +162,18 @@ def run_pngquant(pngs, speed=3): #default speed for pngquant is 3
             command.append(str(Path(out_folder / img.name)))
             command.append(speed)
             command.append(str(Path(img)))
-            Path.touch(out_folder / img.name)
 
-            output = subprocess.check_output(command, stderr=subprocess.STDOUT)
-            mean_time.append(time.time() - start)
-            original_size = os.stat(img).st_size
-            compressed_size = os.stat(Path(out_folder / img.name)).st_size
-            percent_comp = ((original_size  - compressed_size) / original_size) * 100
-            compression_percent.append(percent_comp)
+            try:
+                Path.touch(out_folder / img.name)
+                output = subprocess.check_output(command, stderr=subprocess.STDOUT)
+                mean_time.append(time.time() - start)
+                original_size = os.stat(img).st_size
+                compressed_size = os.stat(Path(out_folder / img.name)).st_size
+                percent_comp = ((original_size  - compressed_size) / original_size) * 100
+                compression_percent.append(percent_comp)
+            except Exception as e:
+                print("An error occurred with PNGQuant:" + str(e))
+
 
     mean_time = mean(mean_time)
     res = {'mean_run_time':mean_time, 'mean_compression': mean(compression_percent),'best_compression_id':compression_percent.index(max(compression_percent)),\
@@ -185,7 +193,7 @@ def run_optipng(pngs, opt_level):
     imgs = list(pngs.iterdir())
 
     for img in imgs:
-        if img.name.find('png') != -1:
+        if img.name.lower().find('png') != -1:
             print(img.name)
             start = time.time()
             command = copy.deepcopy(base)
@@ -204,7 +212,7 @@ def run_optipng(pngs, opt_level):
                     saved_output.append(decoded_output[relevant_index:])
                 mean_time.append(time.time() - start)
             except Exception as e:
-                print("An error occurred with Optipng:")
+                print("An error occurred with Optipng:" + str(e))
 
     for line in saved_output:
         if line.find('decrease') != -1:
@@ -233,7 +241,7 @@ def run_pngnq(pngs, speed=3):
     saved_output = [] # list of output that needs to be parsed to gather more data
 
     for img in pngs.iterdir():
-        if img.name.find('png') != -1:
+        if img.name.lower().find('png') != -1:
             print(img.name)
             start = time.time()
             command = copy.deepcopy(base)
@@ -242,9 +250,13 @@ def run_pngnq(pngs, speed=3):
             command.append(str(Path(out_folder)))
             command.append(str(Path(img)))
 
-            output = subprocess.check_output(command, stderr=subprocess.STDOUT)
-            mean_time.append(time.time() - start)
-            compression_percent.append(calc_percent_difference(img, Path(out_folder / img.name)))
+            try:
+                output = subprocess.check_output(command, stderr=subprocess.STDOUT)
+                mean_time.append(time.time() - start)
+                compression_percent.append(calc_percent_difference(img, Path(out_folder / img.name)))
+            except Exception as e:
+                print("An error occurred with PNGnq:" + str(e))
+
 
     mean_time = mean(mean_time)
     res = {'mean_run_time':mean_time, 'mean_compression': mean(compression_percent),'best_compression_id':compression_percent.index(max(compression_percent)),\
@@ -285,7 +297,7 @@ def run_jpegoptim(jpgs, quality=None):
                     saved_output.append(decoded_output[relevant_index:])
                 mean_time.append(time.time() - start)
             except Exception as e:
-                print("JPEGOptim had an error: ")
+                print("JPEGOptim had an error: " + str(e))
                 print(img.name + " has the following stats:" + str(os.stat(img)))
     
     for line in saved_output:
