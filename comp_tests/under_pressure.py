@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from pathlib import Path
 from PIL import Image
 from statistics import mode, mean
@@ -18,30 +18,37 @@ def main():
     results = dict()
 
     out_folder = mk_folder("pngcrush_results/")
-    out_folder = mk_folder("pngquant_results/")
     out_folder = mk_folder("optipng_results/")
-    # out_folder = mk_folder("pngnq_results/")
-    # out_folder = mk_folder("jpegoptim_results/")
+    out_folder = mk_folder("pngquant_results/")
+    out_folder = mk_folder("pngnq_results/")
+    out_folder = mk_folder("jpegoptim_results/")
+    out_folder = mk_folder("pil_jpeg_results/")
+
 
     results['pngcrush'] = run_pngcrush(pngs)
     results['pngcrush_mode'] = run_pngcrush(pngs,results['pngcrush']['other']['mode_method'])
-
-    # for val in list(range(1,12)):
-    #     print("PNGQuant Speed:" + str(val))
-    #     results['pngquant_speed_' + str(val)] = run_pngquant(pngs, val)
 
     for val in list(range(8)):
         print("OptiPNG optimization level:" + str(val))
         results['optipng_opt_' + str(val)] = run_optipng(pngs, val)
 
-    # for val in list(range(1, 11)):
-    #     print("PNGnq Speed:" + str(val))
-    #     results['pngnq_speed_' + str(val)] = run_pngnq(pngs, val)
+    for val in list(range(1,12)):
+        print("PNGQuant Speed:" + str(val))
+        results['pngquant_speed_' + str(val)] = run_pngquant(pngs, val)
+
+    for val in list(range(1, 11)):
+        print("PNGnq Speed:" + str(val))
+        results['pngnq_speed_' + str(val)] = run_pngnq(pngs, val)
     
-    # for val in list(range(0, 101)):
-    #     print("JPEGOptim Quality:" + str(val))
-    #     run_jpegoptim(jpegs, val)
-    # write_results(results)
+    for val in list(range(0, 101)):
+        print("JPEGOptim Quality:" + str(val))
+        results['jpegoptim'] = run_jpegoptim(jpegs, val)
+
+    for val in list(range(1, 96)):
+        print("Pillow Quality:" + str(val))
+        results['pillow_quality' + str(val)] = run_pil_jpeg(jpegs, val)
+
+    write_results(results)
 
 
 def calc_percent_difference(original, compressed):
@@ -165,7 +172,6 @@ def run_pngquant(pngs, speed=3): #default speed for pngquant is 3
         'worst_compression_id':compression_percent.index(min(compression_percent)), 'other':None}
     return res
 
-
 def run_optipng(pngs, opt_level):
     
     print("Running OptiPNG ...\n")
@@ -251,72 +257,78 @@ def run_jpegoptim(jpgs, quality=None):
     print("Running JPEGOptim ...\n")
 
     if quality is None:
-        base = ["./jpegoptim", "--strip-all", "--all-progressive", "-o", "--stdout"]
+        base = ["./jpegoptim", "--strip-all", "--all-progressive", "-v","-o"]
         out_folder = mk_folder("jpegoptim_results/lossless_opt/")
     else:
-        base = ["./jpegoptim", "--strip-all", "--all-progressive", "-o", "--stdout","-m" + str(quality)]
+        base = ["./jpegoptim", "--strip-all", "--all-progressive", "-o", "-v", "-m" + str(quality)]
         out_folder = mk_folder("jpegoptim_results/max_quality_" + str(quality) + "/")
 
-    # saved_output = [] # list of output that needs to be parsed to gather more data
-    # num_methods = 148
-    # best_methods = list()
-    # compression_percent = list()
-    # increase_percent = list() # list of filesize increase percentages
-    # mean_time = list()
-    
-    # num_pngs = 0
+    saved_output = [] # list of output that needs to be parsed to gather more data
+    compression_percent = list()
+    mean_time = list()
 
     for img in jpgs.iterdir():
         print(img.name)
-        if img.name.lower().find("jpg") != -1 or img.name.lower().find("jpeg"):
+        if img.name.lower().find("jpg") != -1 or img.name.lower().find("jpeg") != -1:
             start = time.time()
             command = copy.deepcopy(base)
             command.append("-d")
-            Path.touch(out_folder)
-            command.append(str(Path(out_folder)))
-            command.append(img)
+            command.append(str(Path(out_folder)) + "/")
+            command.append(str(Path(img)))
 
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = process.communicate()
-            print(err)
-        # output = subprocess.check_output(command, stderr=subprocess.STDOUT)
-    #     # output is a bytes-like object, so decode into a string
-        # decoded_output = output.decode('ascii')
-    #     # find index of relevant data i.e. best method, compression percentage, etc.
-    #     relevant_index = decoded_output.find("Best")
-    #     # store relevant data for later processing
-    #     if relevant_index != -1:
-    #         saved_output.append(decoded_output[relevant_index:])
-    #     mean_time.append(time.time() - start)
+            try:
+                output = subprocess.check_output(command, stderr=subprocess.STDOUT)
+                decoded_output = output.decode('ascii')
+                relevant_index = decoded_output.find("bytes")
+                # store relevant data for later processing
+                if relevant_index != -1:
+                    saved_output.append(decoded_output[relevant_index:])
+                mean_time.append(time.time() - start)
+            except Exception as e:
+                print("JPEGOptim had an error: ")
+                print(img.name + " has the following stats:" + str(os.stat(img)))
     
-    # for line in saved_output:
-    #     # best method number is after the first '=' and before the first '('
-    #     best_method = int(line[line.find('=') + 1: line.find('(')])
-    #     best_methods.append(best_method)
+    for line in saved_output:
+        # percent reduction
+        percent_reduction = int(line[line.find('('): line.find(')')])
+        compression_percent.append(percent_reduction)
 
-    #     if line.find('filesize reduction') != -1:
-    #         percent_reduction = float(line[line.find('filesize reduction') - 7:line.find('filesize reduction')].strip('% ('))
-    #         compression_percent.append(percent_reduction)
-    #     else:
-    #         # Sometimes filesizes increase for reasons unknown
-    #         percent_increase = float(line[line.find('filesize increase') - 7:line.find('filesize increase')].strip('% ('))
-    #         increase_percent.append(percent_increase)
+    mean_time = mean(mean_time)
 
-    # mean_time = mean(mean_time)
+    res = {'mean_run_time':mean_time, 'mean_compression': mean(compression_percent),'best_compression_id':compression_percent.index(max(compression_percent)),\
+        'worst_compression_id':compression_percent.index(min(compression_percent)),'other':None}
+    return res
 
-    # if len(increase_percent) == 0:
-    #     increase_percent.append(-1)
+def run_pil_jpeg(jpgs, quality=None):
+    print("Running JPEG compression via Pillow ...\n")
 
-    # if len(compression_percent) == 0:
-    #     compression_percent.append(-1)
+    compression_percent = list()
+    mean_time = list()
 
-    # res = {'mean_run_time':mean_time, 'mean_compression': mean(compression_percent),'best_compression_id':compression_percent.index(max(compression_percent)),\
-    #     'worst_compression_id':compression_percent.index(min(compression_percent)),'other':{'mode_method':mode(best_methods), 'mean_size_increase':mean(increase_percent)}}
-    # return res
+    if quality is None:
+        out_folder = mk_folder("pil_jpeg_results/quality_default_75" + str(quality) + "/")
+    else:
+        out_folder = mk_folder("pil_jpeg_results/quality_" + str(quality) + "/")
 
-# def run_jpegtran(jpgs):
+    for img in jpgs.iterdir():
+        print(img.name)
+        if img.name.lower().find("jpg") != -1 or img.name.lower().find("jpeg") != -1:
+            start = time.time()
+            try:
+                image = Image.open(img)
+                image.save(Path(out_folder / img.name), "JPEG", quality=quality, optimize=True, progressive=True)
+                mean_time.append(time.time() - start)
+                compression_percent.append(calc_percent_difference(img, Path(out_folder / img.name)))
+            except Exception as e:
+                print("An error occurred with Pillow:" + str(e))
 
-# def run_pil_jpeg(jpgs):
+
+    mean_time = mean(mean_time)
+
+    res = {'mean_run_time':mean_time, 'mean_compression': mean(compression_percent),'best_compression_id':compression_percent.index(max(compression_percent)),\
+        'worst_compression_id':compression_percent.index(min(compression_percent)),'other':None}
+    return res
+
 
 if __name__ == '__main__':
     main()
