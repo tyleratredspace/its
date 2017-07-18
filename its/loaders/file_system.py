@@ -1,7 +1,7 @@
-from .base import BaseLoader
-from errors import NotFoundError
-from PIL import Image
 from pathlib import Path
+from PIL import Image
+from .base import BaseLoader
+from ..errors import NotFoundError
 
 
 class FileSystemLoader(BaseLoader):

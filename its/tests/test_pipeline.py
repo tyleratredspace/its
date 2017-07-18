@@ -3,7 +3,7 @@ from PIL import Image, ImageChops
 from pathlib import Path
 import itertools
 from math import sqrt
-from pipeline.pipeline import process_transforms
+from its.pipeline import process_transforms
 
 def get_pixels(image):
     # List of all the possible coordinates in the image

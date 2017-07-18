@@ -1,9 +1,9 @@
-from .base import BaseTransform
-from errors import ITSTransformError
-from settings import DELIMITERS_RE, FOCUS_KEYWORD
-from PIL import Image
-from math import floor
 import re
+from math import floor
+from PIL import Image
+from .base import BaseTransform
+from ..errors import ITSTransformError
+from ..settings import DELIMITERS_RE, FOCUS_KEYWORD
 
 class CropTransform(BaseTransform):
 

@@ -6,7 +6,7 @@ DEBUG = True
 IMAGE_LOADER = 's3'
 
 OVERLAYS = {
-	'passport': "static/Passport_Compass_Rose.png",
+    'passport': "static/Passport_Compass_Rose.png",
 }
 
 OVERLAY_PLACEMENT = [50, 50]
