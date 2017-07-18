@@ -302,7 +302,7 @@ def run_jpegoptim(jpgs, quality=None):
     
     for line in saved_output:
         # percent reduction
-        percent_reduction = int(line[line.find('('): line.find(')')])
+        percent_reduction = float(line[line.find('('): line.find(')')].strip("( )%"))
         compression_percent.append(percent_reduction)
 
     mean_time = mean(mean_time)
