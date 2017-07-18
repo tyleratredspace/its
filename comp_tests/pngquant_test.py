@@ -47,9 +47,10 @@ def write_results(results_dict):
             writer.writerow({'utility':key, 'mean_run_time':results_dict[key]['mean_run_time'], 'best_compression_id':results_dict[key]['best_compression_id'],\
                 'worst_compression_id':results_dict[key]['worst_compression_id'],'mean_compression_percentage':results_dict[key]['mean_compression']})
 
-            for other_key in results_dict[key]['other']:
-                if results_dict[key]['other'] is not None:
-                    writer.writerow({'other_descript':other_key, 'other':results_dict[key]['other'][other_key]})
+            if results_dict[key]['other'] is not None:
+                for other_key in results_dict[key]['other']:
+                    if results_dict[key]['other'][other_key] is not None:
+                        writer.writerow({'other_descript':other_key, 'other':results_dict[key]['other'][other_key]})
 
 def run_pngquant(pngs, speed=3): #default speed for pngquant is 3
     
@@ -75,13 +76,15 @@ def run_pngquant(pngs, speed=3): #default speed for pngquant is 3
                 Path.touch(out_folder / img.name)
                 output = subprocess.check_output(command, stderr=subprocess.STDOUT)
                 mean_time.append(time.time() - start)
-                original_size = os.stat(img).st_size
-                compressed_size = os.stat(Path(out_folder / img.name)).st_size
-                percent_comp = ((original_size  - compressed_size) / original_size) * 100
-                compression_percent.append(percent_comp)
             except Exception as e:
                 print("An error occurred with PNGQuant:" + str(e))
 
+    for img in pngs.iterdir():
+        try:
+            if img.name.lower().find('png') != -1:
+                compression_percent.append(calc_percent_difference(img, Path(out_folder / img.name)))
+        except Exception as e:
+            print("An error occurred with PNGQuant:" + str(e))
 
     mean_time = mean(mean_time)
     res = {'mean_run_time':mean_time, 'mean_compression': mean(compression_percent),'best_compression_id':compression_percent.index(max(compression_percent)),\

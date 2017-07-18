@@ -18,16 +18,16 @@ def main():
     results = dict()
 
     out_folder = mk_folder("jpegoptim_results/")
-    out_folder = mk_folder("pil_jpeg_results/")
+    # out_folder = mk_folder("pil_jpeg_results/")
 
     
     for val in list(range(0, 101)):
         print("JPEGOptim Quality:" + str(val))
-        results['jpegoptim'] = run_jpegoptim(jpegs, val)
+        results['jpegoptim_quality_' + str(val)] = run_jpegoptim(jpegs, val)
 
-    for val in list(range(1, 96)):
-        print("Pillow Quality:" + str(val))
-        results['pillow_quality' + str(val)] = run_pil_jpeg(jpegs, val)
+    # for val in list(range(1, 96)):
+    #     print("Pillow Quality:" + str(val))
+    #     results['pillow_quality' + str(val)] = run_pil_jpeg(jpegs, val)
 
     write_results(results)
 
@@ -45,7 +45,7 @@ def mk_folder(dir_name):
     return folder
 
 def write_results(results_dict):
-    with open('jpeg_results.csv', 'w') as csvfile:
+    with open('jpegoptim_results.csv', 'w') as csvfile:
         fieldnames = ['utility', 'mean_run_time', 'best_compression_id', 'worst_compression_id','mean_compression_percentage','other_descript', 'other']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -53,9 +53,10 @@ def write_results(results_dict):
             writer.writerow({'utility':key, 'mean_run_time':results_dict[key]['mean_run_time'], 'best_compression_id':results_dict[key]['best_compression_id'],\
                 'worst_compression_id':results_dict[key]['worst_compression_id'],'mean_compression_percentage':results_dict[key]['mean_compression']})
 
-            for other_key in results_dict[key]['other']:
-                if results_dict[key]['other'] is not None:
-                    writer.writerow({'other_descript':other_key, 'other':results_dict[key]['other'][other_key]})
+            if results_dict[key]['other'] is not None:
+                for other_key in results_dict[key]['other']:
+                    if results_dict[key]['other'][other_key] is not None:
+                        writer.writerow({'other_descript':other_key, 'other':results_dict[key]['other'][other_key]})
 
 def run_jpegoptim(jpgs, quality=None):
 

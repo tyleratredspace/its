@@ -47,9 +47,10 @@ def write_results(results_dict):
             writer.writerow({'utility':key, 'mean_run_time':results_dict[key]['mean_run_time'], 'best_compression_id':results_dict[key]['best_compression_id'],\
                 'worst_compression_id':results_dict[key]['worst_compression_id'],'mean_compression_percentage':results_dict[key]['mean_compression']})
 
-            for other_key in results_dict[key]['other']:
-                if results_dict[key]['other'] is not None:
-                    writer.writerow({'other_descript':other_key, 'other':results_dict[key]['other'][other_key]})
+            if results_dict[key]['other'] is not None:
+                for other_key in results_dict[key]['other']:
+                    if results_dict[key]['other'][other_key] is not None:
+                        writer.writerow({'other_descript':other_key, 'other':results_dict[key]['other'][other_key]})
 
 
 def run_optipng(pngs, opt_level):
