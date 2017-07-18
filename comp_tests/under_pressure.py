@@ -50,7 +50,6 @@ def main():
 
     write_results(results)
 
-
 def calc_percent_difference(original, compressed):
     original_size = os.stat(original).st_size
     compressed_size = os.stat(compressed).st_size
@@ -76,6 +75,17 @@ def write_results(results_dict):
                 for other_key in results_dict[key]['other']:
                     if results_dict[key]['other'][other_key] is not None:
                         writer.writerow({'other_descript':other_key, 'other':results_dict[key]['other'][other_key]})
+
+def get_image_name(img_id, is_png):
+    jpegs = Path(__file__).parent / "images/test_jpgs"
+    pngs = Path(__file__).parent / "images/test_pngs"
+    jpegs_list = list(jpegs.iterdir())
+    pngs_list = list(pngs.iterdir())
+
+    if is_png:
+        return pngs_list[img_id]
+    else:
+        return jpegs_list[img_id]
 
 def run_pngcrush(pngs, method=None):
 
