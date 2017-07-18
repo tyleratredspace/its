@@ -17,8 +17,6 @@ class ResizeTransform(BaseTransform):
 
         if img.width == 0 or img.height == 0:
             raise ITSTransformError(error="Input image cannot have zero width nor zero height.")
-        else:
-            ratio = img.width / img.height
 
         try:
             width = int(width) if width != '' else None
@@ -30,11 +28,15 @@ class ResizeTransform(BaseTransform):
             raise ITSTransformError(error="Resize takes WWxHH, WWx, or xHH, where WW is the requested width and HH is the requested height.")
 
         if width is None and height:
-            width = floor(ratio * height)
+            width = floor((img.height / img.width) * height)
 
         if height is None:
-            height = floor(ratio * width)
+            height = floor((img.width / img.height) * width)
 
-        img = img.resize([width, height], Image.ANTIALIAS)
+        # width and height are the max width and max height expected
+        # calculate a resize ratio between them and the original sizes
+        
+        ratio = min(width / img.width, height / img.height)
+        img = img.resize([floor(img.width * ratio), floor(img.height * ratio)], Image.ANTIALIAS)
 
         return img
