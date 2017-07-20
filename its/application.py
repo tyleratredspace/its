@@ -9,21 +9,26 @@ from its.loader import loader
 app = Flask(__name__)
 
 def process_request(namespace, query, filename):
+
     image = loader(namespace, filename)
-    image.info['filename'] = filename
     
     if image is None:
         abort(404)
 
-    result = process_transforms(image, query)
+    if isinstance(image, BytesIO):
+        output = image
+        mime_type ="image/svg+xml"
+    else: 
+        image.info['filename'] = filename
+        result = process_transforms(image, query)
 
-    if result.format is None:
-        result.format = image.format
- 
-    mime_type = "image/" + result.format.lower()
+        if result.format is None:
+            result.format = image.format
+     
+        mime_type = "image/" + result.format.lower()
 
-    output = BytesIO()
-    result.save(output, format=result.format.upper())
+        output = BytesIO()
+        result.save(output, format=result.format.upper())
 
     return Response(response=output.getvalue(),mimetype=mime_type)
 

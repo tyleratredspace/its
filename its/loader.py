@@ -5,7 +5,7 @@ Script to validate images being submitted for transformation.
 from .loaders import BaseLoader, FileSystemLoader
 from .errors import ITSLoaderError
 from . import settings
-
+from io import BytesIO
 
 def loader(namespace, filename):
 
@@ -20,9 +20,12 @@ def loader(namespace, filename):
         for loader in loader_classes 
         if loader.slug == settings.IMAGE_LOADER
     ]
-    
+
     if len(image_loader) == 1:
-        image = image_loader[0].load_image(namespace, filename)
+        if filename.endswith(".svg"):
+            image = image_loader[0].get_fileobj(namespace, filename)
+        else:
+            image = image_loader[0].load_image(namespace, filename)
     elif len(image_loader) == 0:
         raise ITSLoaderError(error="Not Found Error: Image loader not found.")
     elif len(image_loader) > 1:
