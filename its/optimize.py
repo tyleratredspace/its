@@ -9,29 +9,25 @@ def optimize(img, query):
     # what to do with "gif" webp?
     # allow svgs to pass through unchanged
     # convert from and to  png ,jpeg, webp
-    ext = query['format'] if 'format' in query else img.format # the return format
+    ext = query['format'] if 'format' in query else img.format.lower() # the return format
     quality = int(query['quality']) if 'quality' in query else None
 
-    # if ext.lower() == "jpg":
-    #     ext = "jpeg"  
-    # # convert first, then optimize
-    # if ext.upper() != img.format: #same format so do nothing
-    #     # convert from png to jpeg & webp
-    #     if img.format in ["PNG", "WEBP", "JPEG"]:
-    #         img = img.convert("RGB") # need to convert to RGB first, then can save in any format
-            
-    #         if ext.lower() == "jpeg":
-    #             if quality is not None:
-    #                 img.save("converted." + ext.lower(), ext.upper(), quality=quality, progressive=True)
-    #             else:
-    #                 img.save("converted." + ext.lower(), ext.upper(), quality=95, progressive=True)
-    #         else:
-    #             img.save("converted." + ext.lower(), ext.upper())
-            
-    #         img = Image.open("converted." + ext.lower())
+    if ext.lower() == "jpg":
+        ext = "jpeg"  
+    # convert first, then optimize
+    if ext.upper() != img.format: #same format so do nothing
+        if img.format in ["PNG", "WEBP", "JPEG"]:
+            img = img.convert("RGB") # need to convert to RGB first, then can save in any format
 
+            if ext.lower() == "jpeg":
+                if quality is not None:
+                    img.save("converted." + ext.lower(), ext.upper(), quality=quality, progressive=True)
+                else:
+                    img.save("converted." + ext.lower(), ext.upper(), quality=95, progressive=True)
+            else:
+                img.save("converted." + ext.lower(), ext.upper())
 
-    if img.format == "PNG":
+    if img.format == "PNG" and img.mode in ["RGBA", "LA"]: # only optimize pngs with an alpha channel
         if quality is not None:
             command = ["./its/utils/pngquant", "--force", "--verbose", "--output", "./compressed.png", "-s" + str(quality),  "./tmp.png"]
         else:
@@ -60,7 +56,6 @@ def optimize(img, query):
             img.save("compressed.jpeg", "JPEG", optimize=True, progressive=True)
         img = Image.open("./compressed.jpeg")
 
-
     if Path("converted." + ext.lower()).exists(): # delete temporary conversion file
         Path("converted." + ext.lower()).unlink()
 
@@ -69,4 +64,5 @@ def optimize(img, query):
 
     if Path("compressed." + ext.lower()).exists(): # delete temporary conversion file
         Path("compressed." + ext.lower()).unlink()
+    
     return img
