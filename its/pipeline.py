@@ -4,6 +4,7 @@ Script to apply transformations to validated images.
 
 from .transformations import BaseTransform, ResizeTransform
 from .errors import ITSTransformError
+from .optimize import optimize
 
 def process_transforms(img, transforms, *args):
 
@@ -36,4 +37,5 @@ def process_transforms(img, transforms, *args):
     img.info = img_info # some transformations might overwrite the info dict
     # image conversion and compression
     # cache result
+    img = optimize(img, transforms)
     return img
