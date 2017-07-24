@@ -10,8 +10,10 @@ class OverlayTransform(BaseTransform):
     """
     Pastes a specified image over the input image.
     The overlay is placed according to the input expected position of its top left corner.
-    Overlay placement arguments are percentages, with (0,0) representing the top left corner of the input image.
-    See settings to change the default placement of the overlay when no position arguments are input.
+    Overlay placement arguments are percentages, with (0,0)
+    representing the top left corner of the input image.
+    See settings to change the default placement of the
+    overlay when no position arguments are input.
 
     image.png?overlay=overlay_img.pngxPXxPY
     """
@@ -41,7 +43,7 @@ class OverlayTransform(BaseTransform):
             new_img = img.copy()
         else:
             # overlay and input img have alpha channels
-            # make an image the size of the background with 
+            # make an image the size of the background with
             # RGBA mode and alpha composite new image with background
             # this maintains the alpha channel of the background
             new_img = Image.new("RGBA", img.size)

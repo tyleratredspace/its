@@ -1,10 +1,11 @@
 """
 Script to apply transformations to validated images.
 """
-
+import re
 from .transformations import BaseTransform, ResizeTransform
-from .errors import ITSTransformError
+# from .errors import ITSTransformError
 from .optimize import optimize
+
 
 def process_transforms(img, transforms, *args):
 
@@ -34,7 +35,16 @@ def process_transforms(img, transforms, *args):
             transforms[tclass.slug] = transforms[tclass.slug].split('x')
             img = tclass.apply_transform(img, transforms[tclass.slug])
 
-    img.info = img_info # some transformations might overwrite the info dict
+    if img.format is None and 'filename' in img_info.keys():
+        # attempt to grab the filetype from the filename
+        file_type = re.sub('(\.).+', '', img_info['filename'], flags=re.IGNORECASE)
+        if file_type.lower() == "jpg" or file_type.lower() == "jpeg":
+            img.format = "JPEG"
+        else:
+            img.format = file_type.upper()
+    # print(img.info)
+    # img.info = img_info  # some transformations might overwrite the info dict
+    # print(img_info)
     # image conversion and compression
     # cache result
     img = optimize(img, transforms)

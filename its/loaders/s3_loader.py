@@ -2,7 +2,7 @@ from .base import BaseLoader
 from ..errors import NotFoundError
 from PIL import Image
 import boto3
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, WaiterError
 from io import BytesIO
 
 
@@ -12,7 +12,8 @@ class S3Loader(BaseLoader):
 
     def get_fileobj(namespace, filename):
         """
-        Given a namespace (or directory name) and a filename, returns a file-like or bytes-like object.
+        Given a namespace (or directory name) and a filename,
+        returns a file-like or bytes-like object.
         """
         # get the s3 resource
         s3 = boto3.resource('s3')
@@ -32,12 +33,10 @@ class S3Loader(BaseLoader):
         Loads image from file system
         """
         try:
-
-            file_obj = get_fileobj(namespace, filename)
+            file_obj = S3Loader.get_fileobj(namespace, filename)
             image = Image.open(file_obj)
 
         except (ClientError, WaiterError) as e:
             raise NotFoundError(error=str(e))
 
         return image
-
