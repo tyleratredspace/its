@@ -19,7 +19,6 @@ class FileSystemLoader(BaseLoader):
             image_path = Path(api_root / namespace / filename)
             image = Image.open(image_path)
         except FileNotFoundError as e:
-            raise NotFoundError(error="File Not Found at %s"%(image_path))
-
+            raise NotFoundError(error="File Not Found at %s" % (image_path))
 
         return image

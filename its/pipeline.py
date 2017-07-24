@@ -5,6 +5,7 @@ Script to apply transformations to validated images.
 from .transformations import BaseTransform, ResizeTransform
 from .errors import ITSTransformError
 
+
 def process_transforms(img, transforms, *args):
 
     """
@@ -33,7 +34,7 @@ def process_transforms(img, transforms, *args):
             transforms[tclass.slug] = transforms[tclass.slug].split('x')
             img = tclass.apply_transform(img, transforms[tclass.slug])
 
-    img.info = img_info # some transformations might overwrite the info dict
+    img.info = img_info  # some transformations might overwrite the info dict
     # image conversion and compression
     # cache result
     return img

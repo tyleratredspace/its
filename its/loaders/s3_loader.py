@@ -2,7 +2,7 @@ from .base import BaseLoader
 from errors import NotFoundError
 from PIL import Image
 import boto3
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, WaiterError
 from io import BytesIO
 
 

@@ -12,6 +12,6 @@ OVERLAYS = {
 OVERLAY_PLACEMENT = [50, 50]
 
 # the keyword used to recognize focal point args in filenames
-FOCUS_KEYWORD = "focus-" 
+FOCUS_KEYWORD = "focus-"
 
 DELIMITERS_RE = "[x_,]"
