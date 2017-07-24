@@ -1,7 +1,7 @@
 from PIL import Image
 from pathlib import Path
 import subprocess
-
+import tempfile
 
 def optimize(img, query):
 
@@ -10,60 +10,57 @@ def optimize(img, query):
     # convert from and to  png ,jpeg, webp
     ext = query['format'] if 'format' in query else img.format.lower()  # the return format
     quality = int(query['quality']) if 'quality' in query else None
+    tmp_file = tempfile.NamedTemporaryFile(dir=".", delete=True)
 
     if ext is not None and ext.lower() == "jpg":
         ext = "jpeg"
 
     # convert first, then optimize
     if ext.upper() != img.format:  # same format so do nothing
-        if img.format in ["PNG", "WEBP", "JPEG"]:
-            img = img.convert("RGB")  # need to convert to RGB first, then can save in any format
+        if img.format.upper() in ["PNG", "WEBP", "JPEG"]:
+            
+            if ext.upper() in ["JPEG", "JPG"]:
+                # need to convert to RGB first, then can save in any format
+                img = img.convert("RGB")
 
             if ext.lower() == "jpeg":
                 # 95 is the reccommended upper limit on quality for JPEGs in PIL
                 if quality is not None and quality <= 95:
                     img.save(
-                        "converted." + ext.lower(),
+                        tmp_file.name,
                         ext.upper(), quality=quality, progressive=True
                     )
                 else:
                     img.save(
-                        "converted." + ext.lower(),
+                       tmp_file.name,
                         ext.upper(), quality=95, progressive=True)
             else:
-                img.save("converted." + ext.lower(), ext.upper())
+                img.save(tmp_file.name, ext.upper())
 
-            img = Image.open("converted." + ext.lower())
+            img = Image.open(tmp_file.name)
 
     # only optimize pngs with an alpha channel
     if img.format == "PNG" and img.mode in ["RGBA", "LA"]:
         if quality is not None:
             command = [
                 "./its/utils/pngquant", "--force", "--verbose", "--output",
-                "./compressed.png", "-s10", "--quality " + str(quality) + "-100", "./tmp.png"]
+                "./compressed.png", "-s10", "--quality " + str(quality) + "-100", tmp_file.name]
         else:
             command = [
                 "./its/utils/pngquant", "--force", "--verbose", "--output",
-                "./compressed.png", "-s10", "./tmp.png"]
+                "./compressed.png", "-s10", tmp_file.name]
         img.save("./tmp.png", "PNG")
         # output = subprocess.check_output(command, stderr=subprocess.STDOUT)
         subprocess.check_output(command, stderr=subprocess.STDOUT)
-        img = Image.open("./compressed.png")
+        img = Image.open(tmp_file.name)
 
     if img.format == "JPEG":
         if quality is not None:
-            img.save("compressed.jpeg", "JPEG", quality=quality, optimize=True, progressive=True)
+            img.save(tmp_file.name, "JPEG", quality=quality, optimize=True, progressive=True)
         else:
-            img.save("compressed.jpeg", "JPEG", optimize=True, progressive=True)
-        img = Image.open("./compressed.jpeg")
+            img.save(tmp_file.name, "JPEG", optimize=True, progressive=True)
+        img = Image.open(tmp_file.name)
 
-    if Path("converted." + ext.lower()).exists():  # delete temporary conversion file
-        Path("converted." + ext.lower()).unlink()
-
-    if Path("tmp." + ext.lower()).exists():  # delete temporary file
-        Path("tmp." + ext.lower()).unlink()
-
-    if Path("compressed." + ext.lower()).exists():  # delete temporary compression file
-        Path("compressed." + ext.lower()).unlink()
+    tmp_file.close()
 
     return img

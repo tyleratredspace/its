@@ -4,6 +4,7 @@ from io import BytesIO
 from flask import Flask, request, abort, Response
 from its.pipeline import process_transforms
 from its.loader import loader
+from its.settings import MIME_TYPES
 
 app = Flask(__name__)
 
@@ -15,9 +16,14 @@ def process_request(namespace, query, filename):
     if image is None:
         abort(404)
 
+    """
+    PIL doesn't support SVG and ITS doesn't change them in any way,
+    so loader returns a ByesIO object so the images will still be returned to the browser.
+    This BytesIO object is returned from each loader class's get_fileobj() function.
+    """
     if isinstance(image, BytesIO):
         output = image
-        mime_type = "image/svg+xml"
+        mime_type = MIME_TYPES["SVG"]
     else:
         image.info['filename'] = filename
         result = process_transforms(image, query)
@@ -25,7 +31,7 @@ def process_request(namespace, query, filename):
         if result.format is None:
             result.format = image.format
 
-        mime_type = "image/" + result.format.lower()
+        mime_type = MIME_TYPES[result.format.upper()]
 
         output = BytesIO()
         result.save(output, format=result.format.upper())

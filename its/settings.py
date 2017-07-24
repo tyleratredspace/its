@@ -3,6 +3,14 @@
 # Set DEBUG = True to enable debugging application.
 DEBUG = True
 
+MIME_TYPES = {
+	'PNG': 'image/png',
+	'JPEG': 'image/jpeg',
+	'JPG': 'image/jpeg',
+	'WEBP': 'image/webp',
+	'SVG': 'image/svg+xml'
+}
+
 IMAGE_LOADER = 'file_system'
 
 OVERLAYS = {
