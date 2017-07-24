@@ -44,13 +44,13 @@ def optimize(img, query):
         if quality is not None:
             command = [
                 "./its/utils/pngquant", "--force", "--verbose", "--output",
-                "./compressed.png", "-s10", "--quality " + str(quality) + "-100", tmp_file.name]
+                tmp_file.name, "-s10", "--quality " + str(quality) + "-100", tmp_file.name]
         else:
             command = [
                 "./its/utils/pngquant", "--force", "--verbose", "--output",
-                "./compressed.png", "-s10", tmp_file.name]
-        img.save("./tmp.png", "PNG")
-        # output = subprocess.check_output(command, stderr=subprocess.STDOUT)
+                tmp_file.name, "-s10", tmp_file.name]
+        img.save(tmp_file.name, "PNG")
+
         subprocess.check_output(command, stderr=subprocess.STDOUT)
         img = Image.open(tmp_file.name)
 
