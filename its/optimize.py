@@ -2,6 +2,10 @@ from PIL import Image
 from pathlib import Path
 import subprocess
 import tempfile
+import uuid
+from .errors import ITSTransformError
+from its.settings import PNGQUANT_PATH, PNGQUANT_DEFAULT_SPEED, PNGQUANT_DEFAULT_MAX_QUALITY
+from io import BytesIO
 
 def optimize(img, query):
 
@@ -16,49 +20,44 @@ def optimize(img, query):
         ext = "jpeg"
 
     # convert first, then optimize
-    if ext.upper() != img.format:  # same format so do nothing
-        if img.format.upper() in ["PNG", "WEBP", "JPEG"]:
+    if ext.lower() != img.format.lower():  # same format so do nothing
+        if img.format.lower() in ["png", "webp", "jpeg"]:
             
-            if ext.upper() in ["JPEG", "JPG"]:
+            if ext.lower() in ["jpeg", "jpg"]:
                 # need to convert to RGB first, then can save in any format
                 img = img.convert("RGB")
-
-            if ext.lower() == "jpeg":
-                # 95 is the reccommended upper limit on quality for JPEGs in PIL
-                if quality is not None and quality <= 95:
-                    img.save(
-                        tmp_file.name,
-                        ext.upper(), quality=quality, progressive=True
-                    )
-                else:
-                    img.save(
-                       tmp_file.name,
-                        ext.upper(), quality=95, progressive=True)
             else:
                 img.save(tmp_file.name, ext.upper())
 
-            img = Image.open(tmp_file.name)
+                img = Image.open(tmp_file.name)
 
     # only optimize pngs with an alpha channel
     if img.format == "PNG" and img.mode in ["RGBA", "LA"]:
+        
         if quality is not None:
             command = [
-                "./its/utils/pngquant", "--force", "--verbose", "--output",
-                tmp_file.name, "-s10", "--quality " + str(quality) + "-100", tmp_file.name]
+                "./its/utils/pngquant", "--force", "--output",
+                str(uuid.uuid4()), "-s" + PNGQUANT_DEFAULT_SPEED,
+                "--quality " + str(quality) + "-" + PNGQUANT_DEFAULT_MAX_QUALITY, tmp_file.name]
         else:
             command = [
-                "./its/utils/pngquant", "--force", "--verbose", "--output",
-                tmp_file.name, "-s10", tmp_file.name]
+                "./its/utils/pngquant", "--force", "--output",
+                str(uuid.uuid4()), "-s" + PNGQUANT_DEFAULT_SPEED, tmp_file.name]
         img.save(tmp_file.name, "PNG")
 
-        subprocess.check_output(command, stderr=subprocess.STDOUT)
+        try:
+            subprocess.check_output(command, stderr=subprocess.STDOUT)
+        except (OSError, subprocess.CalledProcessError) as e:
+            print(ITSTransformError(error="ITSTransform Error: " + str(e)))
+
         img = Image.open(tmp_file.name)
 
     if img.format == "JPEG":
         if quality is not None:
             img.save(tmp_file.name, "JPEG", quality=quality, optimize=True, progressive=True)
         else:
-            img.save(tmp_file.name, "JPEG", optimize=True, progressive=True)
+            # 95 is the reccommended upper limit on quality for JPEGs in PIL
+            img.save(tmp_file.name, "JPEG", quality=95, optimize=True, progressive=True)
         img = Image.open(tmp_file.name)
 
     tmp_file.close()

@@ -42,9 +42,7 @@ def process_transforms(img, transforms, *args):
             img.format = "JPEG"
         else:
             img.format = file_type.upper()
-    # print(img.info)
-    # img.info = img_info  # some transformations might overwrite the info dict
-    # print(img_info)
+
     # image conversion and compression
     # cache result
     img = optimize(img, transforms)

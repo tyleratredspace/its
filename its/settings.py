@@ -11,6 +11,12 @@ MIME_TYPES = {
 	'SVG': 'image/svg+xml'
 }
 
+PNGQUANT_PATH = "../utils/pngquant"
+
+PNGQUANT_DEFAULT_SPEED = '10'
+
+PNGQUANT_DEFAULT_MAX_QUALITY = '100'
+
 IMAGE_LOADER = 'file_system'
 
 OVERLAYS = {
