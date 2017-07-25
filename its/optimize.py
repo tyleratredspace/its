@@ -44,7 +44,7 @@ def optimize(img, query):
             subprocess.check_output(command, stderr=subprocess.STDOUT)
             img = Image.open(output_path)
         except (OSError, subprocess.CalledProcessError) as e:
-            print(ITSTransformError(error="ITSTransform Error: " + str(e)))
+            raise ITSTransformError(error="ITSTransform Error: " + str(e))
 
     if img.format == "JPEG":
         if quality is not None:
