@@ -4,11 +4,11 @@
 DEBUG = True
 
 MIME_TYPES = {
-	'PNG': 'image/png',
-	'JPEG': 'image/jpeg',
-	'JPG': 'image/jpeg',
-	'WEBP': 'image/webp',
-	'SVG': 'image/svg+xml'
+    'PNG': 'image/png',
+    'JPEG': 'image/jpeg',
+    'JPG': 'image/jpeg',
+    'WEBP': 'image/webp',
+    'SVG': 'image/svg+xml'
 }
 
 PNGQUANT_PATH = "../utils/pngquant"
@@ -16,6 +16,8 @@ PNGQUANT_PATH = "../utils/pngquant"
 PNGQUANT_DEFAULT_SPEED = '10'
 
 PNGQUANT_DEFAULT_MAX_QUALITY = '100'
+
+DEFAULT_JPEG_QUALITY = 95
 
 IMAGE_LOADER = 'file_system'
 

@@ -4,6 +4,7 @@ from io import BytesIO
 from flask import Flask, request, abort, Response
 from its.pipeline import process_transforms
 from its.loader import loader
+from its.optimize import optimize
 from its.settings import MIME_TYPES
 
 app = Flask(__name__)
@@ -27,6 +28,10 @@ def process_request(namespace, query, filename):
     else:
         image.info['filename'] = filename
         result = process_transforms(image, query)
+
+        # image conversion and compression
+        # cache result
+        result = optimize(result, query)
 
         if result.format is None:
             result.format = image.format
