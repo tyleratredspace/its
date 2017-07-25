@@ -32,17 +32,13 @@ def optimize(img, query):
     img.save(tmp_file.name, ext.upper())
     img = Image.open(tmp_file.name)
 
-    # only optimize pngs with an alpha channel
-    if img.format == "PNG" and img.mode in ["RGBA", "LA"]:
-        if quality is not None:
-            command = [
+    # only optimize pngs if quality param is provided
+    if img.format == "PNG" and quality is not None:
+        
+        command = [
                 PNGQUANT_PATH, "--force", "--output",
                 output_path, "-s" + PNGQUANT_DEFAULT_SPEED,
-                "--quality " + str(quality) + "-" + PNGQUANT_DEFAULT_MAX_QUALITY, tmp_file.name]
-        else:
-            command = [
-                PNGQUANT_PATH, "--force", "--output",
-                output_path, "-s" + PNGQUANT_DEFAULT_SPEED, tmp_file.name]
+                "-Q" + str(quality) + "-" + PNGQUANT_DEFAULT_MAX_QUALITY, tmp_file.name]
 
         try:
             subprocess.check_output(command, stderr=subprocess.STDOUT)

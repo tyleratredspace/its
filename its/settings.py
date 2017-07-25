@@ -11,7 +11,7 @@ MIME_TYPES = {
     'SVG': 'image/svg+xml'
 }
 
-PNGQUANT_PATH = "../utils/pngquant"
+PNGQUANT_PATH = "pngquant"
 
 PNGQUANT_DEFAULT_SPEED = '10'
 
