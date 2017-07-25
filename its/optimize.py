@@ -38,7 +38,7 @@ def optimize(img, query):
             command = [
                 PNGQUANT_PATH, "--force", "--output",
                 output_path, "-s" + PNGQUANT_DEFAULT_SPEED,
-                "--quality " + str(quality) + "-" + PNGQUANT_DEFAULT_MAX_QUALITY, tmp_file.name]
+                "-Q" + str(quality) + "-" + PNGQUANT_DEFAULT_MAX_QUALITY, tmp_file.name]
         else:
             command = [
                 PNGQUANT_PATH, "--force", "--output",
@@ -48,7 +48,7 @@ def optimize(img, query):
             subprocess.check_output(command, stderr=subprocess.STDOUT)
             img = Image.open(output_path)
         except (OSError, subprocess.CalledProcessError) as e:
-            print(ITSTransformError(error="ITSTransform Error: " + str(e)))
+            raise ITSTransformError(error="ITSTransform Error: " + str(e))
 
     if img.format == "JPEG":
         if quality is not None:
