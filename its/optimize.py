@@ -34,8 +34,6 @@ def optimize(img, query):
 
     # only optimize pngs with an alpha channel
     if img.format == "PNG" and img.mode in ["RGBA", "LA"]:
-        print(img.mode)
-        Path.touch(Path("./" + output_path))
         if quality is not None:
             command = [
                 PNGQUANT_PATH, "--force", "--output",
