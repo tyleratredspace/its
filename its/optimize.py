@@ -23,20 +23,32 @@ def optimize(img, query):
     if ext.lower() != img.format.lower():  # same format so do nothing
         if img.format.lower() in ["png", "webp", "jpeg"]:
 
-            if ext.lower() in ["jpeg", "jpg"]:
+            if ext.lower() == "jpeg":
                 # need to convert to RGB first, then can save in any format
                 # only necessary when converting to jpeg/jpg
                 img = img.convert("RGB")
 
-    # save to temporary file
-    img.save(tmp_file.name, ext.upper())
+    if ext.lower() == "jpeg":
+        # convert to JPG and/or compress 
+        if quality is not None:
+            img.save(tmp_file.name, "JPEG", quality=quality, optimize=True, progressive=True)
+        else:
+            # 95 is the reccommended upper limit on quality for JPEGs in PIL
+            img.save(
+                tmp_file.name, "JPEG", quality=DEFAULT_JPEG_QUALITY,
+                optimize=True, progressive=True)
+    else:
+        # convert from PNG, JPG and WEBP to formats other than JPG
+        img.save(tmp_file.name, ext.upper())
+    
+    # reopen newly converted or compressed image
     img = Image.open(tmp_file.name)
 
     # only optimize pngs if quality param is provided
     if img.format == "PNG" and quality is not None:
         
         command = [
-                PNGQUANT_PATH, "--force", "--output",
+                PNGQUANT_PATH, "--skip-if-larger", "--strip", "--force", "--output",
                 output_path, "-s" + PNGQUANT_DEFAULT_SPEED,
                 "-Q" + str(quality) + "-" + PNGQUANT_DEFAULT_MAX_QUALITY, tmp_file.name]
 
@@ -46,17 +58,7 @@ def optimize(img, query):
         except (OSError, subprocess.CalledProcessError) as e:
             raise ITSTransformError(error="ITSTransform Error: " + str(e))
 
-    if img.format == "JPEG":
-        if quality is not None:
-            img.save(tmp_file.name, "JPEG", quality=quality, optimize=True, progressive=True)
-        else:
-            # 95 is the reccommended upper limit on quality for JPEGs in PIL
-            img.save(
-                tmp_file.name, "JPEG", quality=DEFAULT_JPEG_QUALITY,
-                optimize=True, progressive=True)
-
-        img = Image.open(tmp_file.name)
-
+    # remove temporary files
     if Path(tmp_file.name).exists():
         tmp_file.close()
 
