@@ -20,6 +20,7 @@ class ITSError(Exception):
         if args:
             self.args = args
 
+
 class ConfigError(ITSError):
     """
     Class for errors that deal with ITS settings.
@@ -27,6 +28,7 @@ class ConfigError(ITSError):
 
     status_code = 500
     message = "Configuration Error: "
+
 
 class ITSLoaderError(ITSError):
     """
@@ -36,6 +38,7 @@ class ITSLoaderError(ITSError):
     status_code = 400
     message = "ITSLoaderError: "
 
+
 class ITSTransformError(ITSError):
     """
     General class for errors occuring while applying transforms.
@@ -43,6 +46,7 @@ class ITSTransformError(ITSError):
 
     status_code = 400
     message = "ITSTransformError: "
+
 
 class NotFoundError(ITSError):
     """
