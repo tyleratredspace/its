@@ -21,7 +21,10 @@ def loader(namespace, filename):
         if loader.slug == settings.IMAGE_LOADER]
 
     if len(image_loader) == 1:
-        image = image_loader[0].load_image(namespace, filename)
+        if filename.endswith(".svg"):
+            image = image_loader[0].get_fileobj(namespace, filename)
+        else:
+            image = image_loader[0].load_image(namespace, filename)
     elif len(image_loader) == 0:
         raise ITSLoaderError(error="Not Found Error: Image loader not found.")
     elif len(image_loader) > 1:

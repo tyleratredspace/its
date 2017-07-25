@@ -17,7 +17,6 @@ def get_pixels(image):
 
 
 def compare_pixels(img1, img2):
-
     img1_pixels = get_pixels(img1)
     img2_pixels = get_pixels(img2)
     matches = 0

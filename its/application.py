@@ -4,29 +4,44 @@ from io import BytesIO
 from flask import Flask, request, abort, Response
 from its.pipeline import process_transforms
 from its.loader import loader
+from its.optimize import optimize
+from its.settings import MIME_TYPES
 
 app = Flask(__name__)
 
 
 def process_request(namespace, query, filename):
+
     image = loader(namespace, filename)
-    image.info['filename'] = filename
 
     if image is None:
         abort(404)
 
-    result = process_transforms(image, query)
+    """
+    PIL doesn't support SVG and ITS doesn't change them in any way,
+    so loader returns a ByesIO object so the images will still be returned to the browser.
+    This BytesIO object is returned from each loader class's get_fileobj() function.
+    """
+    if isinstance(image, BytesIO):
+        output = image
+        mime_type = MIME_TYPES["SVG"]
+    else:
+        image.info['filename'] = filename
+        result = process_transforms(image, query)
 
-    if result.format is None:
-        result.format = image.format
+        # image conversion and compression
+        # cache result
+        result = optimize(result, query)
 
-    mime_type = "image/" + result.format.lower()
+        if result.format is None:
+            result.format = image.format
 
-    output = BytesIO()
-    result.save(output, format=result.format.upper())
+        mime_type = MIME_TYPES[result.format.upper()]
+
+        output = BytesIO()
+        result.save(output, format=result.format.upper())
 
     return Response(response=output.getvalue(), mimetype=mime_type)
-
 
 def query_resize(width, height, ext):
     query = {'resize': 'x', 'format': str(ext)}
@@ -66,6 +81,7 @@ def crop(namespace, filename, width, height, ext):
 @app.route(
     '/<namespace>/<path:filename>.focalcrop.<width>x<height>.' +
     '<int(min=0,max=100):x>.<int(min=0,max=100):y>.<ext>')
+
 def focalcrop(namespace, filename, width, height, x, y, ext):
     query = {'crop': width + 'x' + height + 'x' + x + 'x' + y, 'format': str(ext)}
     result = process_request(namespace, query, filename)

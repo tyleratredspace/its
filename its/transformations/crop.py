@@ -23,7 +23,7 @@ class CropTransform(BaseTransform):
         filename = img.info['filename']
         # match everything before and including the keyword
         pre_keyword_pattern = '.+?(' + FOCUS_KEYWORD + ')'
-        # match everything after and including the '.' in a filename
+        # match the file type and period in the filename
         file_ext_patten = '(\.).+'
 
         if len(focal_point) == 0:
