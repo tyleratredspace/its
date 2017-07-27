@@ -4,7 +4,7 @@ ITS rewrite
 ITS (Image Transform Service) performs transformations on images by accepting transform requests in the form of query strings. 
 
 
-##Crop
+## Crop
 
 There are three varieties of crop -- default, focal and smart crop.
 
@@ -53,7 +53,7 @@ Where:
 * YY -- the y axis of the focal point, represented as a percentage value of the height of the original picture
 Example
 
-##Overlay
+## Overlay
 
 Overlay returns the input image with the specified overlay image placed on top of it. The overlay is placed according to the expected position of its top left corner as input by the user. To use overlay, use the overlay keyword:
 
@@ -69,7 +69,7 @@ Example
 
 
 
-##Resize
+## Resize
 
 Resize returns a resized version of the original image without distortion of the aspect ratio. To use it, use the resize keyword:
 
@@ -85,7 +85,7 @@ Note: Resizing to a larger size isn’t recommended, as it will compromise image
 Example
 
 
-##Format
+## Format
 
 Format returns the input image in the specified type, rather than being left as the original image’s type. It currently supports conversion to JPG, PNG, and WEBP. To use it, use the format keyword:
 
@@ -98,7 +98,7 @@ Where:
 Example
 
 
-##Combination
+## Combination
 All of the transforms described above can be combined into one query by separating them with ‘&’. For example, the following query crops the input PNG image, applies an overlay to it, and then outputs the result as a JPG:
 
 http://its_pbs_org/demo/demo.png?crop=100x100&overlay=overlay_image.jpg&format=jpg
