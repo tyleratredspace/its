@@ -9,6 +9,7 @@ ITS (Image Transform Service) performs transformations on images by accepting tr
 There are three varieties of crop -- default, focal and smart crop.
 
 *Default*
+
 The default crop crops the input image about the center of the image. To use this crop, use the crop keyword like so:
 
 http://its_pbs_org/<file_path/filename.ext>?crop=WWxHH
