@@ -154,4 +154,4 @@ Image Credit: https://pixabay.com/en/luge-sled-sledge-sleigh-sport-1295072/
 
 >http://images.pbs.org/demo/citizen_kane.jpg?resize=1200x1200&overlay=10x50ximages/sled.png
 
-Result Image: ![Citizen-Kane-PNG-10](http://i.imgur.com/CItOntv.jpg)
+Result Image: ![Citizen-Kane-Combination](http://i.imgur.com/vmZuz7k.jpg)
