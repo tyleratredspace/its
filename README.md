@@ -143,7 +143,15 @@ Result Image: ![Citizen-Kane-PNG-10](http://i.imgur.com/CItOntv.jpg)
 All of the transforms described above can be combined into one query by separating them with ‘&’.
 
 Example
-The following query crops the input JPG image, applies an overlay to it, and then outputs the result as a WEBP:
+The following query resizes the input JPG image, applies an overlay to it:
 
->http://images.pbs.org/demo/citizen_kane.jpg?crop=1000x1000&overlay=images/sled.png&format=wbep
+Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
+Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
 
+Original Overlay Image: ![Rosebud-Sled](http://i.imgur.com/RZcKnYD.png)
+
+Image Credit: https://pixabay.com/en/luge-sled-sledge-sleigh-sport-1295072/
+
+>http://images.pbs.org/demo/citizen_kane.jpg?resize=1200x1200&overlay=10x50ximages/sled.png
+
+Result Image: ![Citizen-Kane-PNG-10](http://i.imgur.com/CItOntv.jpg)
