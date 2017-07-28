@@ -87,7 +87,8 @@ Example
 Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
 Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
 
-Original Overlay Image: ![Rosebud]http://i.imgur.com/pOH6LJf.png)
+Original Overlay Image: ![Rosebud](http://i.imgur.com/pOH6LJf.png)
+
 Image Credit: https://pixabay.com/en/rose-orange-blossom-bloom-flower-1385970/
 
 >http://images.pbs.org/demo/citizen_kane.jpg?overlay=20x15/demo/rosebud.png
@@ -106,10 +107,16 @@ Where:
 * HH -- a numerical pixel value representing the desired height of the output image
 
 Note: Resizing to a larger size isn’t recommended, as it will compromise image quality.
+Note: Inputing a single value (either an expected width size or an expected height size followed by an 'x') is also supported.
 
 Example
 
+Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
+Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
 
+>http://images.pbs.org/demo/citizen_kane.jpg?overlay=20x15/demo/rosebud.png
+
+Result Image: [Citizen-Kane-Resize-700x400](http://i.imgur.com/CItOntv.jpg)
 ## Format
 
 Format returns the input image in the specified type, rather than being left as the original image’s type. It currently supports conversion to JPG, PNG, and WEBP. To use it, use the format keyword:
