@@ -3,9 +3,6 @@ ITS rewrite
 
 ITS (Image Transform Service) performs transformations on images by accepting transform requests in the form of query strings. 
 
-Original Image Used in Examples: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
-Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
-
 ## Crop
 
 There are three varieties of crop -- default, focal and smart crop.
@@ -22,6 +19,9 @@ Where:
 * HH -- a numerical pixel value representing the desired height of the output image
 
 Example
+
+Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
+Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
 
 >http://images.pbs.org/demo/citizen_kane.jpg?crop=1000x1000
 
@@ -42,6 +42,9 @@ Where:
 
 Example
 
+Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
+Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
+
 >http://images.pbs.org/demo/citizen_kane.jpg?crop=1000x1000x15x30
 
 Result Image: ![Citizen-Kane-Focal-1000x1000x15x30](http://i.imgur.com/U3gdnmf.jpg)
@@ -60,6 +63,9 @@ Where:
 
 Example
 
+Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
+Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
+
 >http://images.pbs.org/demo/citizen_kane_focus-50x15.jpg?crop=1000x1000
 
 Result Image: ![Citizen-Kane-Smart-1000x1000x50x15](http://i.imgur.com/5w5e8lR.jpg)
@@ -68,7 +74,7 @@ Result Image: ![Citizen-Kane-Smart-1000x1000x50x15](http://i.imgur.com/5w5e8lR.j
 
 Overlay returns the input image with the specified overlay image placed on top of it. The overlay is placed according to the expected position of its top left corner as input by the user. To use overlay, use the overlay keyword:
 
-<http://images.pbs.org/<file_path/filename.ext>?overlay=<overlay_img_path>xPXxPY>
+<http://images.pbs.org/<file_path/filename.ext>?overlay=PXxPYx<overlay_img_path>>
 
 Where:
 * Overlay -- indicates that ITS should put an overlay on the input image
@@ -78,6 +84,11 @@ Where:
 
 Example
 
+Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
+Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
+
+Original Overlay Image: ![Rosebud](https://cdn.pixabay.com/photo/2016/05/11/16/47/rose-1385970_960_720.png)
+Image Credit: https://pixabay.com/en/rose-orange-blossom-bloom-flower-1385970/
 
 
 ## Resize
