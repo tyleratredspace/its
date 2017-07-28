@@ -3,6 +3,8 @@ ITS rewrite
 
 ITS (Image Transform Service) performs transformations on images by accepting transform requests in the form of query strings. 
 
+Original Image Used in Examples: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
+Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
 
 ## Crop
 
@@ -20,8 +22,6 @@ Where:
 * HH -- a numerical pixel value representing the desired height of the output image
 
 Example
-
-Original Image: ![Citizen-Kane](https://upload.wikimedia.org/wikipedia/commons/b/b4/Citizen-Kane-Welles-Coulouris.jpg)
 
 >http://images.pbs.org/demo/citizen_kane.jpg?crop=1000x1000
 
@@ -42,8 +42,6 @@ Where:
 
 Example
 
-Original Image: ![Citizen-Kane](https://upload.wikimedia.org/wikipedia/commons/b/b4/Citizen-Kane-Welles-Coulouris.jpg)
-
 >http://images.pbs.org/demo/citizen_kane.jpg?crop=1000x1000x15x30
 
 Result Image: ![Citizen-Kane-Focal-1000x1000x15x30](http://i.imgur.com/U3gdnmf.jpg)
@@ -61,8 +59,6 @@ Where:
 * YY -- the y axis of the focal point, represented as a percentage value of the height of the original picture
 
 Example
-
-Original Image: ![Citizen-Kane](https://upload.wikimedia.org/wikipedia/commons/b/b4/Citizen-Kane-Welles-Coulouris.jpg)
 
 >http://images.pbs.org/demo/citizen_kane_focus-50x15.jpg?crop=1000x1000
 
