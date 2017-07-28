@@ -9,6 +9,7 @@ class FileSystemLoader(BaseLoader):
 
     slug = "file_system"
 
+    @staticmethod
     def load_image(namespace, filename):
         """
         Loads image from file system
@@ -23,6 +24,7 @@ class FileSystemLoader(BaseLoader):
 
         return image
 
+    @staticmethod
     def get_fileobj(namespace, filename):
         """
         Given a namespace (or directory name) and a filename,
