@@ -16,7 +16,7 @@ class OverlayTransform(BaseTransform):
     See settings to change the default placement of the
     overlay when no position arguments are input.
 
-    image.png?overlay=overlay_img.pngxPXxPY
+    image.png?overlay=PXxPYxoverlay_img.png
     """
     slug = "overlay"
 
@@ -24,14 +24,14 @@ class OverlayTransform(BaseTransform):
 
         *overlay_position, overlay = overlay
 
-        api_root = Path(__file__).parents[2]
-        its_root = Path(__file__).parents[1]
+        api_root = Path(__file__).parents[2]  # its/serverless-its
+        its_root = Path(__file__).parents[1]  # its/
         loader = OverlayTransform.get_loader(OVERLAY_LOADER)
 
+        print(Path(str(api_root) + "/" + overlay))
         if overlay.lower() not in OVERLAYS:
             namespace, *filename = overlay.split('/')
             filename = Path("/".join(filename))
-            print(filename)
             overlay_image = loader[0].load_image(namespace, filename)
         else:
             namespace, *filename = OVERLAYS[overlay.lower()].split('/')
