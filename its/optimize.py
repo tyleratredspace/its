@@ -77,7 +77,7 @@ def optimize_png(img, tmp_file, quality=None):
             speed = int(floor((quality - (quality % 10)) / 10))
 
         command = [
-                PNGQUANT_PATH, "--skip-if-larger", "--strip", "--force", "--output",
+                PNGQUANT_PATH, "--strip", "--force", "--output",
                 output_path, "-s" + str(speed), tmp_file.name]
 
         try:
@@ -86,5 +86,6 @@ def optimize_png(img, tmp_file, quality=None):
             if Path("./" + output_path).exists():
                 Path(output_path).unlink()
         except (OSError, subprocess.CalledProcessError) as e:
+            print(e)
             raise ITSTransformError(error="ITSTransform Error: " + str(e))
     return img
