@@ -87,9 +87,12 @@ Example
 Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
 Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
 
-Original Overlay Image: ![Rosebud](https://cdn.pixabay.com/photo/2016/05/11/16/47/rose-1385970_960_720.png)
+Original Overlay Image: ![Rosebud]http://i.imgur.com/pOH6LJf.png)
 Image Credit: https://pixabay.com/en/rose-orange-blossom-bloom-flower-1385970/
 
+>http://images.pbs.org/demo/citizen_kane.jpg?overlay=20x15/demo/rosebud.png
+
+Result Image: ![Citizen-Kane-Overlay-Rosebud](http://i.imgur.com/BcMqXXT.jpg)
 
 ## Resize
 
