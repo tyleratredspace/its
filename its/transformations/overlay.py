@@ -2,8 +2,9 @@ from math import floor
 from pathlib import Path
 from PIL import Image
 from .base import BaseTransform
-from ..settings import OVERLAYS, OVERLAY_PLACEMENT
-
+from ..loaders import BaseLoader
+from ..settings import OVERLAYS, OVERLAY_PLACEMENT, OVERLAY_LOADER
+from ..errors import ITSTransformError
 
 class OverlayTransform(BaseTransform):
 
@@ -25,11 +26,17 @@ class OverlayTransform(BaseTransform):
 
         api_root = Path(__file__).parents[2]
         its_root = Path(__file__).parents[1]
+        loader = OverlayTransform.get_loader(OVERLAY_LOADER)
 
         if overlay.lower() not in OVERLAYS:
-            overlay_image = Image.open(api_root / overlay)
+            namespace, *filename = overlay.split('/')
+            filename = Path("/".join(filename))
+            print(filename)
+            overlay_image = loader[0].load_image(namespace, filename)
         else:
-            overlay_image = Image.open(its_root / OVERLAYS[overlay.lower()])
+            namespace, *filename = OVERLAYS[overlay.lower()].split('/')
+            filename = Path("/".join(filename))
+            overlay_image = loader[0].load_image(namespace, filename)
 
         # placement of top left corner of overlay
         if len(overlay_position) == 0:
@@ -53,3 +60,18 @@ class OverlayTransform(BaseTransform):
 
         img = new_img
         return img
+
+    def get_loader(OVERLAY_LOADER):
+        
+        loader_classes = BaseLoader.__subclasses__()
+
+        loader = [
+            loader for loader in loader_classes
+            if loader.slug == OVERLAY_LOADER]
+
+        if len(loader) == 1:
+            return loader
+        elif len(loader) == 0:
+            raise ITSTransformError(error="Not Found Error: Overlay Image loader not found.")
+        elif len(loader) > 1:
+            raise ITSTransformError(error="Configuration Error: Two or more loaders have the same slug.")

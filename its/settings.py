@@ -17,6 +17,8 @@ DEFAULT_JPEG_QUALITY = 95
 
 IMAGE_LOADER = 'file_system'
 
+OVERLAY_LOADER = 'file_system'
+
 OVERLAYS = {
     'passport': "static/Passport_Compass_Rose.png",
 }
