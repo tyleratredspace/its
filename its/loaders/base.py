@@ -9,12 +9,14 @@ class BaseLoader(object):
         super(BaseLoader, self).__init__()
         self.arg = arg
 
+    @staticmethod
     def load_image(namespace, filename):
         """
         Given a namespace (or directory name) and a filename, loads a file.
         """
         raise NotImplementedError
 
+    @staticmethod
     def get_fileobj(namespace, filename):
         """
         Given a namespace (or directory name) and a filename,

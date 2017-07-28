@@ -19,6 +19,14 @@ IMAGE_LOADER = 'file_system'
 
 OVERLAY_LOADER = 'file_system'
 
+BUCKETS = {
+	'default': 'default',
+	'kids': 'kids',
+	'front_end': 'front_end',
+	'ga': 'ga',
+	'apps': 'apps'
+}
+
 OVERLAYS = {
     'passport': "static/Passport_Compass_Rose.png",
 }
