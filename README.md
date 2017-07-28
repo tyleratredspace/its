@@ -25,7 +25,7 @@ Original Image: ![Citizen-Kane](https://commons.wikimedia.org/wiki/File:Citizen-
 
 >http://images.pbs.org/demo/citizen_kane.jpg?crop=1000x1000
 
-Result Image: ![Citizen-Kane-Crop-1000x1000](http://imgur.com/a/fzpTN)
+Result Image: ![Citizen-Kane-Crop-1000x1000](http://i.imgur.com/meMAv8Q.jpg)
 
 *Focal*
 
@@ -46,7 +46,7 @@ Original Image: ![Citizen-Kane](https://commons.wikimedia.org/wiki/File:Citizen-
 
 >http://images.pbs.org/demo/citizen_kane.jpg?crop=1000x1000x15x30
 
-Result Image: ![Citizen-Kane-Focal-1000x1000x15x30](http://imgur.com/a/fzpTN)
+Result Image: ![Citizen-Kane-Focal-1000x1000x15x30](http://i.imgur.com/U3gdnmf.jpg)
 
 *Smart*
 
@@ -66,7 +66,7 @@ Original Image: ![Citizen-Kane](https://commons.wikimedia.org/wiki/File:Citizen-
 
 >http://images.pbs.org/demo/citizen_kane_focus-50x15.jpg?crop=1000x1000
 
-Result Image: ![Citizen-Kane-Smart-1000x1000x50x15](http://imgur.com/a/fzpTN)
+Result Image: ![Citizen-Kane-Smart-1000x1000x50x15](http://i.imgur.com/5w5e8lR.jpg)
 
 ## Overlay
 
