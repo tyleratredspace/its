@@ -10,6 +10,7 @@ class S3Loader(BaseLoader):
 
     slug = "s3"
 
+    @staticmethod
     def get_fileobj(namespace, filename):
         """
         Given a namespace (or directory name) and a filename,
@@ -35,6 +36,7 @@ class S3Loader(BaseLoader):
 
         return file_obj
 
+    @staticmethod
     def load_image(namespace, filename):
         """
         Loads image from file system
