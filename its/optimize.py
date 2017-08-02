@@ -27,6 +27,8 @@ def optimize(img, query):
             # convert to JPG and/or compress
             # need to convert to RGB first, then can save in any format
             if img.format != "jpeg":
+                new_img = Image.new("RGBA", img.size)
+                new_img = Image.alpha_composite(new_img, img)
                 img = img.convert("RGB") 
             img = optimize_jpg(img, tmp_file, quality)
         else:
