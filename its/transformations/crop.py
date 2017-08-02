@@ -45,26 +45,21 @@ class CropTransform(BaseTransform):
         focal_x = int(focal_point[0])
         focal_y = int(focal_point[1])
 
-        if img.width < crop_width or img.height < crop_height:
-
-            if (focal_x < 1 or focal_x > 100) or (focal_y < 1 or focal_y > 100):
-                raise ITSTransformError(error="Focus arguments should be between 0 and 100")
-            else:
-                focal_x =  focal_x / 100
-                focal_y = focal_y / 100
-
-            img = ImageOps.fit(img, (crop_width, crop_height), Image.ANTIALIAS, centering=(focal_x, focal_y))
-
-        else:
+        if (focal_x < 0 or focal_x > 100) or (focal_y < 0 or focal_y > 100):
             # make sure focal args are percentages
-            if (focal_x < 1 or focal_x > 100) or (focal_y < 1 or focal_y > 100):
-                raise ITSTransformError(error="Focus arguments should be between 0 and 100")
-            else:
-                focal_x = floor(((focal_x - 1) / 100) * img.width)
-                focal_y = floor(((focal_y - 1) / 100) * img.height)
-
+            raise ITSTransformError(error="Focus arguments should be between 0 and 100")
+        else:
             try:
-                img = img.crop([focal_x, focal_y, focal_x + crop_width, focal_y + crop_height])
+                if img.width < crop_width or img.height < crop_height:
+                    focal_x =  float(focal_x / 100)
+                    focal_y = float(focal_y / 100)
+
+                    img = ImageOps.fit(img, (crop_width, crop_height), Image.ANTIALIAS, centering=(focal_x, focal_y))
+                else:
+                    focal_x = floor(((focal_x - 1) / 100) * img.width)
+                    focal_y = floor(((focal_y - 1) / 100) * img.height)
+
+                    img = img.crop([focal_x, focal_y, focal_x + crop_width, focal_y + crop_height])
             except ITSTransformError as e:
                 raise e(
                         error="Crop transform with requested size %sx%s" +
