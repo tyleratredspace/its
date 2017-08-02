@@ -3,7 +3,7 @@ ITS rewrite
 
 ITS (Image Transform Service) performs transformations on images by accepting transform requests in the form of query strings. 
 
-## Crop
+## Fit
 
 There are three varieties of fit -- default, focal and smart fit.
 
