@@ -3,7 +3,7 @@ Script to validate images being submitted for transformation.
 """
 
 from .loaders import BaseLoader
-from .errors import ITSLoaderError
+from .errors import ITSLoaderError, ConfigError
 from . import settings
 
 
@@ -26,8 +26,8 @@ def loader(namespace, filename):
         else:
             image = image_loader[0].load_image(namespace, filename)
     elif len(image_loader) == 0:
-        raise ITSLoaderError(error="Not Found Error: Image loader not found.")
+        raise ITSLoaderError("No Image Loader with slug '%s' found." %settings.IMAGE_LOADER)
     elif len(image_loader) > 1:
-        raise ITSLoaderError(error="Configuration Error: Two or more loaders have the same slug.")
+        raise ConfigError("Two or more Image Loaders have slug '%s'." %settings.IMAGE_LOADER)
 
     return image
