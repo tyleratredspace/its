@@ -14,7 +14,7 @@ def process_transforms(img, query, *args):
     """
     transform_classes = BaseTransform.__subclasses__()
     img_info = img.info
-    transform_order = {"resize": None, "crop": None, "overlay": None}
+    transform_order = {"resize": None, "fit": None, "overlay": None}
 
     # check if a similar transform on the same image is already in cache
 
