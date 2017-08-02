@@ -39,13 +39,13 @@ class S3Loader(BaseLoader):
     @staticmethod
     def load_image(namespace, filename):
         """
-        Loads image from file system
+        Loads image from AWS S3 bucket.
         """
         try:
             file_obj = S3Loader.get_fileobj(namespace, filename)
             image = Image.open(file_obj)
 
         except (ClientError, WaiterError) as e:
-            raise NotFoundError(error=str(e))
+            raise NotFoundError("An error occurred: '%s'" %str(e))
 
         return image

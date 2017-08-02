@@ -16,7 +16,7 @@ class OverlayTransform(BaseTransform):
     See settings to change the default placement of the
     overlay when no position arguments are input.
 
-    image.png?overlay=PXxPYxoverlay_img.png
+    image.png?overlay=overlay_img_pathxPXxPY
     """
     slug = "overlay"
 
@@ -28,7 +28,6 @@ class OverlayTransform(BaseTransform):
         its_root = Path(__file__).parents[1]  # its/
         loader = OverlayTransform.get_loader(OVERLAY_LOADER)
 
-        print(Path(str(api_root) + "/" + overlay))
         if overlay.lower() not in OVERLAYS:
             namespace, *filename = overlay.split('/')
             filename = Path("/".join(filename))
@@ -42,8 +41,15 @@ class OverlayTransform(BaseTransform):
         if len(overlay_position) == 0:
             overlay_position = OVERLAY_PLACEMENT
 
-        x_coord = floor((int(overlay_position[0]) / 100) * img.width)
-        y_coord = floor((int(overlay_position[1]) / 100) * img.height)
+        try:
+            x_coord = floor((int(overlay_position[0]) / 100) * img.width)
+            y_coord = floor((int(overlay_position[1]) / 100) * img.height)
+        except ValueError as e:
+            raise ITSTransformError(
+                "Invalid arguments supplied to Overlay Transform." +
+                "Overlay takes overlay_image_pathxPXxPY, where overlay_image_path is the path to the overlay image and " + 
+                "(PX, PY) are optional percentage parameters indicating where the top left corner of the overlay should be placed."
+            )
 
         # Only the overlay has an alpha channel
         if(img.mode != "RGBA"):
@@ -72,6 +78,6 @@ class OverlayTransform(BaseTransform):
         if len(loader) == 1:
             return loader
         elif len(loader) == 0:
-            raise ITSTransformError(error="Not Found Error: Overlay Image loader not found.")
+            raise ITSTransformError("Not Found Error: Overlay Image Loader with slug '%s' not found." %OVERLAY_LOADER)
         elif len(loader) > 1:
-            raise ITSTransformError(error="Configuration Error: Two or more loaders have the same slug.")
+            raise ITSTransformError("Configuration Error: Two or more Image Loaders have slug '%s'." %OVERLAY_LOADER)

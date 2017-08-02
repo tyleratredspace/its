@@ -12,4 +12,4 @@ class BaseTransform(object):
 
     def apply_transform(img, *args):
 
-        pass
+        raise NotImplementedError

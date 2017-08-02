@@ -38,24 +38,33 @@ class CropTransform(BaseTransform):
                 focal_point = [50, 50]
 
         # convert all arguments to ints since they're strings
-        crop_width = int(crop_width)
-        crop_height = int(crop_height)
-        focal_x = int(focal_point[0])
-        focal_y = int(focal_point[1])
+        try:
+            crop_width = int(crop_width)
+            crop_height = int(crop_height)
+            focal_x = int(focal_point[0])
+            focal_y = int(focal_point[1])
+        except ValueError as e:
+            raise ITSTransformError(
+                "Invalid arguments supplied to Crop Transform." +
+                "Crop takes takes WWxHHxFXxFY, " + 
+                " where WW is the requested width in pixels, HH is the requested height in pixels, " +
+                " and (FX, FY) is a pair of percentage values indicating the optional focus point in the image. " +
+                "The focus point can either be defined in the query or in the image filename."
+                )
 
         # make sure focal args are percentages
-        if (focal_x < 1 or focal_x > 100) or (focal_y < 1 or focal_y > 100):
-            raise ITSTransformError(error="Focus arguments should be between 0 and 100")
+        if (focal_x < 0 or focal_x > 100) or (focal_y < 0 or focal_y > 100):
+            raise ITSTransformError("Focus arguments should be between 0 and 100.")
         else:
             focal_x = floor(((focal_x - 1) / 100) * img.width)
             focal_y = floor(((focal_y - 1) / 100) * img.height)
 
         try:
             img = img.crop([focal_x, focal_y, focal_x + crop_width, focal_y + crop_height])
-        except ITSTransformError as e:
-            raise e(
-                    error="Crop transform with requested size %sx%s" +
-                    "and requested focal point [%s, %s] failed."
-                    % (crop_width, crop_height, focal_x, focal_y))
+        except Exception as e:
+            raise ITSTransformError(
+                    "Crop Transform with requested size %sx%s" +
+                    "and requested focal point [%s, %s] failed with error '%s'"
+                    % (crop_width, crop_height, focal_x, focal_y, str(e)))
 
         return img

@@ -12,7 +12,7 @@ class FileSystemLoader(BaseLoader):
     @staticmethod
     def load_image(namespace, filename):
         """
-        Loads image from file system
+        Loads image from child folder of the git project folder serverless-its/
         """
         # Path to the great grandparent directory of this file
 
@@ -20,7 +20,7 @@ class FileSystemLoader(BaseLoader):
             image_bytes = FileSystemLoader.get_fileobj(namespace, filename)
             image = Image.open(image_bytes)
         except FileNotFoundError as e:
-            raise NotFoundError(error="File Not Found at %s" % (Path(namespace / filename)))
+            raise NotFoundError("File Not Found at %s" % (Path(namespace / filename)))
 
         return image
 
