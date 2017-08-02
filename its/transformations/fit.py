@@ -6,7 +6,7 @@ from ..errors import ITSTransformError
 from ..settings import DELIMITERS_RE, FOCUS_KEYWORD
 
 
-class CropTransform(BaseTransform):
+class FitTransform(BaseTransform):
 
     slug = "crop"
 
@@ -50,16 +50,9 @@ class CropTransform(BaseTransform):
             raise ITSTransformError(error="Focus arguments should be between 0 and 100")
         else:
             try:
-                if img.width < crop_width or img.height < crop_height:
-                    focal_x =  float(focal_x / 100)
-                    focal_y = float(focal_y / 100)
 
-                    img = ImageOps.fit(img, (crop_width, crop_height), Image.ANTIALIAS, centering=(focal_x, focal_y))
-                else:
-                    focal_x = floor(((focal_x - 1) / 100) * img.width)
-                    focal_y = floor(((focal_y - 1) / 100) * img.height)
+                img = ImageOps.fit(img, (crop_width, crop_height), Image.ANTIALIAS, centering=(focal_x, focal_y))
 
-                    img = img.crop([focal_x, focal_y, focal_x + crop_width, focal_y + crop_height])
             except ITSTransformError as e:
                 raise e(
                         error="Crop transform with requested size %sx%s" +
