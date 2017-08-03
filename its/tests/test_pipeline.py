@@ -47,25 +47,25 @@ def assert_images_equal(self, expected, actual):
     self.assertAlmostEqual(0, norm)  # the difference would be 0 if they were the same
 
 
-class TestCropTransform(TestCase):
+class TestFitTransform(TestCase):
 
     @classmethod
     def setUpClass(self):
         # current directory / images
         self.img_dir = Path(__file__).parents[0] / "images"
 
-    def test_default_crop_no_alpha(self):
+    def test_default_fit_no_alpha(self):
         test_image = Image.open(self.img_dir / "middle.png")
         test_image.info['filename'] = "middle.png"
-        query = {'crop': '1x1'}
+        query = {'fit': '1x1'}
         expected = Image.open(self.img_dir / "expected/blue_pixel.png")
         actual = process_transforms(test_image, query)
         assert_images_equal(self, expected, actual)
 
-    def test_focal_crop_no_alpha(self):
+    def test_focal_fit_no_alpha(self):
         test_image = Image.open(self.img_dir / "top_left.png")
         test_image.info['filename'] = "top_left.png"
-        query = {'crop': '1x1x1x1'}
+        query = {'fit': '1x1x1x1'}
         expected = Image.open(self.img_dir / "expected/blue_pixel.png")
         actual = process_transforms(test_image, query)
         assert_images_equal(self, expected, actual)
@@ -73,7 +73,7 @@ class TestCropTransform(TestCase):
     def test_focal_1x1_no_alpha(self):
         test_image = Image.open(self.img_dir / "abstract.png")
         test_image.info['filename'] = "abstract.png"
-        query = {'crop': '28x34x1x1'}
+        query = {'fit': '28x34x1x1'}
         expected = Image.open(self.img_dir / "expected/rectangle_28x34.png")
         actual = process_transforms(test_image, query)
         assert_images_equal(self, expected, actual)
@@ -81,7 +81,7 @@ class TestCropTransform(TestCase):
     def test_focal_100x100_no_alpha(self):
         test_image = Image.open(self.img_dir / "abstract.png")
         test_image.info['filename'] = "abstract.png"
-        query = {'crop': '1x1x100x100'}
+        query = {'fit': '1x1x100x100'}
         expected = Image.open(self.img_dir / "expected/blue_pixel.png")
         actual = process_transforms(test_image, query)
         assert_images_equal(self, expected, actual)
@@ -89,7 +89,7 @@ class TestCropTransform(TestCase):
     def test_smart_70x1_no_alpha(self):
         test_image = Image.open(self.img_dir / "abstract_focus-70x1.png")
         test_image.info['filename'] = "abstract_focus-70x1.png"
-        query = {'crop': '5x100'}
+        query = {'fit': '5x100'}
         expected = Image.open(self.img_dir / "expected/rectangle_5x100.png")
         actual = process_transforms(test_image, query)
         assert_images_equal(self, expected, actual)
@@ -153,6 +153,7 @@ class TestResizeTransform(TestCase):
         comparison = compare_pixels(expected, actual)
         self.assertGreaterEqual(comparison, self.threshold)
 
-
+class TestImageResults(TestCase):
+    
 if __name__ == '__main__':
     unittest.main()
