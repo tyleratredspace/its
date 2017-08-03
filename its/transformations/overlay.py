@@ -6,6 +6,7 @@ from ..loaders import BaseLoader
 from ..settings import OVERLAYS, OVERLAY_PLACEMENT, OVERLAY_LOADER
 from ..errors import ITSTransformError
 
+
 class OverlayTransform(BaseTransform):
 
     """
@@ -24,8 +25,6 @@ class OverlayTransform(BaseTransform):
 
         *overlay_position, overlay = overlay
 
-        api_root = Path(__file__).parents[2]  # its/serverless-its
-        its_root = Path(__file__).parents[1]  # its/
         loader = OverlayTransform.get_loader(OVERLAY_LOADER)
 
         if overlay.lower() not in OVERLAYS:
@@ -47,8 +46,10 @@ class OverlayTransform(BaseTransform):
         except ValueError as e:
             raise ITSTransformError(
                 "Invalid arguments supplied to Overlay Transform." +
-                "Overlay takes overlay_image_pathxPXxPY, where overlay_image_path is the path to the overlay image and " + 
-                "(PX, PY) are optional percentage parameters indicating where the top left corner of the overlay should be placed."
+                "Overlay takes overlay_image_pathxPXxPY, " +
+                "where overlay_image_path is the path to the overlay image and " +
+                "(PX, PY) are optional percentage parameters indicating where " +
+                "the top left corner of the overlay should be placed."
             )
 
         # Only the overlay has an alpha channel
@@ -68,7 +69,7 @@ class OverlayTransform(BaseTransform):
         return img
 
     def get_loader(OVERLAY_LOADER):
-        
+
         loader_classes = BaseLoader.__subclasses__()
 
         loader = [
@@ -78,6 +79,12 @@ class OverlayTransform(BaseTransform):
         if len(loader) == 1:
             return loader
         elif len(loader) == 0:
-            raise ITSTransformError("Not Found Error: Overlay Image Loader with slug '%s' not found." %OVERLAY_LOADER)
+            raise ITSTransformError(
+                "Not Found Error: Overlay Image Loader " +
+                "with slug '%s' not found." % OVERLAY_LOADER
+            )
         elif len(loader) > 1:
-            raise ITSTransformError("Configuration Error: Two or more Image Loaders have slug '%s'." %OVERLAY_LOADER)
+            raise ITSTransformError(
+                "Configuration Error: Two or more Image Loaders " +
+                "have slug '%s'." % OVERLAY_LOADER
+            )
