@@ -28,14 +28,16 @@ class ResizeTransform(BaseTransform):
             raise ITSTransformError(
                 "Invalid arguments supplied to Resize Transform." +
                 "Resize takes WWxHH, WWx, or xHH," +
-                " where WW is the requested width and HH is the requested height. Both must be integers."
+                " where WW is the requested width and " +
+                "HH is the requested height. Both must be integers."
                 )
 
         if width is None and height is None:
             raise ITSTransformError(
                 "Invalid arguments supplied to Resize Transform." +
                 "Resize takes WWxHH, WWx, or xHH," +
-                " where WW is the requested width and HH is the requested height. Both must be integers."
+                " where WW is the requested width and " +
+                "HH is the requested height. Both must be integers."
                 )
 
         if width is None and height:

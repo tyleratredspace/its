@@ -1,6 +1,5 @@
 import re
 from PIL import Image, ImageOps
-from math import floor
 from .base import BaseTransform
 from ..errors import ITSTransformError
 from ..settings import DELIMITERS_RE, FOCUS_KEYWORD
@@ -8,7 +7,7 @@ from ..settings import DELIMITERS_RE, FOCUS_KEYWORD
 
 class FitTransform(BaseTransform):
 
-    slug = "crop"
+    slug = "fit"
 
     @staticmethod
     def apply_transform(img, crop_size, focal_point=None):
@@ -47,10 +46,12 @@ class FitTransform(BaseTransform):
             focal_y = int(focal_point[1])
         except ValueError as e:
             raise ITSTransformError(
-                "Invalid arguments supplied to Crop Transform." +
-                "Crop takes takes WWxHHxFXxFY, " + 
-                " where WW is the requested width in pixels, HH is the requested height in pixels, " +
-                " and (FX, FY) is a pair of percentage values indicating the optional focus point in the image. " +
+                "Invalid arguments supplied to Fit Transform." +
+                "Crop takes takes WWxHHxFXxFY, " +
+                " where WW is the requested width in pixels, " +
+                "HH is the requested height in pixels, " +
+                " and (FX, FY) is a pair of percentage values " +
+                "indicating the optional focus point in the image. " +
                 "The focus point can either be defined in the query or in the image filename."
                 )
 
@@ -59,12 +60,16 @@ class FitTransform(BaseTransform):
             raise ITSTransformError(error="Focus arguments should be between 0 and 100")
         else:
             try:
-
-                img = ImageOps.fit(img, (crop_width, crop_height), Image.ANTIALIAS, centering=(focal_x, focal_y))
+                focal_x = focal_x / 100
+                focal_y = focal_y / 100
+                img = ImageOps.fit(
+                    img, (crop_width, crop_height),
+                    Image.ANTIALIAS, centering=(focal_x, focal_y)
+                )
 
             except ITSTransformError as e:
                 raise e(
-                        error="Crop transform with requested size %sx%s" +
+                        error="Fit Transform with requested size %sx%s" +
                         "and requested focal point [%s, %s] failed."
                         % (crop_width, crop_height, focal_x, focal_y))
 

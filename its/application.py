@@ -47,6 +47,7 @@ def process_request(namespace, query, filename):
 
     return Response(response=output.getvalue(), mimetype=mime_type)
 
+
 def query_resize(width, height, ext):
     query = {'resize': 'x', 'format': str(ext)}
 
@@ -57,6 +58,7 @@ def query_resize(width, height, ext):
         query['resize'] = query['resize'] + height
 
     return query
+
 
 # New ITS
 # image transform command
@@ -78,7 +80,6 @@ def crop(namespace, filename, width, height, ext):
 @app.route(
     '/<namespace>/<path:filename>.focalcrop.<width>x<height>.' +
     '<int(min=0,max=100):x>.<int(min=0,max=100):y>.<ext>')
-
 def focalcrop(namespace, filename, width, height, x, y, ext):
     query = {'fit': width + 'x' + height + 'x' + x + 'x' + y, 'format': str(ext)}
     result = process_request(namespace, query, filename)

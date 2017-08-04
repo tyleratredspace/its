@@ -6,6 +6,7 @@ from botocore.exceptions import ClientError, WaiterError
 from io import BytesIO
 from ..settings import BUCKETS
 
+
 class S3Loader(BaseLoader):
 
     slug = "s3"
@@ -46,6 +47,6 @@ class S3Loader(BaseLoader):
             image = Image.open(file_obj)
 
         except (ClientError, WaiterError) as e:
-            raise NotFoundError("An error occurred: '%s'" %str(e))
+            raise NotFoundError("An error occurred: '%s'" % str(e))
 
         return image

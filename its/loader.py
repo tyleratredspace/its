@@ -26,8 +26,8 @@ def loader(namespace, filename):
         else:
             image = image_loader[0].load_image(namespace, filename)
     elif len(image_loader) == 0:
-        raise ITSLoaderError("No Image Loader with slug '%s' found." %settings.IMAGE_LOADER)
+        raise ITSLoaderError("No Image Loader with slug '%s' found." % settings.IMAGE_LOADER)
     elif len(image_loader) > 1:
-        raise ConfigError("Two or more Image Loaders have slug '%s'." %settings.IMAGE_LOADER)
+        raise ConfigError("Two or more Image Loaders have slug '%s'." % settings.IMAGE_LOADER)
 
     return image

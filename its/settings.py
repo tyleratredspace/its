@@ -20,11 +20,11 @@ IMAGE_LOADER = 'file_system'
 OVERLAY_LOADER = 'file_system'
 
 BUCKETS = {
-	'default': 'default',
-	'kids': 'kids',
-	'front_end': 'front_end',
-	'ga': 'ga',
-	'apps': 'apps'
+    'default': 'default',
+    'kids': 'kids',
+    'front_end': 'front_end',
+    'ga': 'ga',
+    'apps': 'apps'
 }
 
 OVERLAYS = {
