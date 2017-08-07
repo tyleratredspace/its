@@ -23,15 +23,11 @@ class S3Loader(BaseLoader):
         if namespace in BUCKETS:
             # get the specified bucket
             bucket = s3.Bucket(BUCKETS[namespace])
-
             bucket.wait_until_exists()
-            # create an empty bytes object to store the image bytes in
         else:
-            # get the specified bucket
-            bucket = s3.Bucket(namespace)
+            raise NotFoundError("Namespace {} is not configured.".format(namespace))
 
-            bucket.wait_until_exists()
-            # create an empty bytes object to store the image bytes in
+        # create an empty bytes object to store the image bytes in
         file_obj = BytesIO()
         bucket.download_fileobj(filename, file_obj)
 
