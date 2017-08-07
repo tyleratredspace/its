@@ -1,15 +1,15 @@
 import os
-
+import json
 
 # Set DEBUG = True to enable debugging application.
 DEBUG = os.environ.get('ITS_DEBUG', 'false').lower() == 'true'
 
 MIME_TYPES = {
-    'PNG': os.environ.get('ITS_MIME_TYPE_PNG', 'image/png'),
-    'JPEG': os.environ.get('ITS_MIME_TYPE_JPEG', 'image/jpeg'),
-    'JPG': os.environ.get('ITS_MIME_TYPE_JPEG', 'image/jpeg'),
-    'WEBP': os.environ.get('ITS_MIME_TYPE_WEBP', 'image/webp'),
-    'SVG': os.environ.get('ITS_MIME_TYPE_WEBP', 'image/svg+xml')
+    'PNG': 'image/png',
+    'JPEG': 'image/jpeg',
+    'JPG': 'image/jpeg',
+    'WEBP': 'image/webp',
+    'SVG': 'image/svg+xml'
 }
 
 PNGQUANT_PATH = os.environ.get('ITS_PNGQUANT_PATH', "pngquant")
@@ -20,17 +20,9 @@ IMAGE_LOADER = os.environ.get('ITS_IMAGE_LOADER', 's3')
 
 OVERLAY_LOADER = os.environ.get('ITS_OVERLAY_LOADER', 's3')
 
-BUCKETS = {
-    'default': 'default',
-    'kids': 'kids',
-    'front_end': 'front_end',
-    'ga': 'ga',
-    'apps': 'apps'
-}
+BUCKETS = json.JSONDecoder().decode(s=os.environ.get('ITS_BUCKETS', '{"default":"None"}'))
 
-OVERLAYS = {
-    'overlay': "/static/overlay.png",
-}
+OVERLAYS = json.JSONDecoder().decode(s=os.environ.get('ITS_OVERLAYS', '{"overlay":"None"}'))
 
 OVERLAY_PLACEMENT = [
     int(os.environ.get('ITS_OVERLAY_PLACEMENT_X', '5')),
