@@ -21,11 +21,11 @@ IMAGE_LOADER = os.environ.get('ITS_IMAGE_LOADER', 's3')
 OVERLAY_LOADER = os.environ.get('ITS_OVERLAY_LOADER', 's3')
 
 BUCKETS = {
-	'default': 'default',
-	'kids': 'kids',
-	'front_end': 'front_end',
-	'ga': 'ga',
-	'apps': 'apps'
+    'default': 'default',
+    'kids': 'kids',
+    'front_end': 'front_end',
+    'ga': 'ga',
+    'apps': 'apps'
 }
 
 OVERLAYS = {
