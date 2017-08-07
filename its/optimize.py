@@ -20,7 +20,7 @@ def optimize(img, query):
         except ValueError as e:
             raise ITSTransformError("ITSTransform Error: " + str(e))
 
-        with tempfile.NamedTemporaryFile(dir=".", delete=True) as tmp_file:
+        with tempfile.NamedTemporaryFile(dir="/tmp/", delete=True) as tmp_file:
             if ext.lower() == "jpg":
                 ext = "jpeg"
 
@@ -69,7 +69,7 @@ def optimize_jpg(img, tmp_file, quality=None):
 
 
 def optimize_png(img, tmp_file, quality=None):
-    output_path = str(uuid.uuid4())
+    output_path = "/tmp/" + str(uuid.uuid4())
 
     if quality < 100:
         # return the image as is since 100% quality means no compression
@@ -88,7 +88,7 @@ def optimize_png(img, tmp_file, quality=None):
             img.save(tmp_file.name, format=img.format)
             subprocess.check_output(command, stderr=subprocess.STDOUT)
             img = Image.open(output_path)
-            if Path("./" + output_path).exists():
+            if Path(output_path).exists():
                 Path(output_path).unlink()
         except (OSError, subprocess.CalledProcessError) as e:
             raise ITSTransformError("ITSTransform Error: " + str(e))
