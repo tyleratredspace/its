@@ -2,7 +2,7 @@ from .base import BaseLoader
 from ..errors import NotFoundError
 from PIL import Image
 import boto3
-from botocore.exceptions import ClientError, WaiterError
+from botocore.exceptions import ClientError
 from io import BytesIO
 from ..settings import BUCKETS
 
@@ -23,7 +23,6 @@ class S3Loader(BaseLoader):
         if namespace in BUCKETS:
             # get the specified bucket
             bucket = s3.Bucket(BUCKETS[namespace])
-            bucket.wait_until_exists()
         else:
             raise NotFoundError("Namespace {} is not configured.".format(namespace))
 
@@ -42,7 +41,7 @@ class S3Loader(BaseLoader):
             file_obj = S3Loader.get_fileobj(namespace, filename)
             image = Image.open(file_obj)
 
-        except (ClientError, WaiterError) as e:
+        except ClientError as e:
             raise NotFoundError("An error occurred: '%s'" % str(e))
 
         return image
