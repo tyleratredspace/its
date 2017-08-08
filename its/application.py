@@ -12,7 +12,6 @@ app = Flask(__name__)
 
 
 def process_request(namespace, query, filename):
-
     try:
         image = loader(namespace, filename)
     except NotFoundError as e:
@@ -55,7 +54,6 @@ def query_resize(width, height, ext):
         query['resize'] = query['resize'] + height
 
     return query
-
 
 # New ITS
 # image transform command
