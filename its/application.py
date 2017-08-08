@@ -12,10 +12,6 @@ app = Flask(__name__)
 
 def process_request(namespace, query, filename):
 
-    if len(query) == 0:
-        # an invalid url was attempted
-        abort(400)
-
     image = loader(namespace, filename)
 
     if image is None:
@@ -58,7 +54,6 @@ def query_resize(width, height, ext):
         query['resize'] = query['resize'] + height
 
     return query
-
 
 # New ITS
 # image transform command
