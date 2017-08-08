@@ -76,7 +76,7 @@ def crop(namespace, filename, width, height, ext):
     '/<namespace>/<path:filename>.focalcrop.<width>x<height>.' +
     '<int(min=0,max=100):x>.<int(min=0,max=100):y>.<ext>')
 def focalcrop(namespace, filename, width, height, x, y, ext):
-    query = {'fit': width + 'x' + height + 'x' + x + 'x' + y, 'format': str(ext)}
+    query = {'fit': width + 'x' + height + 'x' + str(x) + 'x' + str(y), 'format': str(ext)}
     result = process_request(namespace, query, filename)
     return result
 
