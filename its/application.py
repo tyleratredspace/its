@@ -6,17 +6,17 @@ from its.pipeline import process_transforms
 from its.loader import loader
 from its.optimize import optimize
 from its.settings import MIME_TYPES
+from its.errors import NotFoundError
 
 app = Flask(__name__)
 
 
 def process_request(namespace, query, filename):
-
-    image = loader(namespace, filename)
-
-    if image is None:
+    try:
+        image = loader(namespace, filename)
+    except NotFoundError as e:
         abort(404)
-
+    
     """
     PIL doesn't support SVG and ITS doesn't change them in any way,
     so loader returns a ByesIO object so the images will still be returned to the browser.
