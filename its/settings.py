@@ -1,17 +1,35 @@
-# import os
+import os
+import json
 
 # Set DEBUG = True to enable debugging application.
-DEBUG = True
+DEBUG = os.environ.get('ITS_DEBUG', 'false').lower() == 'true'
 
-IMAGE_LOADER = 's3'
-
-OVERLAYS = {
-    'passport': "static/Passport_Compass_Rose.png",
+MIME_TYPES = {
+    'PNG': 'image/png',
+    'JPEG': 'image/jpeg',
+    'JPG': 'image/jpeg',
+    'WEBP': 'image/webp',
+    'SVG': 'image/svg+xml'
 }
 
-OVERLAY_PLACEMENT = [50, 50]
+PNGQUANT_PATH = os.environ.get('ITS_PNGQUANT_PATH', "pngquant")
+
+DEFAULT_JPEG_QUALITY = int(os.environ.get('ITS_DEFAULT_JPEG_QUALITY', "95"))
+
+IMAGE_LOADER = os.environ.get('ITS_IMAGE_LOADER', 's3')
+
+OVERLAY_LOADER = os.environ.get('ITS_OVERLAY_LOADER', 's3')
+
+BUCKETS = json.JSONDecoder().decode(s=os.environ.get('ITS_BUCKETS', '{"default":"None"}'))
+
+OVERLAYS = json.JSONDecoder().decode(s=os.environ.get('ITS_OVERLAYS', '{"overlay":"None"}'))
+
+OVERLAY_PLACEMENT = [
+    int(os.environ.get('ITS_OVERLAY_PLACEMENT_X', '5')),
+    int(os.environ.get('ITS_OVERLAY_PLACEMENT_Y', '5')) 
+    ]
 
 # the keyword used to recognize focal point args in filenames
-FOCUS_KEYWORD = "focus-" 
+FOCUS_KEYWORD = os.environ.get('ITS_FOCUS_KEYWORD', "focus-")
 
-DELIMITERS_RE = "[x_,]"
+DELIMITERS_RE = os.environ.get('ITS_DELIMITERS_RE', '[x_,]')

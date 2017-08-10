@@ -2,8 +2,8 @@
 Script to validate images being submitted for transformation.
 """
 
-from .loaders import BaseLoader, FileSystemLoader
-from .errors import ITSLoaderError
+from .loaders import BaseLoader
+from .errors import ITSLoaderError, ConfigError
 from . import settings
 
 
@@ -16,16 +16,18 @@ def loader(namespace, filename):
 
     loader_classes = BaseLoader.__subclasses__()
 
-    image_loader = [loader 
-        for loader in loader_classes 
-        if loader.slug == settings.IMAGE_LOADER
-    ]
-    
+    image_loader = [
+        loader for loader in loader_classes
+        if loader.slug == settings.IMAGE_LOADER]
+
     if len(image_loader) == 1:
-        image = image_loader[0].load_image(namespace, filename)
+        if filename.endswith(".svg"):
+            image = image_loader[0].get_fileobj(namespace, filename)
+        else:
+            image = image_loader[0].load_image(namespace, filename)
     elif len(image_loader) == 0:
-        raise ITSLoaderError(error="Not Found Error: Image loader not found.")
+        raise ITSLoaderError("No Image Loader with slug '%s' found." % settings.IMAGE_LOADER)
     elif len(image_loader) > 1:
-        raise ITSLoaderError(error="Configuration Error: Two or more loaders have the same slug.")
+        raise ConfigError("Two or more Image Loaders have slug '%s'." % settings.IMAGE_LOADER)
 
     return image
