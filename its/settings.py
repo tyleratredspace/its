@@ -16,11 +16,7 @@ PNGQUANT_PATH = os.environ.get('ITS_PNGQUANT_PATH', "pngquant")
 
 DEFAULT_JPEG_QUALITY = int(os.environ.get('ITS_DEFAULT_JPEG_QUALITY', "95"))
 
-IMAGE_LOADER = os.environ.get('ITS_IMAGE_LOADER', 's3')
-
-OVERLAY_LOADER = os.environ.get('ITS_OVERLAY_LOADER', 's3')
-
-BUCKETS = json.JSONDecoder().decode(s=os.environ.get('ITS_BUCKETS', '{"default":"None"}'))
+BACKENDS = json.JSONDecoder().decode(s=os.environ.get('ITS_BACKENDS', '{"default":{"loader":"http", "prefixes":[""]}}'))
 
 OVERLAYS = json.JSONDecoder().decode(s=os.environ.get('ITS_OVERLAYS', '{"overlay":"None"}'))
 
@@ -32,4 +28,4 @@ OVERLAY_PLACEMENT = [
 # the keyword used to recognize focal point args in filenames
 FOCUS_KEYWORD = os.environ.get('ITS_FOCUS_KEYWORD', "focus-")
 
-DELIMITERS_RE = os.environ.get('ITS_DELIMITERS_RE', '[x_,]')
+DELIMITERS_RE = os.environ.get('ITS_DELIMITERS_RE', "[x_,]")
