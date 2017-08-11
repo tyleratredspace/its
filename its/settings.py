@@ -16,7 +16,7 @@ PNGQUANT_PATH = os.environ.get('ITS_PNGQUANT_PATH', "pngquant")
 
 DEFAULT_JPEG_QUALITY = int(os.environ.get('ITS_DEFAULT_JPEG_QUALITY', "95"))
 
-BACKENDS = json.JSONDecoder().decode(s=os.environ.get('ITS_BACKENDS', '{"default":{"loader":"http", "prefixes":[""]}}'))
+NAMESPACES = json.JSONDecoder().decode(s=os.environ.get('ITS_BACKENDS', '{"default":{"loader":"http", "prefixes":[""]}}'))
 
 OVERLAYS = json.JSONDecoder().decode(s=os.environ.get('ITS_OVERLAYS', '{"overlay":"None"}'))
 

@@ -3,8 +3,8 @@ from ..errors import NotFoundError
 from PIL import Image
 from io import BytesIO
 import re
-from ..settings import BACKENDS
-import urllib.request
+from ..settings import NAMESPACES
+import requests
 
 class HTTPLoader(BaseLoader):
 
@@ -18,16 +18,17 @@ class HTTPLoader(BaseLoader):
         returns a file-like or bytes-like object.
         """
         prefixes = set(filename.rsplit('/', 1)[0].split('/')) # everything before the final slash
-        params = BACKENDS[namespace][HTTPLoader.parameter_name]
-        intersect = list(set(params).intersection(prefixes))
+        params = NAMESPACES[namespace][HTTPLoader.parameter_name]
+        intersect = set(params).intersection(prefixes)
+
         if len(intersect) > 0:
-            local_filename, headers = urllib.request.urlretrieve(filename)
+             # create an empty bytes object to store the image bytes in
+            file_obj = BytesIO(requests.get(filename).content)
         else:
             raise NotFoundError("Namespace {} is not configured.".format(namespace))
 
-        # create an empty bytes object to store the image bytes in
-        with open(local_filename) as file_obj:
-            return file_obj
+    
+        return file_obj
 
     @staticmethod
     def load_image(namespace, filename):

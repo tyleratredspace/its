@@ -4,7 +4,7 @@ Script to validate images being submitted for transformation.
 
 from .loaders import BaseLoader
 from .errors import ITSLoaderError, ConfigError
-from .settings import BACKENDS
+from .settings import NAMESPACES
 
 
 def loader(namespace, filename):
@@ -16,8 +16,8 @@ def loader(namespace, filename):
 
     loader_classes = BaseLoader.__subclasses__()
 
-    if namespace in BACKENDS:
-        loader_parameters = BACKENDS[namespace]
+    if namespace in NAMESPACES:
+        loader_parameters = NAMESPACES[namespace]
         loader_slug = loader_parameters['loader']
 
         image_loader = [

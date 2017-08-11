@@ -3,7 +3,7 @@ from PIL import Image
 from .base import BaseLoader
 from ..errors import NotFoundError
 from io import BytesIO
-from ..settings import BACKENDS
+from ..settings import NAMESPACES
 import re
 
 class FileSystemLoader(BaseLoader):
@@ -33,6 +33,6 @@ class FileSystemLoader(BaseLoader):
         """
         api_root = Path(__file__).parents[3]
         folder = filename.split('/')[0]
-        if folder in BACKENDS[namespace][FileSystemLoader.parameter_name]:
+        if folder in NAMESPACES[namespace][FileSystemLoader.parameter_name]:
             image_path = Path(api_root / filename)
         return BytesIO(open(image_path, "rb").read())
