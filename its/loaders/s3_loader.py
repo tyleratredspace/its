@@ -4,12 +4,13 @@ from PIL import Image
 import boto3
 from botocore.exceptions import ClientError
 from io import BytesIO
-from ..settings import BUCKETS
+from ..settings import NAMESPACES
 
 
 class S3Loader(BaseLoader):
 
     slug = "s3"
+    parameter_name = "buckets"
 
     @staticmethod
     def get_fileobj(namespace, filename):
@@ -20,9 +21,11 @@ class S3Loader(BaseLoader):
         # get the s3 resource
         s3 = boto3.resource('s3')
 
-        if namespace in BUCKETS:
+        bucket_name = filename.split('/')[0]
+
+        if bucket_name in NAMESPACES[namespace][S3Loader.parameter_name]:
             # get the specified bucket
-            bucket = s3.Bucket(BUCKETS[namespace])
+            bucket = s3.Bucket(NAMESPACES[namespace][S3Loader.parameter_name][bucket_name])
         else:
             raise NotFoundError("Namespace {} is not configured.".format(namespace))
 

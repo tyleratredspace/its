@@ -4,7 +4,7 @@ Script to apply transformations to validated images.
 import re
 from io import BytesIO
 from .transformations import BaseTransform
-
+from .settings import DELIMITERS_RE
 
 def process_transforms(img, query, *args):
 
@@ -30,7 +30,7 @@ def process_transforms(img, query, *args):
         # loop through the order dict and apply the transforms
         for transform in transform_order:
             if transform in query:
-                query[transform] = query[transform].split('x')
+                query[transform] = re.split(DELIMITERS_RE, query[transform])
                 img = transform_order[transform].apply_transform(img, query[transform])
 
         if img.format is None and 'filename' in img_info.keys():

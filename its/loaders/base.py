@@ -3,14 +3,15 @@ class BaseLoader(object):
     """
     Generic file loader class
     """
-    loader_slug = None
+    slug = None
+    parameter_name = None
 
     def __init__(self, arg):
         super(BaseLoader, self).__init__()
         self.arg = arg
 
     @staticmethod
-    def load_image(namespace, filename):
+    def load_image(namespace, filename, loader_slug):
         """
         Given a namespace (or directory name) and a filename, loads a file.
         """

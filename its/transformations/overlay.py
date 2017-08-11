@@ -3,7 +3,7 @@ from pathlib import Path
 from PIL import Image
 from .base import BaseTransform
 from ..loaders import BaseLoader
-from ..settings import OVERLAYS, OVERLAY_PLACEMENT, OVERLAY_LOADER
+from ..settings import OVERLAYS, NAMESPACES
 from ..errors import ITSTransformError
 
 
@@ -25,7 +25,10 @@ class OverlayTransform(BaseTransform):
 
         *overlay_position, overlay = overlay
 
-        loader = OverlayTransform.get_loader(OVERLAY_LOADER)
+        if 'overlay' in NAMESPACES:
+            loader = OverlayTransform.get_loader(NAMESPACES['overlay']['loader'])
+        else:
+            raise ConfigError("No Backend has been set up for overlays.")
 
         if overlay.lower() not in OVERLAYS:
             namespace, *filename = overlay.split('/')
