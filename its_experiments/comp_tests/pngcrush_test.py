@@ -57,10 +57,10 @@ def run_pngcrush(pngs, method=None):
     
     print(method)
     if method is None:
-        base = ["./pngcrush", "-reduce", "-brute"]
-        out_folder = mk_folder("pngcrush_results/brute_force/")
+        base = ["./pngcrush"]
+        out_folder = mk_folder("pngcrush_results/heuristic_method/")
     else:
-        base = ["./pngcrush", "-reduce", "-m " + str(method)]
+        base = ["./pngcrush", "-m " + str(method)]
         out_folder = mk_folder("pngcrush_results/method_" + str(method) + "/")
     saved_output = [] # list of output that needs to be parsed to gather more data
     num_methods = 148
