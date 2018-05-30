@@ -3,8 +3,8 @@ from pathlib import Path
 from PIL import Image
 from .base import BaseTransform
 from ..loaders import BaseLoader
-from ..settings import OVERLAYS, NAMESPACES
-from ..errors import ITSTransformError
+from ..settings import OVERLAYS, NAMESPACES, OVERLAY_PLACEMENT
+from ..errors import ITSTransformError, ConfigError
 
 
 class OverlayTransform(BaseTransform):
