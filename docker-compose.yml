@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./scripts/docker/server/dev-server.sh
+    environment:
+      - PIPENV_DONT_LOAD_ENV=1
+    env_file: .env
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/opt/its
