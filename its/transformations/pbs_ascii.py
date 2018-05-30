@@ -1,4 +1,5 @@
-from PIL import Image, ImageDraw
+# flake8: noqa
+from PIL import ImageDraw
 from math import floor
 from .base import BaseTransform
 
@@ -26,7 +27,6 @@ class PBSASCIITransform(BaseTransform):
                     int(floor(int(fill_color[1]))),
                     int(floor(int(fill_color[2])))
                 )
-
 
         draw = ImageDraw.Draw(img)
         pbs_ascii = """

@@ -4,7 +4,7 @@ from .base import BaseLoader
 from ..errors import NotFoundError
 from io import BytesIO
 from ..settings import NAMESPACES
-import re
+
 
 class FileSystemLoader(BaseLoader):
 
