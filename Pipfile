@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 flask = "*"
 pillow = "*"
+"boto3" = "*"
+requests = "*"
 
 [dev-packages]
 "flake8" = "*"
