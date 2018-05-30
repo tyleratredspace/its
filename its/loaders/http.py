@@ -42,4 +42,4 @@ class HTTPLoader(BaseLoader):
         except NotFoundError as e:
             raise NotFoundError("An error occurred: '%s'" % str(e))
 
-        return image
+        return img
