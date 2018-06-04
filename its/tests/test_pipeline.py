@@ -102,12 +102,10 @@ class TestOverlayTransform(TestCase):
     @classmethod
     def setUpClass(self):
         self.img_dir = Path(__file__).parent / "images"
-        self.overlays = {'five': 'images/five.png'}
+        self.overlays = {'five': 'tests/images/five.png'}
         self.threshold = 0.85
 
     def test_overlay(self):
-        print(self.img_dir)
-
         test_image = Image.open(self.img_dir / "abstract.png")
         test_image.info['filename'] = "abstract.png"
         query = {'overlay': '45x45x' + self.overlays['five']}
