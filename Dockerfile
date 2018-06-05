@@ -14,4 +14,4 @@ RUN pipenv --three
 COPY Pipfile Pipfile.lock /opt/its/
 RUN pipenv install --dev
 COPY tox.ini /opt/its/
-COPY its/ /opt/its/
+COPY its/ /opt/its/its/

@@ -13,13 +13,14 @@ jobs:
     steps:
       - checkout
 
+      - setup_remote_docker
+
       - run:
-          name: build docker container
+          name: build docker image
           command: |
-            docker-compose build .
+            docker build -t pbs/its:latest .
 
       - run:
           name: run tests
           command: |
-            docker-compose run server pipenv run pytest its/tests
-          
+            docker run --rm -e ITS_DEBUG=true pbs/its:latest pipenv run pytest its/tests
