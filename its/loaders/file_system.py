@@ -4,7 +4,9 @@ from .base import BaseLoader
 from ..errors import NotFoundError
 from io import BytesIO
 from ..settings import NAMESPACES
-import re
+
+from pathlib import PosixPath
+
 
 class FileSystemLoader(BaseLoader):
 
@@ -16,6 +18,8 @@ class FileSystemLoader(BaseLoader):
         """
         Loads image from child folder of the git project folder serverless-its/
         """
+        if isinstance(filename, PosixPath):
+            filename = str(filename)
         # Path to the great grandparent directory of this file
         try:
             image_bytes = FileSystemLoader.get_fileobj(namespace, filename)
@@ -31,8 +35,6 @@ class FileSystemLoader(BaseLoader):
         Given a namespace (or directory name) and a filename,
         returns a file-like or bytes-like object.
         """
-        api_root = Path(__file__).parents[3]
-        folder = filename.split('/')[0]
-        if folder in NAMESPACES[namespace][FileSystemLoader.parameter_name]:
-            image_path = Path(api_root / filename)
+        api_root = Path(__file__).parents[1]
+        image_path = Path(api_root / namespace / filename)
         return BytesIO(open(image_path, "rb").read())

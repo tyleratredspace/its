@@ -102,3 +102,6 @@ ENV/
 
 #misc
 .DS_Store
+
+# pytest
+.pytest_cache

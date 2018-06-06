@@ -12,12 +12,12 @@ app = Flask(__name__)
 
 
 def process_request(namespace, query, filename):
-    
+
     try:
         image = loader(namespace, filename)
     except NotFoundError as e:
         abort(404)
-    
+
     """
     PIL doesn't support SVG and ITS doesn't change them in any way,
     so loader returns a ByesIO object so the images will still be returned to the browser.
@@ -44,7 +44,9 @@ def process_request(namespace, query, filename):
 
     return Response(response=output.getvalue(), mimetype=mime_type)
 
-def process_old_request(namespace, filename, transform, width=None, height=None, ext=None, x=None, y=None):
+
+def process_old_request(namespace, filename, transform, width=None, height=None,
+                        ext=None, x=None, y=None):
 
     query = {}
 
@@ -54,7 +56,7 @@ def process_old_request(namespace, filename, transform, width=None, height=None,
     query[transform] = "x"
     if width is not None:
         query[transform] = str(width) + query[transform]
-    
+
     if height is not None:
         query[transform] = query[transform] + str(height)
 
@@ -69,10 +71,10 @@ def process_old_request(namespace, filename, transform, width=None, height=None,
 
     return query
 
-# New ITS
-# image transform command
+
 @app.route('/<namespace>/<path:filename>', methods=['GET'])
 def transform_image(namespace, filename):
+    """ New ITS image transform command """
     query = request.args.to_dict()
     result = process_request(namespace, query, filename)
     return result

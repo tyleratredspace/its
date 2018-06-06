@@ -6,6 +6,7 @@ from io import BytesIO
 from .transformations import BaseTransform
 from .settings import DELIMITERS_RE
 
+
 def process_transforms(img, query, *args):
 
     """

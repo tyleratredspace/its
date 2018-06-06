@@ -1,0 +1,26 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6.1
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - setup_remote_docker
+
+      - run:
+          name: build docker image
+          command: |
+            docker build -t pbs/its:latest .
+
+      - run:
+          name: run tests
+          command: |
+            docker run --rm -e ITS_DEBUG=true pbs/its:latest pipenv run pytest its/tests
