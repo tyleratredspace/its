@@ -51,4 +51,5 @@ RUN pipenv install --dev
 
 # copy source code
 COPY --chown=its:its its/ /opt/its/its/
+COPY --chown=its:its scripts/docker/ /opt/its/its/scripts/docker
 COPY --chown=its:its tox.ini /opt/its/
