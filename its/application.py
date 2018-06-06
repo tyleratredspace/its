@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
 from io import BytesIO
-from flask import Flask, request, abort, Response
-from its.pipeline import process_transforms
+
+from flask import Flask, Response, abort, request
+
+from its.errors import NotFoundError
 from its.loader import loader
 from its.optimize import optimize
+from its.pipeline import process_transforms
 from its.settings import MIME_TYPES
-from its.errors import NotFoundError
 
 app = Flask(__name__)
 
@@ -27,7 +29,7 @@ def process_request(namespace, query, filename):
         output = image
         mime_type = MIME_TYPES["SVG"]
     else:
-        image.info['filename'] = filename
+        image.info["filename"] = filename
         result = process_transforms(image, query)
 
         # image conversion and compression
@@ -45,8 +47,9 @@ def process_request(namespace, query, filename):
     return Response(response=output.getvalue(), mimetype=mime_type)
 
 
-def process_old_request(namespace, filename, transform, width=None, height=None,
-                        ext=None, x=None, y=None):
+def process_old_request(
+    namespace, filename, transform, width=None, height=None, ext=None, x=None, y=None
+):
 
     query = {}
 
@@ -61,7 +64,7 @@ def process_old_request(namespace, filename, transform, width=None, height=None,
         query[transform] = query[transform] + str(height)
 
     if ext is not None:
-        query['format'] = ext
+        query["format"] = ext
 
     if x is not None:
         query[transform] = query[transform] + "x" + str(x)
@@ -72,7 +75,7 @@ def process_old_request(namespace, filename, transform, width=None, height=None,
     return query
 
 
-@app.route('/<namespace>/<path:filename>', methods=['GET'])
+@app.route("/<namespace>/<path:filename>", methods=["GET"])
 def transform_image(namespace, filename):
     """ New ITS image transform command """
     query = request.args.to_dict()
@@ -81,7 +84,7 @@ def transform_image(namespace, filename):
 
 
 # Old ITS Support
-@app.route('/<namespace>/<path:filename>.crop.<width>x<height>.<ext>')
+@app.route("/<namespace>/<path:filename>.crop.<width>x<height>.<ext>")
 def crop(namespace, filename, width, height, ext):
     query = process_old_request(namespace, filename, "fit", width, height, ext)
     result = process_request(namespace, query, filename)
@@ -89,15 +92,16 @@ def crop(namespace, filename, width, height, ext):
 
 
 @app.route(
-    '/<namespace>/<path:filename>.focalcrop.<width>x<height>.' +
-    '<int(min=0,max=100):x>.<int(min=0,max=100):y>.<ext>')
+    "/<namespace>/<path:filename>.focalcrop.<width>x<height>."
+    + "<int(min=0,max=100):x>.<int(min=0,max=100):y>.<ext>"
+)
 def focalcrop(namespace, filename, width, height, x, y, ext):
     query = process_old_request(namespace, filename, "fit", width, height, ext, x, y)
     result = process_request(namespace, query, filename)
     return result
 
 
-@app.route('/<namespace>/<path:filename>.fit.<width>x<height>.<ext>')
+@app.route("/<namespace>/<path:filename>.fit.<width>x<height>.<ext>")
 def fit(namespace, filename, width, height, ext):
     query = process_old_request(namespace, filename, "fit", width, height, ext)
     result = process_request(namespace, query, filename)
@@ -105,9 +109,9 @@ def fit(namespace, filename, width, height, ext):
 
 
 # resize with pseduo-optional arguments
-@app.route('/<namespace>/<path:filename>.resize.<width>x<height>.<ext>')
-@app.route('/<namespace>/<path:filename>.resize.x<height>.<ext>')
-@app.route('/<namespace>/<path:filename>.resize.<width>x.<ext>')
+@app.route("/<namespace>/<path:filename>.resize.<width>x<height>.<ext>")
+@app.route("/<namespace>/<path:filename>.resize.x<height>.<ext>")
+@app.route("/<namespace>/<path:filename>.resize.<width>x.<ext>")
 def resize(namespace, filename, ext, width=None, height=None):
     query = process_old_request(namespace, filename, "resize", width, height, ext)
     result = process_request(namespace, query, filename)
@@ -115,15 +119,17 @@ def resize(namespace, filename, ext, width=None, height=None):
 
 
 # passport overlay resize with pseduo-optional arguments
-@app.route('/<namespace>/<path:filename>.resize.<int:width>x<int:height>.passport.<ext>')
-@app.route('/<namespace>/<path:filename>.resize.x<int:height>.passport.<ext>')
-@app.route('/<namespace>/<path:filename>.resize.<int:width>x.passport.<ext>')
+@app.route(
+    "/<namespace>/<path:filename>.resize.<int:width>x<int:height>.passport.<ext>"
+)
+@app.route("/<namespace>/<path:filename>.resize.x<int:height>.passport.<ext>")
+@app.route("/<namespace>/<path:filename>.resize.<int:width>x.passport.<ext>")
 def resize_passport(namespace, filename, width, height, ext):
     query = process_old_request(namespace, filename, "resize", width, height, ext)
-    query['overlay'] = 'passport'
+    query["overlay"] = "passport"
     result = process_request(namespace, query, filename)
     return result
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)

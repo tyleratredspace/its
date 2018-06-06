@@ -1,6 +1,8 @@
 # flake8: noqa
-from PIL import ImageDraw
 from math import floor
+
+from PIL import ImageDraw
+
 from .base import BaseTransform
 
 
@@ -9,7 +11,8 @@ class PBSASCIITransform(BaseTransform):
     """
     Generic image transform type class
     """
-    slug = 'pbs'  # unique string that identifies a given transform
+
+    slug = "pbs"  # unique string that identifies a given transform
 
     def apply_transform(img, fill_color=None):
 
@@ -25,7 +28,7 @@ class PBSASCIITransform(BaseTransform):
                 fill_color = (
                     int(floor(int(fill_color[0]))),
                     int(floor(int(fill_color[1]))),
-                    int(floor(int(fill_color[2])))
+                    int(floor(int(fill_color[2]))),
                 )
 
         draw = ImageDraw.Draw(img)
@@ -53,6 +56,11 @@ class PBSASCIITransform(BaseTransform):
            :yyyyyyyyyyyyyy.            :++++++++++++++++++++++/-`          ./oooooooooooooo+:`      
            .//////////////`            .-------------------.`                 `.-:////::-.
         """
-        draw.multiline_text((int(floor(int(pos_x))), int(floor(int(pos_y)))), pbs_ascii, fill=fill_color, align="center")
+        draw.multiline_text(
+            (int(floor(int(pos_x))), int(floor(int(pos_y)))),
+            pbs_ascii,
+            fill=fill_color,
+            align="center",
+        )
         del draw
         return img

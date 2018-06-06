@@ -13,6 +13,11 @@ uwsgi = "*"
 [dev-packages]
 "flake8" = "*"
 pytest = "*"
+black = "*"
+isort = "*"
 
 [requires]
 python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true

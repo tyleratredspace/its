@@ -164,3 +164,9 @@ run tests locally:
     docker-compose build server
     docker-compose run server pipenv run pytest its/tests
 ```
+
+run autoformatter for python code:
+
+```
+    docker-compose run server ./scripts/docker/server/format.sh
+```
