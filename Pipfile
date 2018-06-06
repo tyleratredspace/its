@@ -8,6 +8,7 @@ flask = "*"
 pillow = "*"
 "boto3" = "*"
 requests = "*"
+uwsgi = "*"
 
 [dev-packages]
 "flake8" = "*"
