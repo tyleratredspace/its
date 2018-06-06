@@ -1,10 +1,12 @@
-from .base import BaseLoader
-from ..errors import NotFoundError
-from PIL import Image
+from io import BytesIO
+
 import boto3
 from botocore.exceptions import ClientError
-from io import BytesIO
+from PIL import Image
+
+from ..errors import NotFoundError
 from ..settings import NAMESPACES
+from .base import BaseLoader
 
 
 class S3Loader(BaseLoader):
@@ -19,7 +21,7 @@ class S3Loader(BaseLoader):
         returns a file-like or bytes-like object.
         """
         # get the s3 resource
-        s3 = boto3.resource('s3')
+        s3 = boto3.resource("s3")
 
         bucket = s3.Bucket(NAMESPACES[namespace][S3Loader.parameter_name])
 

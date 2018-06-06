@@ -2,8 +2,8 @@
 Script to validate images being submitted for transformation.
 """
 
+from .errors import ConfigError, ITSLoaderError
 from .loaders import BaseLoader
-from .errors import ITSLoaderError, ConfigError
 from .settings import NAMESPACES
 
 
@@ -18,11 +18,11 @@ def loader(namespace, filename):
 
     if namespace in NAMESPACES:
         loader_parameters = NAMESPACES[namespace]
-        loader_slug = loader_parameters['loader']
+        loader_slug = loader_parameters["loader"]
 
         image_loader = [
-            loader for loader in loader_classes
-            if loader.slug == loader_slug]
+            loader for loader in loader_classes if loader.slug == loader_slug
+        ]
 
         if len(image_loader) == 1:
             if filename.endswith(".svg"):

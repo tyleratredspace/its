@@ -1,10 +1,12 @@
 from math import floor
 from pathlib import Path
+
 from PIL import Image
-from .base import BaseTransform
+
+from ..errors import ConfigError, ITSTransformError
 from ..loaders import BaseLoader
-from ..settings import OVERLAYS, NAMESPACES, OVERLAY_PLACEMENT
-from ..errors import ITSTransformError, ConfigError
+from ..settings import NAMESPACES, OVERLAY_PLACEMENT, OVERLAYS
+from .base import BaseTransform
 
 
 class OverlayTransform(BaseTransform):
@@ -19,23 +21,24 @@ class OverlayTransform(BaseTransform):
 
     image.png?overlay=overlay_img_pathxPXxPY
     """
+
     slug = "overlay"
 
     def apply_transform(img, overlay, overlay_position=None):
 
         *overlay_position, overlay = overlay
 
-        if 'overlay' in NAMESPACES:
-            loader = OverlayTransform.get_loader(NAMESPACES['overlay']['loader'])
+        if "overlay" in NAMESPACES:
+            loader = OverlayTransform.get_loader(NAMESPACES["overlay"]["loader"])
         else:
             raise ConfigError("No Backend has been set up for overlays.")
 
         if overlay.lower() not in OVERLAYS:
-            namespace, *filename = overlay.split('/')
+            namespace, *filename = overlay.split("/")
             filename = Path("/".join(filename))
             overlay_image = loader[0].load_image(namespace, filename)
         else:
-            namespace, *filename = OVERLAYS[overlay.lower()].split('/')
+            namespace, *filename = OVERLAYS[overlay.lower()].split("/")
             filename = Path("/".join(filename))
             overlay_image = loader[0].load_image(namespace, filename)
 
@@ -48,15 +51,15 @@ class OverlayTransform(BaseTransform):
             y_coord = floor((int(overlay_position[1]) / 100) * img.height)
         except ValueError as e:
             raise ITSTransformError(
-                "Invalid arguments supplied to Overlay Transform." +
-                "Overlay takes overlay_image_pathxPXxPY, " +
-                "where overlay_image_path is the path to the overlay image and " +
-                "(PX, PY) are optional percentage parameters indicating where " +
-                "the top left corner of the overlay should be placed."
+                "Invalid arguments supplied to Overlay Transform."
+                + "Overlay takes overlay_image_pathxPXxPY, "
+                + "where overlay_image_path is the path to the overlay image and "
+                + "(PX, PY) are optional percentage parameters indicating where "
+                + "the top left corner of the overlay should be placed."
             )
 
         # Only the overlay has an alpha channel
-        if(img.mode != "RGBA"):
+        if img.mode != "RGBA":
             new_img = img.copy()
         else:
             # overlay and input img have alpha channels
@@ -75,19 +78,17 @@ class OverlayTransform(BaseTransform):
 
         loader_classes = BaseLoader.__subclasses__()
 
-        loader = [
-            loader for loader in loader_classes
-            if loader.slug == OVERLAY_LOADER]
+        loader = [loader for loader in loader_classes if loader.slug == OVERLAY_LOADER]
 
         if len(loader) == 1:
             return loader
         elif len(loader) == 0:
             raise ITSTransformError(
-                "Not Found Error: Overlay Image Loader " +
-                "with slug '%s' not found." % OVERLAY_LOADER
+                "Not Found Error: Overlay Image Loader "
+                + "with slug '%s' not found." % OVERLAY_LOADER
             )
         elif len(loader) > 1:
             raise ITSTransformError(
-                "Configuration Error: Two or more Image Loaders " +
-                "have slug '%s'." % OVERLAY_LOADER
+                "Configuration Error: Two or more Image Loaders "
+                + "have slug '%s'." % OVERLAY_LOADER
             )

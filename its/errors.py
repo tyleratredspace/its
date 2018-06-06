@@ -1,5 +1,3 @@
-
-
 class ITSError(Exception):
     """
     Base error class for ITS.
@@ -15,7 +13,7 @@ class ITSError(Exception):
         if status_code is not None:
             self.status_code = status_code
 
-        self.payload = (payload or dict())
+        self.payload = payload or dict()
 
         if args:
             self.args = args

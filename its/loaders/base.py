@@ -1,8 +1,8 @@
-
 class BaseLoader(object):
     """
     Generic file loader class
     """
+
     slug = None
     parameter_name = None
 

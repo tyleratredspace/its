@@ -3,8 +3,9 @@ Script to apply transformations to validated images.
 """
 import re
 from io import BytesIO
-from .transformations import BaseTransform
+
 from .settings import DELIMITERS_RE
+from .transformations import BaseTransform
 
 
 def process_transforms(img, query, *args):
@@ -34,9 +35,9 @@ def process_transforms(img, query, *args):
                 query[transform] = re.split(DELIMITERS_RE, query[transform])
                 img = transform_order[transform].apply_transform(img, query[transform])
 
-        if img.format is None and 'filename' in img_info.keys():
+        if img.format is None and "filename" in img_info.keys():
             # attempt to grab the filetype from the filename
-            file_type = re.sub('.+?(\.)', '', img_info['filename'], flags=re.IGNORECASE)
+            file_type = re.sub(".+?(\.)", "", img_info["filename"], flags=re.IGNORECASE)
             if file_type.lower() == "jpg" or file_type.lower() == "jpeg":
                 img.format = "JPEG"
             else:

@@ -1,11 +1,11 @@
-from pathlib import Path
-from PIL import Image
-from .base import BaseLoader
-from ..errors import NotFoundError
 from io import BytesIO
-from ..settings import NAMESPACES
+from pathlib import Path, PosixPath
 
-from pathlib import PosixPath
+from PIL import Image
+
+from ..errors import NotFoundError
+from ..settings import NAMESPACES
+from .base import BaseLoader
 
 
 class FileSystemLoader(BaseLoader):
@@ -25,7 +25,9 @@ class FileSystemLoader(BaseLoader):
             image_bytes = FileSystemLoader.get_fileobj(namespace, filename)
             image = Image.open(image_bytes)
         except FileNotFoundError as e:
-            raise NotFoundError("File Not Found at %s" % (Path(namespace + "/" + filename)))
+            raise NotFoundError(
+                "File Not Found at %s" % (Path(namespace + "/" + filename))
+            )
 
         return image
 

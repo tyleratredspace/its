@@ -1,22 +1,27 @@
-from PIL import Image, ImageFile
-from pathlib import Path
-from io import BytesIO
 import subprocess
 import tempfile
 import uuid
+from io import BytesIO
 from math import floor
-from .errors import ITSTransformError
-from its.settings import PNGQUANT_PATH, DEFAULT_JPEG_QUALITY
+from pathlib import Path
 
-ImageFile.MAXBLOCK = 2**20  # for JPG progressive saving
+from PIL import Image, ImageFile
+
+from its.settings import DEFAULT_JPEG_QUALITY, PNGQUANT_PATH
+
+from .errors import ITSTransformError
+
+ImageFile.MAXBLOCK = 2 ** 20  # for JPG progressive saving
 
 
 def optimize(img, query):
 
     if not isinstance(img, BytesIO):
-        ext = query['format'] if 'format' in query else img.format.lower()  # the return format
+        ext = (
+            query["format"] if "format" in query else img.format.lower()
+        )  # the return format
         try:
-            quality = int(query['quality']) if 'quality' in query else None
+            quality = int(query["quality"]) if "quality" in query else None
         except ValueError as e:
             raise ITSTransformError("ITSTransform Error: " + str(e))
 
@@ -56,12 +61,18 @@ def convert(img, ext, tmp_file):
 
 def optimize_jpg(img, tmp_file, quality=None):
     if quality is not None and quality <= 95:
-        img.save(tmp_file.name, "JPEG", quality=quality, optimize=True, progressive=True)
+        img.save(
+            tmp_file.name, "JPEG", quality=quality, optimize=True, progressive=True
+        )
     else:
         # 95 is the reccommended upper limit on quality for JPEGs in PIL
         img.save(
-            tmp_file.name, "JPEG", quality=DEFAULT_JPEG_QUALITY,
-            optimize=True, progressive=True)
+            tmp_file.name,
+            "JPEG",
+            quality=DEFAULT_JPEG_QUALITY,
+            optimize=True,
+            progressive=True,
+        )
     # reopen newly converted or compressed image
     img = Image.open(tmp_file.name)
 
@@ -81,8 +92,14 @@ def optimize_png(img, tmp_file, quality=None):
             speed = int(floor((quality - (quality % 10)) / 10))
 
         command = [
-                PNGQUANT_PATH, "--strip", "--force", "--output",
-                output_path, "-s" + str(speed), tmp_file.name]
+            PNGQUANT_PATH,
+            "--strip",
+            "--force",
+            "--output",
+            output_path,
+            "-s" + str(speed),
+            tmp_file.name,
+        ]
 
         try:
             img.save(tmp_file.name, format=img.format)

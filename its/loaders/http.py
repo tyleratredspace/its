@@ -1,9 +1,11 @@
-from .base import BaseLoader
-from ..errors import NotFoundError
-from PIL import Image
 from io import BytesIO
-from ..settings import NAMESPACES
+
 import requests
+from PIL import Image
+
+from ..errors import NotFoundError
+from ..settings import NAMESPACES
+from .base import BaseLoader
 
 
 class HTTPLoader(BaseLoader):
@@ -17,7 +19,9 @@ class HTTPLoader(BaseLoader):
         Given a namespace (or directory name) and a filename,
         returns a file-like or bytes-like object.
         """
-        prefixes = set(filename.rsplit('/', 1)[0].split('/'))  # everything before the final slash
+        prefixes = set(
+            filename.rsplit("/", 1)[0].split("/")
+        )  # everything before the final slash
         params = NAMESPACES[namespace][HTTPLoader.parameter_name]
         intersect = set(params).intersection(prefixes)
 
