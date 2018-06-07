@@ -160,13 +160,26 @@ Result Image: ![Citizen-Kane-Combination](http://i.imgur.com/vmZuz7k.jpg)
 
 run tests locally:
 
-```
+```bash
     docker-compose build server
     docker-compose run server pipenv run pytest its/tests
 ```
 
+run local development environment:
+
+```bash
+    docker-compose up --build
+```
+
 run autoformatter for python code:
 
-```
+```bash
     docker-compose run server ./scripts/docker/server/format.sh
+```
+
+build and publish docker image:
+
+```bash
+    # first, authenticate to docker hub (https://docs.docker.com/engine/reference/commandline/login/)
+    ./scripts/do publish
 ```
