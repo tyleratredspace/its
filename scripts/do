@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euox pipefail
+set -euo pipefail
 
 # A general script to run aliased commands
 # Taken loosely from https://gist.github.com/waylan/4080362
@@ -15,7 +15,7 @@ sub_help(){
     echo "    publish   build and push image to docker hub"
 }
 
-sub tag(){
+sub_tag(){
     local git_hash=$(git log --pretty=format:'%h' --no-merges -n 1)
     echo "version-${git_hash}"
 }
