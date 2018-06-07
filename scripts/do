@@ -11,6 +11,7 @@ IMAGE_REPO_ADDRESS="pbsd/its"
 sub_help(){
     echo "Usage: ${PROGRAM_NAME} <subcommand>"
     echo "Subcommands:"
+    echo "    tag       generate docker image tag"
     echo "    publish   build and push image to docker hub"
 }
 
