@@ -23,11 +23,13 @@ class S3Loader(BaseLoader):
         # get the s3 resource
         s3 = boto3.resource("s3")
 
-        bucket = s3.Bucket(NAMESPACES[namespace][S3Loader.parameter_name])
+        bucket_name = NAMESPACES[namespace][S3Loader.parameter_name]
+        key = "{namespace}/{filename}".format(namespace=namespace, filename=filename)
+        s3_object = s3.Object(bucket_name=bucket_name, key=key)
 
         # create an empty bytes object to store the image bytes in
         file_obj = BytesIO()
-        bucket.download_fileobj(filename, file_obj)
+        s3_object.download_fileobj(file_obj)
 
         return file_obj
 
