@@ -9,6 +9,7 @@ pillow = "*"
 "boto3" = "*"
 requests = "*"
 uwsgi = "*"
+larson = "*"
 
 [dev-packages]
 "flake8" = "*"
