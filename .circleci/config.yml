@@ -5,22 +5,24 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/python:3.6.1
+    machine: true
 
     working_directory: ~/repo
 
     steps:
       - checkout
 
-      - setup_remote_docker
-
       - run:
           name: build docker image
           command: |
-            docker build -t pbs/its:latest .
+            docker build -t ci_build .
 
       - run:
           name: run tests
           command: |
-            docker run --rm -e ITS_DEBUG=true pbs/its:latest pipenv run pytest its/tests
+            docker run --rm -e ITS_DEBUG=true ci_build pipenv run pytest its/tests
+
+      - run:
+          name: lint
+          command: |
+            docker run --rm ci_build /opt/its/scripts/docker/server/lint.sh
