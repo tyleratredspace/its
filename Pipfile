@@ -16,6 +16,7 @@ larson = "*"
 pytest = "*"
 black = "*"
 isort = "*"
+prospector = "*"
 
 [requires]
 python_version = "3.6"

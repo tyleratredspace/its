@@ -6,7 +6,8 @@ class ITSError(Exception):
     status_code = 400
     message = ""
 
-    def __init__(self, error, status_code=None, payload=None, *args):
+    def __init__(self, error, *args, status_code=None, payload=None):
+        super().__init__(error)
 
         self.message = self.message + error
 

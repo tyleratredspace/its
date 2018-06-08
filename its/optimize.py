@@ -22,8 +22,8 @@ def optimize(img, query):
         )  # the return format
         try:
             quality = int(query["quality"]) if "quality" in query else None
-        except ValueError as e:
-            raise ITSTransformError("ITSTransform Error: " + str(e))
+        except ValueError as error:
+            raise ITSTransformError("ITSTransform Error: " + str(error))
 
         with tempfile.NamedTemporaryFile(dir="/tmp/", delete=True) as tmp_file:
             if ext.lower() == "jpg":
@@ -107,6 +107,6 @@ def optimize_png(img, tmp_file, quality=None):
             img = Image.open(output_path)
             if Path(output_path).exists():
                 Path(output_path).unlink()
-        except (OSError, subprocess.CalledProcessError) as e:
-            raise ITSTransformError("ITSTransform Error: " + str(e))
+        except (OSError, subprocess.CalledProcessError) as error:
+            raise ITSTransformError("ITSTransform Error: " + str(error))
     return img

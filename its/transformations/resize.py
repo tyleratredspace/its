@@ -26,7 +26,7 @@ class ResizeTransform(BaseTransform):
         try:
             width = int(width) if width != "" else None
             height = int(height) if height != "" else None
-        except ValueError as e:
+        except ValueError:
             raise ITSTransformError(
                 "Invalid arguments supplied to Resize Transform."
                 + "Resize takes WWxHH, WWx, or xHH,"

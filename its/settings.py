@@ -16,7 +16,7 @@ PNGQUANT_PATH = os.environ.get("ITS_PNGQUANT_PATH", "pngquant")
 
 DEFAULT_JPEG_QUALITY = int(os.environ.get("ITS_DEFAULT_JPEG_QUALITY", "95"))
 
-default_namespaces = json.dumps(
+DEFAULT_NAMESPACES = json.dumps(
     {
         "default": {"loader": "http", "prefixes": [""]},
         "overlay": {"loader": "file_system", "prefixes": ["test/overlay"]},
@@ -26,7 +26,7 @@ default_namespaces = json.dumps(
 )
 
 NAMESPACES = json.JSONDecoder().decode(
-    s=os.environ.get("ITS_BACKENDS", default_namespaces)
+    s=os.environ.get("ITS_BACKENDS", DEFAULT_NAMESPACES)
 )
 
 OVERLAYS = json.JSONDecoder().decode(

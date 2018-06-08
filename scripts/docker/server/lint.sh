@@ -4,3 +4,4 @@ IFS=$'\n\t'
 
 pipenv run black --check .
 pipenv run isort --check-only --recursive .
+pipenv run prospector --profile .prospector.yml .

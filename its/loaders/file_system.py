@@ -4,7 +4,6 @@ from pathlib import Path, PosixPath
 from PIL import Image
 
 from ..errors import NotFoundError
-from ..settings import NAMESPACES
 from .base import BaseLoader
 
 
@@ -24,7 +23,7 @@ class FileSystemLoader(BaseLoader):
         try:
             image_bytes = FileSystemLoader.get_fileobj(namespace, filename)
             image = Image.open(image_bytes)
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             raise NotFoundError(
                 "File Not Found at %s" % (Path(namespace + "/" + filename))
             )
