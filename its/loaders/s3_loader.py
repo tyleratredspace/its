@@ -21,11 +21,11 @@ class S3Loader(BaseLoader):
         returns a file-like or bytes-like object.
         """
         # get the s3 resource
-        s3 = boto3.resource("s3")
+        s3_resource = boto3.resource("s3")
 
         bucket_name = NAMESPACES[namespace][S3Loader.parameter_name]
         key = "{namespace}/{filename}".format(namespace=namespace, filename=filename)
-        s3_object = s3.Object(bucket_name=bucket_name, key=key)
+        s3_object = s3_resource.Object(bucket_name=bucket_name, key=key)
 
         # create an empty bytes object to store the image bytes in
         file_obj = BytesIO()
@@ -42,7 +42,7 @@ class S3Loader(BaseLoader):
             file_obj = S3Loader.get_fileobj(namespace, filename)
             image = Image.open(file_obj)
 
-        except ClientError as e:
-            raise NotFoundError("An error occurred: '%s'" % str(e))
+        except ClientError as error:
+            raise NotFoundError("An error occurred: '%s'" % str(error))
 
         return image

@@ -8,7 +8,7 @@ from .settings import DELIMITERS_RE
 from .transformations import BaseTransform
 
 
-def process_transforms(img, query, *args):
+def process_transforms(img, query):
 
     """
     View that returns an image transformed according to the
@@ -22,7 +22,7 @@ def process_transforms(img, query, *args):
 
         # check if a similar transform on the same image is already in cache
 
-        if len(query) == 0:  # no transforms; return image as is
+        if not query:  # no transforms; return image as is
             return img
 
         # assign each subclass to it's slug in the order dict
@@ -37,7 +37,9 @@ def process_transforms(img, query, *args):
 
         if img.format is None and "filename" in img_info.keys():
             # attempt to grab the filetype from the filename
-            file_type = re.sub(".+?(\.)", "", img_info["filename"], flags=re.IGNORECASE)
+            file_type = re.sub(
+                r".+?(\.)", "", img_info["filename"], flags=re.IGNORECASE
+            )
             if file_type.lower() == "jpg" or file_type.lower() == "jpeg":
                 img.format = "JPEG"
             else:

@@ -25,7 +25,7 @@ class HTTPLoader(BaseLoader):
         params = NAMESPACES[namespace][HTTPLoader.parameter_name]
         intersect = set(params).intersection(prefixes)
 
-        if len(intersect) > 0:
+        if intersect:
             # create an empty bytes object to store the image bytes in
             file_obj = BytesIO(requests.get(filename).content)
         else:
@@ -42,7 +42,7 @@ class HTTPLoader(BaseLoader):
             file_obj = HTTPLoader.get_fileobj(namespace, filename)
             img = Image.open(file_obj)
 
-        except NotFoundError as e:
-            raise NotFoundError("An error occurred: '%s'" % str(e))
+        except NotFoundError as error:
+            raise NotFoundError("An error occurred: '%s'" % str(error))
 
         return img

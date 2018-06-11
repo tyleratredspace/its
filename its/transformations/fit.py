@@ -1,3 +1,4 @@
+import logging
 import re
 
 from PIL import Image, ImageOps
@@ -5,6 +6,8 @@ from PIL import Image, ImageOps
 from ..errors import ITSTransformError
 from ..settings import DELIMITERS_RE, FOCUS_KEYWORD
 from .base import BaseTransform
+
+LOGGER = logging.getLogger(__name__)
 
 
 class FitTransform(BaseTransform):
@@ -27,9 +30,9 @@ class FitTransform(BaseTransform):
         # match everything before and including the keyword
         pre_keyword_pattern = ".+?(" + FOCUS_KEYWORD + ")"
         # match the file type and period in the filename
-        file_ext_patten = "(\.).+"
+        file_ext_patten = r"(\.).+"
 
-        if len(focal_point) == 0:
+        if not focal_point:
             # if FOCUS_KEYWORD is present in filename, do smart crop
             if filename.find(FOCUS_KEYWORD) >= 0:  # smart crop
                 # Match and remove the non-argument filename parts using the patterns defined above
@@ -48,7 +51,7 @@ class FitTransform(BaseTransform):
             crop_height = int(crop_height)
             focal_x = int(focal_point[0])
             focal_y = int(focal_point[1])
-        except ValueError as e:
+        except ValueError:
             raise ITSTransformError(
                 "Invalid arguments supplied to Fit Transform."
                 + "Crop takes takes WWxHHxFXxFY, "
@@ -73,11 +76,15 @@ class FitTransform(BaseTransform):
                     centering=(focal_x, focal_y),
                 )
 
-            except ITSTransformError as e:
-                raise e(
-                    error="Fit Transform with requested size %sx%s"
-                    + "and requested focal point [%s, %s] failed."
-                    % (crop_width, crop_height, focal_x, focal_y)
+            except ITSTransformError as error:
+                LOGGER.error(
+                    "Fit Transform with requested size %sx%s"
+                    + "and requested focal point [%s, %s] failed.",
+                    crop_width,
+                    crop_height,
+                    focal_x,
+                    focal_y,
                 )
+                raise error
 
         return img
