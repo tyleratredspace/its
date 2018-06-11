@@ -42,3 +42,5 @@ OVERLAY_PLACEMENT = [
 FOCUS_KEYWORD = os.environ.get("ITS_FOCUS_KEYWORD", "focus-")
 
 DELIMITERS_RE = os.environ.get("ITS_DELIMITERS_RE", "[x_,]")
+
+SENTRY_DSN = os.environ.get("ITS_SENTRY_DSN")
