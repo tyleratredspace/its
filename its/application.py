@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
+import logging
 from io import BytesIO
 
 from flask import Flask, Response, abort, request
+from raven.contrib.flask import Sentry
 
 from its.errors import NotFoundError
 from its.loader import loader
@@ -10,7 +12,13 @@ from its.optimize import optimize
 from its.pipeline import process_transforms
 from its.settings import MIME_TYPES
 
+from .settings import SENTRY_DSN
+
 app = Flask(__name__)
+
+
+if SENTRY_DSN:
+    sentry = Sentry(app, dsn=SENTRY_DSN, logging=True, level=logging.ERROR)
 
 
 def process_request(namespace, query, filename):

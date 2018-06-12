@@ -10,6 +10,8 @@ pillow = "*"
 requests = "*"
 uwsgi = "*"
 larson = "*"
+raven = {extras = ["flask"]}
+newrelic = "*"
 
 [dev-packages]
 "flake8" = "*"
