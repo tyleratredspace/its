@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from its.application import app
+
 from . import test_vcr
 
 
