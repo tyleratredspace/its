@@ -5,7 +5,7 @@ from .settings import NAMESPACES
 
 def get_redirect_location(namespace, query, filename):
     config = NAMESPACES[namespace]
-    redirect_url = "{url}?{query_param}={scheme}:{host}/{namespace}/{path}".format(
+    redirect_url = "{url}?{query_param}={scheme}://{host}/{namespace}/{path}".format(
         url=config["url"],
         query_param=config["query-param"],
         scheme=request.scheme,

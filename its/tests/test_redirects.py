@@ -16,5 +16,5 @@ class TestRedirects(TestCase):
         assert response.status_code == 301
         assert (
             response.location
-            == "https://station-service.example.com/station/image-redirects/?url=http:localhost/station-images/StationColorProfiles/color/WGBH.png.resize.240x120.png"
+            == "https://station-service.example.com/station/image-redirects/?url=http://localhost/station-images/StationColorProfiles/color/WGBH.png.resize.240x120.png"
         )
