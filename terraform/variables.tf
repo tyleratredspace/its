@@ -8,9 +8,9 @@ variable "environment" {
   description = "tag for environment, such as prod, staging or qa"
 }
 
-variable "s3_bucket" {
-  type        = "string"
-  description = "name for the S3 bucket ITS will use to store images"
+variable "s3_buckets" {
+  type        = "list"
+  description = "names for the S3 buckets ITS will use to store images"
 }
 
 variable "aws_region" {
