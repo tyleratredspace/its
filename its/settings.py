@@ -22,6 +22,11 @@ DEFAULT_NAMESPACES = json.dumps(
         "overlay": {"loader": "file_system", "prefixes": ["test/overlay"]},
         "folders": {"loader": "file_system", "prefixes": [""]},
         "tests": {"loader": "file_system", "folders": ["tests/images"]},
+        "station-images": {
+            "redirect": True,
+            "url": "https://station-service.example.com/station/image-redirects/",
+            "query-param": "url",
+        },
     }
 )
 
