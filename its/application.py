@@ -3,7 +3,7 @@
 import logging
 from io import BytesIO
 
-from flask import Flask, Response, abort, request
+from flask import Flask, Response, abort, redirect, request
 from raven.contrib.flask import Sentry
 
 from its.errors import NotFoundError
@@ -12,7 +12,8 @@ from its.optimize import optimize
 from its.pipeline import process_transforms
 from its.settings import MIME_TYPES
 
-from .settings import SENTRY_DSN
+from .settings import NAMESPACES, SENTRY_DSN
+from .util import get_redirect_location
 
 app = Flask(__name__)
 
@@ -22,6 +23,10 @@ if SENTRY_DSN:
 
 
 def process_request(namespace, query, filename):
+    namespace_config = NAMESPACES[namespace]
+    if namespace_config.get("redirect"):
+        location = get_redirect_location(namespace, query, filename)
+        return redirect(location=location, code=301)
 
     try:
         image = loader(namespace, filename)
