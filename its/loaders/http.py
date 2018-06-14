@@ -26,8 +26,12 @@ class HTTPLoader(BaseLoader):
         intersect = set(params).intersection(prefixes)
 
         if intersect:
+            if filename.startswith("http"):
+                url = filename
+            else:
+                url = "https://{}".format(filename)
             # create an empty bytes object to store the image bytes in
-            file_obj = BytesIO(requests.get(filename).content)
+            file_obj = BytesIO(requests.get(url).content)
         else:
             raise NotFoundError("Namespace {} is not configured.".format(namespace))
 
