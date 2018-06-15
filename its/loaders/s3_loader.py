@@ -40,9 +40,14 @@ class S3Loader(BaseLoader):
         """
         try:
             file_obj = S3Loader.get_fileobj(namespace, filename)
-            image = Image.open(file_obj)
-
         except ClientError as error:
-            raise NotFoundError("An error occurred: '%s'" % str(error))
+            error_code = error.response["Error"]["Code"]
+
+            if error_code == 404:
+                raise NotFoundError("An error occurred: '%s'" % str(error))
+
+            raise error
+
+        image = Image.open(file_obj)
 
         return image
