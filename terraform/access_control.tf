@@ -47,7 +47,21 @@ resource "aws_iam_role_policy" "its" {
             ],
             "Effect": "Allow",
             "Resource": "${var.parameter_store_path_arn}"
-        },
+        }
+    ],
+    "Version": "2012-10-17"
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "its-s3" {
+  count = "${length(var.s3_buckets)}"
+  name  = "its-${var.environment}-s3-policy-${count.index}"
+  role  = "${aws_iam_role.its_task.name}"
+
+  policy = <<EOF
+{
+    "Statement": [
         {
 
             "Action": [
@@ -55,8 +69,8 @@ resource "aws_iam_role_policy" "its" {
             ],
             "Effect": "Allow",
             "Resource": [
-              "arn:aws:s3:::${var.s3_bucket}/",
-              "arn:aws:s3:::${var.s3_bucket}/*"
+              "arn:aws:s3:::${var.s3_buckets[count.index]}/",
+              "arn:aws:s3:::${var.s3_buckets[count.index]}/*"
             ]
         }
     ],
