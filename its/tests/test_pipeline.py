@@ -98,31 +98,6 @@ class TestFitTransform(TestCase):
         fit_transform.assert_called_with(test_image, query)
 
 
-class TestOverlayTransform(TestCase):
-    @classmethod
-    def setUpClass(self):
-        self.img_dir = Path(__file__).parent / "images"
-        self.overlays = {"five": "tests/images/five.png"}
-        self.threshold = 0.85
-
-    def test_overlay(self):
-        test_image = Image.open(self.img_dir / "abstract.png")
-        test_image.info["filename"] = "abstract.png"
-        query = {"overlay": "45x45x" + self.overlays["five"]}
-        expected = Image.open(self.img_dir / "expected/abstract_overlay_five.png")
-        actual = process_transforms(test_image, query)
-        compare_pixels(expected, actual)
-
-    def test_overlay_12x78(self):
-        test_image = Image.open(self.img_dir / "abstract.png")
-        test_image.info["filename"] = "abstract.png"
-        query = {"overlay": "12x78x" + self.overlays["five"]}
-        expected = Image.open(self.img_dir / "expected/abstract_five_12x78.png")
-        actual = process_transforms(test_image, query)
-        comparison = compare_pixels(expected, actual)
-        self.assertGreaterEqual(comparison, self.threshold)
-
-
 class TestResizeTransform(TestCase):
     @classmethod
     def setUpClass(self):

@@ -142,5 +142,16 @@ def resize_passport(namespace, filename, width, height, ext):
     return result
 
 
+# passport overlay fit with pseduo-optional arguments
+@app.route("/<namespace>/<path:filename>.fit.<int:width>x<int:height>.passport.<ext>")
+@app.route("/<namespace>/<path:filename>.fit.x<int:height>.passport.<ext>")
+@app.route("/<namespace>/<path:filename>.fit.<int:width>x.passport.<ext>")
+def fit_passport(namespace, filename, width, height, ext):
+    query = process_old_request("fit", width, height, ext)
+    query["overlay"] = "passport"
+    result = process_request(namespace, query, filename)
+    return result
+
+
 if __name__ == "__main__":
     app.run(debug=True)

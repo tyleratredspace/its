@@ -38,14 +38,9 @@ NAMESPACES = json.JSONDecoder().decode(
     s=os.environ.get("ITS_BACKENDS", DEFAULT_NAMESPACES)
 )
 
-OVERLAYS = json.JSONDecoder().decode(
-    s=os.environ.get("ITS_OVERLAYS", '{"overlay":"None"}')
-)
+DEFAULT_OVERLAYS = json.dumps({"passport": "tests/images/logo.png"})
 
-OVERLAY_PLACEMENT = [
-    int(os.environ.get("ITS_OVERLAY_PLACEMENT_X", "5")),
-    int(os.environ.get("ITS_OVERLAY_PLACEMENT_Y", "5")),
-]
+OVERLAYS = json.JSONDecoder().decode(s=os.environ.get("ITS_OVERLAYS", DEFAULT_OVERLAYS))
 
 # the keyword used to recognize focal point args in filenames
 FOCUS_KEYWORD = os.environ.get("ITS_FOCUS_KEYWORD", "focus-")

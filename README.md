@@ -72,28 +72,13 @@ Result Image: ![Citizen-Kane-Smart-1000x1000x50x15](http://i.imgur.com/5w5e8lR.j
 
 ## Overlay
 
-Overlay returns the input image with the specified overlay image placed on top of it. The overlay is placed according to the expected position of its top left corner as input by the user. To use overlay, use the overlay keyword:
+Overlay returns the input image with the specified overlay image placed on top of it. The overlay is placed in the top left corner. To use overlay, use the overlay keyword:
 
->API_URL/<file_path/filename.ext>?overlay=PXxPYx<overlay_img_path>
+>API_URL/<file_path/filename.ext>?overlay=<overlay_img_path>
 
 Where:
 * overlay -- indicates that ITS should put an overlay on the input image
 * overlay_img_path -- path to the overlay (optionally, can be a keyword a keyword in the OVERLAYS dictionary in settings)
-* PX -- the x axis of the top left corner of the overlay image,  represented as a percentage value of the height of the original picture (default is 50%)
-* PY -- the y axis of the top left corner of the overlay image, represented as a percentage value of the height of the original picture (default is 50%)
-
-Example
-
-Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
-Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
-
-Original Overlay Image: ![Rosebud](http://i.imgur.com/pOH6LJf.png)
-
-Image Credit: https://pixabay.com/en/rose-orange-blossom-bloom-flower-1385970/
-
->API_URL/demo/citizen_kane.jpg?overlay=20x15/demo/rosebud.png
-
-Result Image: ![Citizen-Kane-Overlay-Rosebud](http://i.imgur.com/BcMqXXT.jpg)
 
 ## Resize
 
@@ -138,23 +123,8 @@ Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulou
 
 Result Image: ![Citizen-Kane-PNG-10](http://i.imgur.com/CItOntv.jpg)
 
-
 ## Combination
 All of the transforms described above can be combined into one query by separating them with ‘&’.
-
-Example
-The following query resizes the input JPG image, applies an overlay to it:
-
-Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
-Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
-
-Original Overlay Image: ![Rosebud-Sled](http://i.imgur.com/RZcKnYD.png)
-
-Image Credit: https://pixabay.com/en/luge-sled-sledge-sleigh-sport-1295072/
-
->API_URL/demo/citizen_kane.jpg?resize=1200x1200&overlay=10x50ximages/sled.png
-
-Result Image: ![Citizen-Kane-Combination](http://i.imgur.com/vmZuz7k.jpg)
 
 # Development
 

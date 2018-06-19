@@ -1,32 +1,30 @@
-from math import floor
 from pathlib import Path
 
 from PIL import Image
 
 from ..errors import ConfigError, ITSTransformError
 from ..loaders import BaseLoader
-from ..settings import NAMESPACES, OVERLAY_PLACEMENT, OVERLAYS
+from ..settings import NAMESPACES, OVERLAYS
 from .base import BaseTransform
+
+OVERLAY_PROPORTION = 0.2
 
 
 class OverlayTransform(BaseTransform):
 
     """
-    Pastes a specified image over the input image.
-    The overlay is placed according to the input expected position of its top left corner.
-    Overlay placement arguments are percentages, with (0,0)
-    representing the top left corner of the input image.
-    See settings to change the default placement of the
-    overlay when no position arguments are input.
+    Pastes a specified image over the input.
 
-    image.png?overlay=overlay_img_pathxPXxPY
+    image.png?overlay=overlay_img_path
     """
 
     slug = "overlay"
 
-    def apply_transform(img, overlay, overlay_position=None):
+    def apply_transform(img, query):
+        if len(query) > 1:
+            raise ValueError("overlay transform does not accept parameters")
 
-        *overlay_position, overlay = overlay
+        overlay = query[0]
 
         if "overlay" in NAMESPACES:
             loader = OverlayTransform.get_loader(NAMESPACES["overlay"]["loader"])
@@ -42,21 +40,11 @@ class OverlayTransform(BaseTransform):
             filename = Path("/".join(filename))
             overlay_image = loader[0].load_image(namespace, filename)
 
-        # placement of top left corner of overlay
-        if not overlay_position:
-            overlay_position = OVERLAY_PLACEMENT
-
-        try:
-            x_coord = floor((int(overlay_position[0]) / 100) * img.width)
-            y_coord = floor((int(overlay_position[1]) / 100) * img.height)
-        except ValueError:
-            raise ITSTransformError(
-                "Invalid arguments supplied to Overlay Transform."
-                + "Overlay takes overlay_image_pathxPXxPY, "
-                + "where overlay_image_path is the path to the overlay image and "
-                + "(PX, PY) are optional percentage parameters indicating where "
-                + "the top left corner of the overlay should be placed."
-            )
+        height = img.height
+        overlay_size = int(height * OVERLAY_PROPORTION)
+        resized_overlay = overlay_image.resize(
+            (overlay_size, overlay_size), Image.ANTIALIAS
+        )
 
         # Only the overlay has an alpha channel
         if img.mode != "RGBA":
@@ -69,7 +57,11 @@ class OverlayTransform(BaseTransform):
             new_img = Image.new("RGBA", img.size)
             new_img = Image.alpha_composite(new_img, img)
 
-        new_img.paste(overlay_image, box=[x_coord, y_coord], mask=overlay_image)
+        padding_top = int(height * 0.05)
+        padding_left = int(height * 0.05)
+        new_img.paste(
+            resized_overlay, (padding_top, padding_left), mask=resized_overlay
+        )
 
         img = new_img
         return img
