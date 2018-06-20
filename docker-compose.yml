@@ -10,6 +10,7 @@ services:
       - PIPENV_DONT_LOAD_ENV=1
       - SHELL=/bin/bash
     env_file: .env
+    stdin_open: true
     ports:
       - "5000:5000"
     volumes:
