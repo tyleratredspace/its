@@ -70,6 +70,7 @@ resource "aws_iam_role_policy" "its-s3" {
             ],
             "Effect": "Allow",
             "Resource": [
+              "arn:aws:s3:::${var.s3_buckets[count.index]}",
               "arn:aws:s3:::${var.s3_buckets[count.index]}/",
               "arn:aws:s3:::${var.s3_buckets[count.index]}/*"
             ]
