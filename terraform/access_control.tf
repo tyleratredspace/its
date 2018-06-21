@@ -65,7 +65,8 @@ resource "aws_iam_role_policy" "its-s3" {
         {
 
             "Action": [
-              "s3:Get*"
+              "s3:Get*",
+              "s3:List*"
             ],
             "Effect": "Allow",
             "Resource": [
