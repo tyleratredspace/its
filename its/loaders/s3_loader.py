@@ -43,7 +43,7 @@ class S3Loader(BaseLoader):
         except ClientError as error:
             error_code = error.response["Error"]["Code"]
 
-            if error_code == 404:
+            if error_code == "404":
                 raise NotFoundError("An error occurred: '%s'" % str(error))
 
             raise error
