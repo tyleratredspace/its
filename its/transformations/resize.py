@@ -15,7 +15,10 @@ class ResizeTransform(BaseTransform):
         Resizes input image while maintaining aspect ratio.
         """
 
-        width, height = resize_size
+        if len(resize_size) == 2:
+            width, height = resize_size
+        else:
+            raise ITSTransformError("Missing width or height. Both width and height")
 
         if img.width == 0 or img.height == 0:
             raise ITSTransformError(
