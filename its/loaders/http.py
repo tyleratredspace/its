@@ -30,8 +30,18 @@ class HTTPLoader(BaseLoader):
                 url = filename
             else:
                 url = "https://{}".format(filename)
-            # create an empty bytes object to store the image bytes in
-            file_obj = BytesIO(requests.get(url).content)
+            response = requests.get(url)
+
+            if response.status_code == 200:
+                # create an empty bytes object to store the image bytes in
+                file_obj = BytesIO(response.content)
+            elif response.status_code in [403, 404]:
+                raise NotFoundError(
+                    "404 from {namespace} http backend for {filename}".format(
+                        namespace=namespace, filename=filename
+                    )
+                )
+
         else:
             raise NotFoundError("Namespace {} is not configured.".format(namespace))
 
