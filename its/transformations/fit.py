@@ -62,17 +62,14 @@ class FitTransform(BaseTransform):
                 + "The focus point can either be defined in the query or in the image filename."
             )
 
-        if (focal_x < 0 or focal_x > 100) or (focal_y < 0 or focal_y > 100):
-            # make sure focal args are percentages
-            raise ITSTransformError(error="Focus arguments should be between 0 and 100")
-        else:
+        if focal_x in range(0, 101) and focal_y in range(0, 101) and crop_height != 0:
             try:
                 focal_x = focal_x / 100
                 focal_y = focal_y / 100
                 img = ImageOps.fit(
                     img,
                     (crop_width, crop_height),
-                    Image.ANTIALIAS,
+                    method=Image.ANTIALIAS,
                     centering=(focal_x, focal_y),
                 )
 
@@ -86,5 +83,12 @@ class FitTransform(BaseTransform):
                     focal_y,
                 )
                 raise error
+
+        elif crop_height == 0:
+            raise ITSTransformError(error="Crop height must be greater than 0")
+
+        else:
+            # make sure focal args are percentages
+            raise ITSTransformError(error="Focus arguments should be between 0 and 100")
 
         return img

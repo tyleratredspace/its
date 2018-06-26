@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 from PIL import Image
 
+import its.errors
 from its.optimize import optimize
 from its.pipeline import process_transforms
 
@@ -97,6 +98,22 @@ class TestFitTransform(TestCase):
         fit_transform(test_image, query)
         fit_transform.assert_called_with(test_image, query)
 
+    def test_invalid_crop_size(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        test_image.info["filename"] = "test.png"
+        query = {"fit": "5x0"}
+
+        with self.assertRaises(its.errors.ITSTransformError):
+            process_transforms(test_image, query)
+
+    def test_invalid_focal_percentages(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        test_image.info["filename"] = "test.png"
+        query = {"fit": "100x100x150x150"}
+
+        with self.assertRaises(its.errors.ITSTransformError):
+            process_transforms(test_image, query)
+
 
 class TestResizeTransform(TestCase):
     @classmethod
@@ -130,6 +147,21 @@ class TestResizeTransform(TestCase):
         actual = process_transforms(test_image, query)
         comparison = compare_pixels(expected, actual)
         self.assertGreaterEqual(comparison, self.threshold)
+
+    def test_invalid_resize(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        query = {"resize": "100"}
+
+        with self.assertRaises(its.errors.ITSTransformError):
+            process_transforms(test_image, query)
+
+    def test_resize_format(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        query = {"resize": "100x100", "format": "foo"}
+
+        with self.assertRaises(its.errors.ITSTransformError):
+            result = process_transforms(test_image, query)
+            optimize(result, query)
 
 
 class TestImageResults(TestCase):
