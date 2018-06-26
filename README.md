@@ -1,5 +1,8 @@
+# warning: under active development
+
+This application is under active development and likely to change further before stabilizing.
+
 # serverless-its
-ITS rewrite
 
 ITS (Image Transform Service) performs transformations on images by accepting transform requests in the form of query strings. 
 

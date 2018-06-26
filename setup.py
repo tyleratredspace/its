@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="its",
-    version="2.0.0",
+    version="0.0.1",
     py_modules=["its"],
     author="",
     author_email="",
