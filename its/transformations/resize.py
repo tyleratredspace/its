@@ -18,12 +18,14 @@ class ResizeTransform(BaseTransform):
         if len(resize_size) == 2:
             width, height = resize_size
         else:
-            raise ITSTransformError("Missing width or height. Both width and height")
+            raise ITSTransformError(
+                "Missing width or height. Both width and height are required"
+            )
 
         if img.width == 0 or img.height == 0:
             raise ITSTransformError(
                 "Invalid arguments supplied to Resize Transform."
-                + "Input image cannot have zero width nor zero height."
+                "Input image cannot have zero width nor zero height."
             )
 
         try:
@@ -31,18 +33,18 @@ class ResizeTransform(BaseTransform):
             height = int(height) if height != "" else None
         except ValueError:
             raise ITSTransformError(
-                "Invalid arguments supplied to Resize Transform."
-                + "Resize takes WWxHH, WWx, or xHH,"
-                + " where WW is the requested width and "
-                + "HH is the requested height. Both must be integers."
+                "Invalid arguments supplied to Resize Transform. "
+                "Resize takes WWxHH, WWx, or xHH,"
+                " where WW is the requested width and "
+                "HH is the requested height. Both must be integers."
             )
 
         if width is None and height is None:
             raise ITSTransformError(
                 "Invalid arguments supplied to Resize Transform."
-                + "Resize takes WWxHH, WWx, or xHH,"
-                + " where WW is the requested width and "
-                + "HH is the requested height. Both must be integers."
+                "Resize takes WWxHH, WWx, or xHH,"
+                " where WW is the requested width and "
+                "HH is the requested height. Both must be integers."
             )
 
         if width is None and height:
