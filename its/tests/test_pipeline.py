@@ -9,9 +9,9 @@ from unittest.mock import patch
 
 from PIL import Image
 
+import its.errors
 from its.optimize import optimize
 from its.pipeline import process_transforms
-import its.errors
 
 
 def get_pixels(image):
@@ -150,23 +150,19 @@ class TestResizeTransform(TestCase):
 
     def test_invalid_resize(self):
         test_image = Image.open(self.img_dir / "test.png")
-        query = {
-            "resize": "100"
-        }
-        
+        query = {"resize": "100"}
+
         with self.assertRaises(its.errors.ITSTransformError):
             process_transforms(test_image, query)
 
     def test_resize_format(self):
         test_image = Image.open(self.img_dir / "test.png")
-        query = {
-            "resize": "100x100",
-            "format": "foo"
-        }
-        
+        query = {"resize": "100x100", "format": "foo"}
+
         with self.assertRaises(its.errors.ITSTransformError):
             result = process_transforms(test_image, query)
             optimize(result, query)
+
 
 class TestImageResults(TestCase):
     @classmethod

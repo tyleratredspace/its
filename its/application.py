@@ -3,10 +3,10 @@
 import logging
 from io import BytesIO
 
-from flask import Flask, Response, abort, redirect, request, jsonify
+from flask import Flask, Response, abort, jsonify, redirect, request
 from raven.contrib.flask import Sentry
 
-from its.errors import NotFoundError, ITSTransformError
+from its.errors import ITSTransformError, NotFoundError
 from its.loader import loader
 from its.optimize import optimize
 from its.pipeline import process_transforms
