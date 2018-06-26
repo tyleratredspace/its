@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 from PIL import Image
 
+from its.application import app
 from its.optimize import optimize
 from its.pipeline import process_transforms
 
@@ -182,6 +183,17 @@ class TestImageResults(TestCase):
         result = process_transforms(test_image, query)
         result = optimize(result, query)
         self.assertEqual(isinstance(result, BytesIO), True)
+
+
+class TestPipelineEndToEnd(TestCase):
+    @classmethod
+    def setUpClass(self):
+        app.config["TESTING"] = True
+        self.client = app.test_client()
+
+    def test_secret_png(self):
+        response = self.client.get("tests/images/secretly-a-png.jpg.resize.800x450.jpg")
+        assert response.status_code == 200
 
 
 if __name__ == "__main__":

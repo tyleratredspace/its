@@ -33,11 +33,10 @@ def optimize(img, query):
             if ext.lower() == "jpeg":
                 # convert to JPG and/or compress
                 # need to convert to RGB first, then can save in any format
-                if img.format != "JPEG":
-                    if img.mode in ["RGBA", "LA"]:
-                        new_img = Image.new("RGBA", img.size)
-                        new_img = Image.alpha_composite(new_img, img)
-                    img = img.convert("RGB")
+                if img.mode in ["RGBA", "LA"]:
+                    new_img = Image.new("RGBA", img.size)
+                    new_img = Image.alpha_composite(new_img, img)
+                img = img.convert("RGB")
                 img = optimize_jpg(img, tmp_file, quality)
             elif ext.lower():
                 # convert from PNG, JPG and WEBP to formats other than JPG
