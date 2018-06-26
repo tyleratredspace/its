@@ -28,8 +28,8 @@ def loader(namespace, filename):
 
         if len(image_loader) == 1:
             # handle self-referential http backend use.
-            # if we get a request like /my_http_backend/image.example.com/test/image.jpg, we want to
-            # serve as if we got `/test/image.jpg`
+            # if we get a request like /my_http_backend/image.example.com/test/image.jpg,
+            # we want to serve as if we got `/test/image.jpg`
             path_segments = filename.split("/")
             if image_loader[0].slug == "http" and path_segments[0] == request.host:
                 namespace = path_segments[1]
