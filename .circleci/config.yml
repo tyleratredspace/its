@@ -23,6 +23,11 @@ jobs:
             docker run --rm -e ITS_DEBUG=true ci_build pipenv run pytest its/tests
 
       - run:
+          name: type checking
+          command: |
+            docker run --rm ci_build /opt/its/scripts/docker/server/type-check.sh
+
+      - run:
           name: lint
           command: |
             docker run --rm ci_build /opt/its/scripts/docker/server/lint.sh

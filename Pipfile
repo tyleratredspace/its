@@ -20,6 +20,8 @@ black = "*"
 isort = "*"
 prospector = "*"
 vcrpy = "*"
+pyannotate = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.6"
