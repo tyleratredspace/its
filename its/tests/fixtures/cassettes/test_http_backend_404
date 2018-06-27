@@ -1,0 +1,22 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.19.1]
+    method: GET
+    uri: https://s3.amazonaws.com/pbs.merlin.cdn.prod/some-fake-thing.jpg
+  response:
+    body: {string: '<?xml version="1.0" encoding="UTF-8"?>
+
+        <Error><Code>AccessDenied</Code><Message>Access Denied</Message><RequestId>5B1033CF46A4D55F</RequestId><HostId>3WlDqqUp50ht67jmmLVVkyiG3o+iqEAUZR1lx1ruDdHHm7voLu003pGdeq7HePnvo5FDRBnq11s=</HostId></Error>'}
+    headers:
+      Content-Type: [application/xml]
+      Date: ['Tue, 26 Jun 2018 17:25:54 GMT']
+      Server: [AmazonS3]
+      x-amz-id-2: [3WlDqqUp50ht67jmmLVVkyiG3o+iqEAUZR1lx1ruDdHHm7voLu003pGdeq7HePnvo5FDRBnq11s=]
+      x-amz-request-id: [5B1033CF46A4D55F]
+    status: {code: 403, message: Forbidden}
+version: 1

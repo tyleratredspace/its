@@ -3,7 +3,7 @@ from io import BytesIO
 import requests
 from PIL import Image
 
-from ..errors import NotFoundError
+from ..errors import ITSLoaderError, NotFoundError
 from ..settings import NAMESPACES
 from .base import BaseLoader
 
@@ -25,17 +25,31 @@ class HTTPLoader(BaseLoader):
         params = NAMESPACES[namespace][HTTPLoader.parameter_name]
         intersect = set(params).intersection(prefixes)
 
-        if intersect:
-            if filename.startswith("http"):
-                url = filename
-            else:
-                url = "https://{}".format(filename)
-            # create an empty bytes object to store the image bytes in
-            file_obj = BytesIO(requests.get(url).content)
-        else:
+        if not intersect:
             raise NotFoundError("Namespace {} is not configured.".format(namespace))
 
-        return file_obj
+        if filename.startswith("http"):
+            url = filename
+        else:
+            url = "https://{}".format(filename)
+        response = requests.get(url)
+
+        if response.status_code in [403, 404]:
+            raise NotFoundError(
+                "404 from http backend for {namespace}/{filename}".format(
+                    namespace=namespace, filename=filename
+                )
+            )
+        elif response.status_code != 200:
+            raise ITSLoaderError(
+                "{code} from http backend for {namespace}/{filename}".format(
+                    code=response.status_code, namespace=namespace, filename=filename
+                ),
+                status_code=500,
+            )
+
+        # create an empty bytes object to store the image bytes in
+        return BytesIO(response.content)
 
     @staticmethod
     def load_image(namespace, filename):
