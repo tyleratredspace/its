@@ -38,9 +38,14 @@ def optimize(img, query):
                     new_img = Image.alpha_composite(new_img, img)
                 img = img.convert("RGB")
                 img = optimize_jpg(img, tmp_file, quality)
-            elif ext.lower():
+            elif ext.lower() in ["svg", "png", "webp"]:
                 # convert from PNG, JPG and WEBP to formats other than JPG
                 img = convert(img, ext, tmp_file)
+
+            else:
+                raise ITSTransformError(
+                    "ITS Transform Error: Format must be jpeg, svg, png or webp"
+                )
 
             # only optimize pngs if quality param is provided
             if img.format == "PNG" and quality is not None:

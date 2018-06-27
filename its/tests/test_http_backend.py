@@ -22,3 +22,10 @@ class TestRedirects(TestCase):
     def test_self_referential_http_backend_use(self):
         response = self.client.get("/merlin/localhost/tests/images/test.png")
         assert response.status_code == 200
+
+    @test_vcr.use_cassette()
+    def test_http_backend_404(self):
+        response = self.client.get(
+            "/merlin/s3.amazonaws.com/pbs.merlin.cdn.prod/some-fake-thing.jpg.fit.646x246.jpg"
+        )
+        assert response.status_code == 404

@@ -6,7 +6,7 @@ from io import BytesIO
 from flask import Flask, Response, abort, redirect, request
 from raven.contrib.flask import Sentry
 
-from its.errors import NotFoundError
+from its.errors import ITSTransformError, NotFoundError
 from its.loader import loader
 from its.optimize import optimize
 from its.pipeline import process_transforms
@@ -151,6 +151,11 @@ def fit_passport(namespace, filename, width, height, ext):
     query["overlay"] = "passport"
     result = process_request(namespace, query, filename)
     return result
+
+
+@app.errorhandler(ITSTransformError)
+def handle_transform_error(error):
+    return Response(error.message, status=error.status_code)
 
 
 if __name__ == "__main__":
