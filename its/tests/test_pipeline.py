@@ -227,6 +227,10 @@ class TestPipelineEndToEnd(TestCase):
         response = self.client.get("tests/images/secretly-a-png.jpg.resize.800x450.jpg")
         assert response.status_code == 200
 
+    def test_cmyk_jpg_to_rgb_png(self):
+        response = self.client.get("/tests/images/cmyk.jpg.resize.380x190.png")
+        assert response.status_code == 200
+
 
 if __name__ == "__main__":
     unittest.main()

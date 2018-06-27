@@ -57,6 +57,8 @@ def optimize(img, query):
 def convert(img, ext, tmp_file):
     if ext.lower() != img.format.lower():  # same format so do nothing
         if img.format.lower() in ["png", "webp", "jpeg"]:
+            if img.mode in ["CMYK", "LA"]:
+                img = img.convert("RGB")
             img.save(tmp_file.name, ext.upper())
             # reopen newly converted or compressed image
             img = Image.open(tmp_file.name)
