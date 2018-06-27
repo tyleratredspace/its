@@ -2,7 +2,7 @@ from math import floor
 
 from PIL import Image
 
-from ..errors import ITSTransformError
+from ..errors import ITSClientError
 from .base import BaseTransform
 
 
@@ -18,12 +18,12 @@ class ResizeTransform(BaseTransform):
         if len(resize_size) == 2:
             width, height = resize_size
         else:
-            raise ITSTransformError(
+            raise ITSClientError(
                 "Missing width or height. Both width and height are required"
             )
 
         if img.width == 0 or img.height == 0:
-            raise ITSTransformError(
+            raise ITSClientError(
                 "Invalid arguments supplied to Resize Transform."
                 "Input image cannot have zero width nor zero height."
             )
@@ -32,7 +32,7 @@ class ResizeTransform(BaseTransform):
             width = int(width) if width != "" else None
             height = int(height) if height != "" else None
         except ValueError:
-            raise ITSTransformError(
+            raise ITSClientError(
                 "Invalid arguments supplied to Resize Transform. "
                 "Resize takes WWxHH, WWx, or xHH,"
                 " where WW is the requested width and "
@@ -40,7 +40,7 @@ class ResizeTransform(BaseTransform):
             )
 
         if width is None and height is None:
-            raise ITSTransformError(
+            raise ITSClientError(
                 "Invalid arguments supplied to Resize Transform."
                 "Resize takes WWxHH, WWx, or xHH,"
                 " where WW is the requested width and "

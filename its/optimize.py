@@ -9,7 +9,7 @@ from PIL import Image, ImageFile
 
 from its.settings import DEFAULT_JPEG_QUALITY, PNGQUANT_PATH
 
-from .errors import ITSTransformError
+from .errors import ITSClientError, ITSTransformError
 
 ImageFile.MAXBLOCK = 2 ** 20  # for JPG progressive saving
 
@@ -23,7 +23,7 @@ def optimize(img, query):
         try:
             quality = int(query["quality"]) if "quality" in query else None
         except ValueError as error:
-            raise ITSTransformError("ITSTransform Error: " + str(error))
+            raise ITSClientError("ITS Client Error: " + str(error))
 
         with tempfile.NamedTemporaryFile(dir="/tmp/", delete=True) as tmp_file:
             if ext.lower() == "jpg":
@@ -43,8 +43,8 @@ def optimize(img, query):
                 img = convert(img, ext, tmp_file)
 
             else:
-                raise ITSTransformError(
-                    "ITS Transform Error: Format must be jpeg, svg, png or webp"
+                raise ITSClientError(
+                    "ITS Client Error: Format must be jpeg, svg, png or webp"
                 )
 
             # only optimize pngs if quality param is provided
