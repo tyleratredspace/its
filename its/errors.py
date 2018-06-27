@@ -49,8 +49,13 @@ class ITSTransformError(ITSError):
 
 class NotFoundError(ITSError):
     """
-    General class for existance errors.
+    General class for existence errors.
     """
 
     status_code = 404
     message = "NotFoundError: "
+
+
+class ITSClientError(ITSError):
+    status_code = 400
+    message = "ITSClientError: "

@@ -3,7 +3,7 @@ import re
 
 from PIL import Image, ImageOps
 
-from ..errors import ITSTransformError
+from ..errors import ITSClientError, ITSTransformError
 from ..settings import DELIMITERS_RE, FOCUS_KEYWORD
 from .base import BaseTransform
 
@@ -52,7 +52,7 @@ class FitTransform(BaseTransform):
             focal_x = int(focal_point[0])
             focal_y = int(focal_point[1])
         except ValueError:
-            raise ITSTransformError(
+            raise ITSClientError(
                 "Invalid arguments supplied to Fit Transform."
                 + "Crop takes takes WWxHHxFXxFY, "
                 + " where WW is the requested width in pixels, "
@@ -85,10 +85,10 @@ class FitTransform(BaseTransform):
                 raise error
 
         elif crop_height == 0:
-            raise ITSTransformError(error="Crop height must be greater than 0")
+            raise ITSClientError(error="Crop height must be greater than 0")
 
         else:
             # make sure focal args are percentages
-            raise ITSTransformError(error="Focus arguments should be between 0 and 100")
+            raise ITSClientError(error="Focus arguments should be between 0 and 100")
 
         return img

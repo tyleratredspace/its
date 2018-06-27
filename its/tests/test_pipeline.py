@@ -104,7 +104,7 @@ class TestFitTransform(TestCase):
         test_image.info["filename"] = "test.png"
         query = {"fit": "5x0"}
 
-        with self.assertRaises(its.errors.ITSTransformError):
+        with self.assertRaises(its.errors.ITSClientError):
             process_transforms(test_image, query)
 
     def test_invalid_focal_percentages(self):
@@ -112,7 +112,7 @@ class TestFitTransform(TestCase):
         test_image.info["filename"] = "test.png"
         query = {"fit": "100x100x150x150"}
 
-        with self.assertRaises(its.errors.ITSTransformError):
+        with self.assertRaises(its.errors.ITSClientError):
             process_transforms(test_image, query)
 
 
@@ -153,14 +153,14 @@ class TestResizeTransform(TestCase):
         test_image = Image.open(self.img_dir / "test.png")
         query = {"resize": "100"}
 
-        with self.assertRaises(its.errors.ITSTransformError):
+        with self.assertRaises(its.errors.ITSClientError):
             process_transforms(test_image, query)
 
     def test_resize_format(self):
         test_image = Image.open(self.img_dir / "test.png")
         query = {"resize": "100x100", "format": "foo"}
 
-        with self.assertRaises(its.errors.ITSTransformError):
+        with self.assertRaises(its.errors.ITSClientError):
             result = process_transforms(test_image, query)
             optimize(result, query)
 
