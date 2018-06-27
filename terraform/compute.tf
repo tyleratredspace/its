@@ -65,7 +65,7 @@ resource "aws_appautoscaling_policy" "its_web_scale_up" {
 
   service_namespace = "ecs"
 
-  # plus four every time we scale up, cooldown two minutes
+  # plus eight every time we scale up, cooldown two minutes
   step_scaling_policy_configuration {
     adjustment_type         = "ChangeInCapacity"
     cooldown                = 120
@@ -74,7 +74,7 @@ resource "aws_appautoscaling_policy" "its_web_scale_up" {
     step_adjustment {
       metric_interval_lower_bound = 0
       metric_interval_upper_bound = -1
-      scaling_adjustment          = 4
+      scaling_adjustment          = 8
     }
   }
 
