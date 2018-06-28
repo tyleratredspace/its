@@ -1,7 +1,10 @@
 from io import BytesIO
 from pathlib import Path, PosixPath
+from typing import Union
 
 from PIL import Image
+from PIL.JpegImagePlugin import JpegImageFile
+from PIL.PngImagePlugin import PngImageFile
 
 from ..errors import NotFoundError
 from .base import BaseLoader
@@ -13,7 +16,9 @@ class FileSystemLoader(BaseLoader):
     parameter_name = "folders"
 
     @staticmethod
-    def load_image(namespace, filename):
+    def load_image(
+        namespace: str, filename: Union[PosixPath, str]
+    ) -> Union[JpegImageFile, PngImageFile]:
         """
         Loads image from child folder of the git project folder serverless-its/
         """
@@ -31,7 +36,7 @@ class FileSystemLoader(BaseLoader):
         return image
 
     @staticmethod
-    def get_fileobj(namespace, filename):
+    def get_fileobj(namespace: str, filename: str) -> BytesIO:
         """
         Given a namespace (or directory name) and a filename,
         returns a file-like or bytes-like object.

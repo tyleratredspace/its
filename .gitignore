@@ -102,6 +102,8 @@ ENV/
 
 #misc
 .DS_Store
+type_info.json
+.vscode
 
 # pytest
 .pytest_cache

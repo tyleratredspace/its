@@ -66,3 +66,4 @@ COPY --chown=its:its its.ini /opt/its/its.ini
 COPY --chown=its:its scripts/docker/ /opt/its/scripts/docker
 COPY --chown=its:its tox.ini /opt/its/
 COPY --chown=its:its .prospector.yml /opt/its/
+COPY --chown=its:its .mypy.ini /opt/its/
