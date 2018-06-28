@@ -1,10 +1,13 @@
+from typing import Union
+
+
 class BaseTransform(object):
 
     """
     Generic image transform type class
     """
 
-    slug = None  # unique string that identifies a given transform
+    slug: Union[None, str] = None  # unique string that identifies a given transform
 
     def __init__(self, arg):
         super(BaseTransform, self).__init__()
