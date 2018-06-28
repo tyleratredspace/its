@@ -2,6 +2,7 @@
 
 import logging
 from io import BytesIO
+from typing import Any, Dict, Optional, Union
 
 from flask import Flask, Response, abort, redirect, request
 from raven.contrib.flask import Sentry
@@ -22,7 +23,7 @@ if SENTRY_DSN:
     sentry = Sentry(app, dsn=SENTRY_DSN, logging=True, level=logging.ERROR)
 
 
-def process_request(namespace, query, filename):
+def process_request(namespace: str, query: Dict[str, str], filename: str) -> Response:
     namespace_config = NAMESPACES[namespace]
     if namespace_config.get("redirect"):
         location = get_redirect_location(namespace, query, filename)
@@ -60,7 +61,14 @@ def process_request(namespace, query, filename):
     return Response(response=output.getvalue(), mimetype=mime_type)
 
 
-def process_old_request(transform, width=None, height=None, ext=None, x=None, y=None):
+def process_old_request(
+    transform: str,
+    width: Union[int, str] = None,
+    height: Union[int, str] = None,
+    ext: str = None,
+    x: Optional[Any] = None,
+    y: Optional[Any] = None,
+) -> Dict[str, str]:
 
     query = {}
 
@@ -87,7 +95,7 @@ def process_old_request(transform, width=None, height=None, ext=None, x=None, y=
 
 
 @app.route("/<namespace>/<path:filename>", methods=["GET"])
-def transform_image(namespace, filename):
+def transform_image(namespace: str, filename: str) -> Response:
     """ New ITS image transform command """
     query = request.args.to_dict()
     result = process_request(namespace, query, filename)
@@ -96,7 +104,7 @@ def transform_image(namespace, filename):
 
 # Old ITS Support
 @app.route("/<namespace>/<path:filename>.crop.<width>x<height>.<ext>")
-def crop(namespace, filename, width, height, ext):
+def crop(namespace: str, filename: str, width: str, height: str, ext: str) -> Response:
     query = process_old_request("fit", width, height, ext)
     result = process_request(namespace, query, filename)
     return result
@@ -106,14 +114,16 @@ def crop(namespace, filename, width, height, ext):
     "/<namespace>/<path:filename>.focalcrop.<width>x<height>."
     + "<int(min=0,max=100):x>.<int(min=0,max=100):y>.<ext>"
 )
-def focalcrop(namespace, filename, width, height, x, y, ext):
+def focalcrop(
+    namespace: str, filename: str, width: str, height: str, x: str, y: str, ext: str
+) -> Response:
     query = process_old_request("fit", width, height, ext, x, y)
     result = process_request(namespace, query, filename)
     return result
 
 
 @app.route("/<namespace>/<path:filename>.fit.<width>x<height>.<ext>")
-def fit(namespace, filename, width, height, ext):
+def fit(namespace: str, filename: str, width: str, height: str, ext: str) -> Response:
     query = process_old_request("fit", width, height, ext)
     result = process_request(namespace, query, filename)
     return result
@@ -123,7 +133,9 @@ def fit(namespace, filename, width, height, ext):
 @app.route("/<namespace>/<path:filename>.resize.<width>x<height>.<ext>")
 @app.route("/<namespace>/<path:filename>.resize.x<height>.<ext>")
 @app.route("/<namespace>/<path:filename>.resize.<width>x.<ext>")
-def resize(namespace, filename, ext, width=None, height=None):
+def resize(
+    namespace: str, filename: str, ext: str, width: int = None, height: int = None
+) -> Response:
     query = process_old_request("resize", width, height, ext)
     result = process_request(namespace, query, filename)
     return result
@@ -135,7 +147,9 @@ def resize(namespace, filename, ext, width=None, height=None):
 )
 @app.route("/<namespace>/<path:filename>.resize.x<int:height>.passport.<ext>")
 @app.route("/<namespace>/<path:filename>.resize.<int:width>x.passport.<ext>")
-def resize_passport(namespace, filename, width, height, ext):
+def resize_passport(
+    namespace: str, filename: str, width: int, height: int, ext: str
+) -> Response:
     query = process_old_request("resize", width, height, ext)
     query["overlay"] = "passport"
     result = process_request(namespace, query, filename)
@@ -146,7 +160,9 @@ def resize_passport(namespace, filename, width, height, ext):
 @app.route("/<namespace>/<path:filename>.fit.<int:width>x<int:height>.passport.<ext>")
 @app.route("/<namespace>/<path:filename>.fit.x<int:height>.passport.<ext>")
 @app.route("/<namespace>/<path:filename>.fit.<int:width>x.passport.<ext>")
-def fit_passport(namespace, filename, width, height, ext):
+def fit_passport(
+    namespace: str, filename: str, width: int, height: int, ext: str
+) -> Response:
     query = process_old_request("fit", width, height, ext)
     query["overlay"] = "passport"
     result = process_request(namespace, query, filename)
@@ -154,7 +170,7 @@ def fit_passport(namespace, filename, width, height, ext):
 
 
 @app.errorhandler(ITSClientError)
-def handle_transform_error(error):
+def handle_transform_error(error: ITSClientError) -> Response:
     return Response(error.message, status=error.status_code)
 
 
