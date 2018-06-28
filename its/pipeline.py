@@ -25,6 +25,9 @@ def process_transforms(img, query):
         if not query:  # no transforms; return image as is
             return img
 
+        if query.get("crop"):
+            query["fit"] = query.pop("crop")
+
         # assign each subclass to it's slug in the order dict
         for tclass in transform_classes:
             transform_order[tclass.slug] = tclass
