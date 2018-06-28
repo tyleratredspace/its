@@ -2,7 +2,7 @@
 
 import logging
 from io import BytesIO
-from typing import Any, Dict, Optional, Union
+from typing import Dict, Optional
 
 from flask import Flask, Response, abort, redirect, request
 from raven.contrib.flask import Sentry
@@ -63,11 +63,11 @@ def process_request(namespace: str, query: Dict[str, str], filename: str) -> Res
 
 def process_old_request(
     transform: str,
-    width: Union[int, str] = None,
-    height: Union[int, str] = None,
-    ext: str = None,
-    x: Optional[Any] = None,
-    y: Optional[Any] = None,
+    width: Optional[int] = None,
+    height: Optional[int] = None,
+    ext: Optional[str] = None,
+    x: Optional[int] = None,
+    y: Optional[int] = None,
 ) -> Dict[str, str]:
 
     query = {}
@@ -103,38 +103,42 @@ def transform_image(namespace: str, filename: str) -> Response:
 
 
 # Old ITS Support
-@app.route("/<namespace>/<path:filename>.crop.<width>x<height>.<ext>")
-def crop(namespace: str, filename: str, width: str, height: str, ext: str) -> Response:
+@app.route("/<namespace>/<path:filename>.crop.<int:width>x<int:height>.<ext>")
+def crop(namespace: str, filename: str, width: int, height: int, ext: str) -> Response:
     query = process_old_request("fit", width, height, ext)
     result = process_request(namespace, query, filename)
     return result
 
 
 @app.route(
-    "/<namespace>/<path:filename>.focalcrop.<width>x<height>."
+    "/<namespace>/<path:filename>.focalcrop.<int:width>x<int:height>."
     + "<int(min=0,max=100):x>.<int(min=0,max=100):y>.<ext>"
 )
 def focalcrop(
-    namespace: str, filename: str, width: str, height: str, x: str, y: str, ext: str
+    namespace: str, filename: str, width: int, height: int, x: int, y: int, ext: str
 ) -> Response:
     query = process_old_request("fit", width, height, ext, x, y)
     result = process_request(namespace, query, filename)
     return result
 
 
-@app.route("/<namespace>/<path:filename>.fit.<width>x<height>.<ext>")
-def fit(namespace: str, filename: str, width: str, height: str, ext: str) -> Response:
+@app.route("/<namespace>/<path:filename>.fit.<int:width>x<int:height>.<ext>")
+def fit(namespace: str, filename: str, width: int, height: int, ext: str) -> Response:
     query = process_old_request("fit", width, height, ext)
     result = process_request(namespace, query, filename)
     return result
 
 
 # resize with pseduo-optional arguments
-@app.route("/<namespace>/<path:filename>.resize.<width>x<height>.<ext>")
-@app.route("/<namespace>/<path:filename>.resize.x<height>.<ext>")
-@app.route("/<namespace>/<path:filename>.resize.<width>x.<ext>")
+@app.route("/<namespace>/<path:filename>.resize.<int:width>x<int:height>.<ext>")
+@app.route("/<namespace>/<path:filename>.resize.x<int:height>.<ext>")
+@app.route("/<namespace>/<path:filename>.resize.<int:width>x.<ext>")
 def resize(
-    namespace: str, filename: str, ext: str, width: int = None, height: int = None
+    namespace: str,
+    filename: str,
+    ext: str,
+    width: Optional[int] = None,
+    height: Optional[int] = None,
 ) -> Response:
     query = process_old_request("resize", width, height, ext)
     result = process_request(namespace, query, filename)
