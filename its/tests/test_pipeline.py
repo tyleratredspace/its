@@ -60,11 +60,31 @@ class TestFitTransform(TestCase):
         fit_transform.assert_called_with(test_image, query)
 
     @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_default_crop_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "middle.png")
+        test_image.info["filename"] = "middle.png"
+        query = {"crop": "100x100"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
+
+    @patch("its.transformations.fit.FitTransform.apply_transform")
     def test_focal_fit_no_alpha(self, MockFitTransform):
         fit_transform = MockFitTransform()
         test_image = Image.open(self.img_dir / "top_left.png")
         test_image.info["filename"] = "top_left.png"
         query = {"fit": "1x1x1x1"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
+
+    @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_focal_crop_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "top_left.png")
+        test_image.info["filename"] = "top_left.png"
+        query = {"crop": "1x1x1x1"}
         fit_transform.return_value = True
         fit_transform(test_image, query)
         fit_transform.assert_called_with(test_image, query)
@@ -80,11 +100,31 @@ class TestFitTransform(TestCase):
         fit_transform.assert_called_with(test_image, query)
 
     @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_focalcrop_1x1_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "abstract.png")
+        test_image.info["filename"] = "abstract.png"
+        query = {"crop": "28x34x1x1"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
+
+    @patch("its.transformations.fit.FitTransform.apply_transform")
     def test_focal_100x100_no_alpha(self, MockFitTransform):
         fit_transform = MockFitTransform()
         test_image = Image.open(self.img_dir / "abstract.png")
         test_image.info["filename"] = "abstract.png"
         query = {"fit": "1x1x100x100"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
+
+    @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_focalcrop_100x100_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "abstract.png")
+        test_image.info["filename"] = "abstract.png"
+        query = {"crop": "1x1x100x100"}
         fit_transform.return_value = True
         fit_transform(test_image, query)
         fit_transform.assert_called_with(test_image, query)
@@ -99,10 +139,28 @@ class TestFitTransform(TestCase):
         fit_transform(test_image, query)
         fit_transform.assert_called_with(test_image, query)
 
-    def test_invalid_crop_size(self):
+    @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_smartcrop_70x1_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "abstract_focus-70x1.png")
+        test_image.info["filename"] = "abstract_focus-70x1.png"
+        query = {"crop": "5x100"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
+
+    def test_invalid_fit_size(self):
         test_image = Image.open(self.img_dir / "test.png")
         test_image.info["filename"] = "test.png"
         query = {"fit": "5x0"}
+
+        with self.assertRaises(its.errors.ITSClientError):
+            process_transforms(test_image, query)
+
+    def test_invalid_crop_size(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        test_image.info["filename"] = "test.png"
+        query = {"crop": "5x0"}
 
         with self.assertRaises(its.errors.ITSClientError):
             process_transforms(test_image, query)
@@ -111,6 +169,14 @@ class TestFitTransform(TestCase):
         test_image = Image.open(self.img_dir / "test.png")
         test_image.info["filename"] = "test.png"
         query = {"fit": "100x100x150x150"}
+
+        with self.assertRaises(its.errors.ITSClientError):
+            process_transforms(test_image, query)
+
+    def test_invalid_crop_focal_percentages(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        test_image.info["filename"] = "test.png"
+        query = {"crop": "100x100x150x150"}
 
         with self.assertRaises(its.errors.ITSClientError):
             process_transforms(test_image, query)
