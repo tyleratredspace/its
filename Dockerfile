@@ -1,4 +1,4 @@
-FROM python:3.6.5-alpine3.7
+FROM python:3.6.6-alpine3.7
 
 ENV PYTHONUNBUFFERED 1
 ENV CONFD_VERSION 0.16.0
