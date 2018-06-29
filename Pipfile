@@ -12,6 +12,7 @@ uwsgi = "*"
 larson = "*"
 raven = {extras = ["flask"]}
 newrelic = "*"
+pyyaml = ">=3.0,<4.0"  # this can change once there's a stable 4.x version: https://github.com/yaml/pyyaml/issues/192
 
 [dev-packages]
 "flake8" = "*"
