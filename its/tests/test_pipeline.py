@@ -270,24 +270,13 @@ class TestImageResults(TestCase):
 
         self.assertLessEqual(q1_size, q10_size)
 
-    def test_svg_passthrough(self):
-        test_image = BytesIO(open(self.img_dir / "wikipedia_logo.svg", "rb").read())
-        query = {
-            "fit": "10x10",
-            "format": "png",
-            "resize": "500x500",
-            "filename": "wikipedia_logo.svg",
-        }
-        result = process_transforms(test_image, query)
-        result = optimize(result, query)
-        self.assertEqual(isinstance(result, BytesIO), True)
-
 
 class TestPipelineEndToEnd(TestCase):
     @classmethod
     def setUpClass(self):
         app.config["TESTING"] = True
         self.client = app.test_client()
+        self.img_dir = Path(__file__).parent / "images"
 
     def test_secret_png(self):
         response = self.client.get("tests/images/secretly-a-png.jpg.resize.800x450.jpg")
@@ -296,6 +285,17 @@ class TestPipelineEndToEnd(TestCase):
     def test_cmyk_jpg_to_rgb_png(self):
         response = self.client.get("/tests/images/cmyk.jpg.resize.380x190.png")
         assert response.status_code == 200
+
+    def test_svg_passthrough(self):
+        reference_image = BytesIO(
+            open(self.img_dir / "wikipedia_logo.svg", "rb").read()
+        )
+        response = self.client.get(
+            "/tests/images/wikipedia_logo.svg?fit=10x10&format=png&resize=500x500"
+        )
+        assert response.status_code == 200
+        assert response.mimetype == "image/svg+xml"
+        assert response.data == reference_image.getvalue()
 
 
 if __name__ == "__main__":
