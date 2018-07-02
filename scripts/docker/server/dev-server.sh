@@ -8,4 +8,4 @@ FLASK_ENV=development
 export FLASK_APP
 export FLASK_ENV
 
-pipenv run flask run --host=0.0.0.0
+exec pipenv run flask run --host=0.0.0.0
