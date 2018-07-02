@@ -1,10 +1,9 @@
 import subprocess
 import uuid
-from io import BytesIO
 from math import floor
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from PIL import Image, ImageFile
 from PIL.JpegImagePlugin import JpegImageFile
@@ -17,13 +16,7 @@ from .errors import ITSClientError, ITSTransformError
 ImageFile.MAXBLOCK = 2 ** 20  # for JPG progressive saving
 
 
-def optimize(
-    img: Union[Image.Image, BytesIO], query: Dict[str, str]
-) -> Union[Image.Image, BytesIO]:
-
-    if isinstance(img, BytesIO):
-        return img
-
+def optimize(img: Image.Image, query: Dict[str, str]) -> Image.Image:
     ext = (
         query["format"] if "format" in query else img.format.lower()
     )  # the return format
