@@ -2,11 +2,13 @@ from io import BytesIO
 from pathlib import Path, PosixPath
 from typing import Union
 
+from enforce import runtime_validation
 from PIL import Image
 from PIL.JpegImagePlugin import JpegImageFile
 from PIL.PngImagePlugin import PngImageFile
 
 from ..errors import NotFoundError
+from ..settings import ENFORCE_TYPE_CHECKS
 from .base import BaseLoader
 
 
@@ -15,6 +17,7 @@ class FileSystemLoader(BaseLoader):
     slug = "file_system"
     parameter_name = "folders"
 
+    @runtime_validation(enabled=ENFORCE_TYPE_CHECKS)
     @staticmethod
     def load_image(
         namespace: str, filename: Union[PosixPath, str]
@@ -35,6 +38,7 @@ class FileSystemLoader(BaseLoader):
 
         return image
 
+    @runtime_validation(enabled=ENFORCE_TYPE_CHECKS)
     @staticmethod
     def get_fileobj(namespace: str, filename: str) -> BytesIO:
         """

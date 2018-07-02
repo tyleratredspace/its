@@ -1,6 +1,11 @@
 from typing import Any, Dict, Optional
 
+from enforce import runtime_validation
 
+from .settings import ENFORCE_TYPE_CHECKS
+
+
+@runtime_validation(enabled=ENFORCE_TYPE_CHECKS)
 class ITSError(Exception):
     """
     Base error class for ITS.
