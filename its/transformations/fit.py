@@ -1,5 +1,6 @@
 import logging
 import re
+from typing import Sequence, Union
 
 from PIL import Image, ImageOps
 
@@ -15,7 +16,9 @@ class FitTransform(BaseTransform):
     slug = "fit"
 
     @staticmethod
-    def apply_transform(img, crop_size, focal_point=None):
+    def apply_transform(
+        img: Image.Image, parameters: Sequence[Union[str, int]]
+    ) -> Image.Image:
         """
         Crops input img about a focal point.
         The default focal point is the center of the image.
@@ -25,7 +28,7 @@ class FitTransform(BaseTransform):
         smart crop : image_focus-FXxFY.png?crop=WWxHH
         """
 
-        crop_width, crop_height, *focal_point = crop_size
+        crop_width, crop_height, *focal_point = parameters
         filename = img.info["filename"]
         # match everything before and including the keyword
         pre_keyword_pattern = ".+?(" + FOCUS_KEYWORD + ")"
@@ -64,8 +67,8 @@ class FitTransform(BaseTransform):
 
         if focal_x in range(0, 101) and focal_y in range(0, 101) and crop_height != 0:
             try:
-                focal_x = focal_x / 100
-                focal_y = focal_y / 100
+                focal_x = int(focal_x / 100)
+                focal_y = int(focal_y / 100)
                 img = ImageOps.fit(
                     img,
                     (crop_width, crop_height),

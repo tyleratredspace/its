@@ -10,13 +10,13 @@ class ResizeTransform(BaseTransform):
 
     slug = "resize"
 
-    def apply_transform(img, resize_size):
+    def apply_transform(img, parameters):
         """
         Resizes input image while maintaining aspect ratio.
         """
 
-        if len(resize_size) == 2:
-            width, height = resize_size
+        if len(parameters) == 2:
+            width, height = parameters
         else:
             raise ITSClientError(
                 "Missing width or height. Both width and height are required"

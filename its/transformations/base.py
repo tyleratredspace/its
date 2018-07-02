@@ -1,4 +1,6 @@
-from typing import Union
+from typing import Sequence, Union
+
+from PIL import Image
 
 
 class BaseTransform(object):
@@ -13,6 +15,8 @@ class BaseTransform(object):
         super(BaseTransform, self).__init__()
         self.arg = arg
 
-    def apply_transform(img, *args):
-
+    @staticmethod
+    def apply_transform(
+        img: Image.Image, parameters: Sequence[Union[str, int]]
+    ) -> Image.Image:
         raise NotImplementedError
