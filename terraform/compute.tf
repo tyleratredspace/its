@@ -153,7 +153,7 @@ resource "aws_cloudwatch_metric_alarm" "its_web_cpu_low" {
   namespace           = "AWS/ECS"
   period              = "60"
   statistic           = "Average"
-  threshold           = "10"
+  threshold           = "30"
   alarm_actions       = ["${aws_appautoscaling_policy.its_web_scale_down.arn}"]
 
   dimensions {
