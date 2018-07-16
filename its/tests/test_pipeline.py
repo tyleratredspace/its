@@ -297,6 +297,11 @@ class TestPipelineEndToEnd(TestCase):
         assert response.mimetype == "image/svg+xml"
         assert response.data == reference_image.getvalue()
 
+    def test_grayscale_png_to_jpg(self):
+        response = self.client.get("tests/images/grayscale.png.fit.2048x876.jpg")
+        assert response.status_code == 200
+        assert response.mimetype == "image/jpeg"
+
 
 if __name__ == "__main__":
     unittest.main()
