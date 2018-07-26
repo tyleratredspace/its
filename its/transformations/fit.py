@@ -67,13 +67,13 @@ class FitTransform(BaseTransform):
 
         if focal_x in range(0, 101) and focal_y in range(0, 101) and crop_height != 0:
             try:
-                focal_x = int(focal_x / 100)
-                focal_y = int(focal_y / 100)
+                focal_x_percentage = focal_x / 100
+                focal_y_percentage = focal_y / 100
                 img = ImageOps.fit(
                     img,
                     (crop_width, crop_height),
                     method=Image.ANTIALIAS,
-                    centering=(focal_x, focal_y),
+                    centering=(focal_x_percentage, focal_y_percentage),
                 )
 
             except ITSTransformError as error:
