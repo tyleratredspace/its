@@ -20,11 +20,11 @@ class OverlayTransform(BaseTransform):
 
     slug = "overlay"
 
-    def apply_transform(img, query):
-        if len(query) > 1:
+    def apply_transform(img, parameters):
+        if len(parameters) > 1:
             raise ValueError("overlay transform does not accept parameters")
 
-        overlay = query[0]
+        overlay = parameters[0]
 
         if "overlay" in NAMESPACES:
             loader = OverlayTransform.get_loader(NAMESPACES["overlay"]["loader"])
