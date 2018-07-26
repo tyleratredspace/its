@@ -33,7 +33,7 @@ def optimize(img: Image.Image, query: Dict[str, str]) -> Image.Image:
         if ext.lower() == "jpeg":
             # convert to JPG and/or compress
             # need to convert to RGB first, then can save in any format
-            if img.mode in ["RGBA", "LA"]:
+            if img.mode == "RGBA":
                 new_img = Image.new("RGBA", img.size)
                 new_img = Image.alpha_composite(new_img, img)
             img = img.convert("RGB")
