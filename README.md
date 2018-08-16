@@ -6,6 +6,8 @@ This application is under active development and likely to change further before
 
 ITS (Image Transform Service) performs transformations on images by accepting transform requests in the form of query strings.
 
+---
+
 ## Crop
 
 There are three varieties of crop -- default, focal and smart crop.
@@ -66,7 +68,7 @@ Applying `crop` with four parameters:
 
 ![A cropped Key Lime pie](https://image.pbs.org/test/GmtpBa4-asset-mezzanine-16x9-Uu2CpNc.png?crop=500x400x90x10)
 
-### _Smart_
+### _Smart Crop_
 
 Smart crop returns an image focused around a user-specified point in the original image of a user-specified size. To use this crop, the input image _filename_ must end in `_foucs-XXxYY.ext`, and then you can use the `crop` keyword with **two** arguments split by x's:
 
@@ -94,6 +96,8 @@ Applying `crop`:
 
 ![A hand holding a knife that is cutting bread](https://image.pbs.org/test/Sjk2Eqs-asset-mezzanine-16x9-0gsKw4z_focus-90x10.png?crop=300x400)
 
+---
+
 ## Overlay
 
 Overlay returns the input image with the specified overlay image placed on top of it. The overlay is placed in the top left corner. To use overlay, use the overlay keyword:
@@ -104,6 +108,8 @@ Where:
 
 - overlay -- indicates that ITS should put an overlay on the input image
 - overlay_img_path -- path to the overlay (optionally, can be a keyword a keyword in the OVERLAYS dictionary in settings)
+
+---
 
 ## Resize
 
@@ -141,6 +147,8 @@ With `resize` applied and only a width supplied:
 
 ![A resized flowery cake](https://image.pbs.org/video-assets/GTdD9Rq-asset-mezzanine-16x9-d3h7qCm.jpg?resize=400x)
 
+---
+
 ## Format
 
 Format returns the input image in the specified type, rather than being left as the original image’s type. It currently supports conversion to JPG, PNG, and WEBP. To use it, use the `format` keyword with the file extension as an argument:
@@ -155,16 +163,37 @@ Where:
 
 Example
 
-Original Image: ![Citizen-Kane](http://i.imgur.com/pFndG84.jpg)
-Image Credit: https://commons.wikimedia.org/wiki/File:Citizen-Kane-Welles-Coulouris.jpg
+Original Image:
 
-> API_URL/demo/citizen_kane.jpg?format=png&quality=10
+> https://image.pbs.org/test/7Sy3rBL-asset-mezzanine-16x9-xMYNIn3.jpg
 
-Result Image: ![Citizen-Kane-PNG-10](http://i.imgur.com/CItOntv.jpg)
+![Macaroons](https://image.pbs.org/test/7Sy3rBL-asset-mezzanine-16x9-xMYNIn3.jpg)
+
+Image as a PNG:
+
+> https://image.pbs.org/test/7Sy3rBL-asset-mezzanine-16x9-xMYNIn3.jpg?format=png
+
+![Macaroons](https://image.pbs.org/test/7Sy3rBL-asset-mezzanine-16x9-xMYNIn3.jpg?format=png)
+
+Image as a JPG with a quality of 20:
+
+> https://image.pbs.org/test/7Sy3rBL-asset-mezzanine-16x9-xMYNIn3.jpg?quality=20
+
+![Macaroons](https://image.pbs.org/test/7Sy3rBL-asset-mezzanine-16x9-xMYNIn3.jpg?quality=20)
+
+---
 
 ## Combination
 
 All of the transforms described above can be combined into one query by separating them with `&`.
+
+An image cropped to 600x300px, changed to a PNG:
+
+> https://image.pbs.org/test/nBVLq44-asset-mezzanine-16x9-p0bSjVY.jpg?crop=600x300&format=png
+
+![A fancy cake](https://image.pbs.org/test/nBVLq44-asset-mezzanine-16x9-p0bSjVY.jpg?crop=600x300&format=png)
+
+---
 
 # Development
 
