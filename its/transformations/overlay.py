@@ -1,62 +1,53 @@
-from math import floor
 from pathlib import Path
+
 from PIL import Image
-from .base import BaseTransform
+
+from ..errors import ConfigError, ITSTransformError
 from ..loaders import BaseLoader
-from ..settings import OVERLAYS, NAMESPACES
-from ..errors import ITSTransformError
+from ..settings import NAMESPACES, OVERLAYS
+from .base import BaseTransform
+
+OVERLAY_PROPORTION = 0.2
 
 
 class OverlayTransform(BaseTransform):
 
     """
-    Pastes a specified image over the input image.
-    The overlay is placed according to the input expected position of its top left corner.
-    Overlay placement arguments are percentages, with (0,0)
-    representing the top left corner of the input image.
-    See settings to change the default placement of the
-    overlay when no position arguments are input.
+    Pastes a specified image over the input.
 
-    image.png?overlay=overlay_img_pathxPXxPY
+    image.png?overlay=overlay_img_path
     """
+
     slug = "overlay"
 
-    def apply_transform(img, overlay, overlay_position=None):
+    def apply_transform(img, parameters):
+        if len(parameters) > 1:
+            raise ValueError("overlay transform does not accept parameters")
 
-        *overlay_position, overlay = overlay
+        overlay = parameters[0]
 
-        if 'overlay' in NAMESPACES:
-            loader = OverlayTransform.get_loader(NAMESPACES['overlay']['loader'])
+        if "overlay" in NAMESPACES:
+            loader = OverlayTransform.get_loader(NAMESPACES["overlay"]["loader"])
         else:
             raise ConfigError("No Backend has been set up for overlays.")
 
         if overlay.lower() not in OVERLAYS:
-            namespace, *filename = overlay.split('/')
+            namespace, *filename = overlay.split("/")
             filename = Path("/".join(filename))
             overlay_image = loader[0].load_image(namespace, filename)
         else:
-            namespace, *filename = OVERLAYS[overlay.lower()].split('/')
+            namespace, *filename = OVERLAYS[overlay.lower()].split("/")
             filename = Path("/".join(filename))
             overlay_image = loader[0].load_image(namespace, filename)
 
-        # placement of top left corner of overlay
-        if len(overlay_position) == 0:
-            overlay_position = OVERLAY_PLACEMENT
-
-        try:
-            x_coord = floor((int(overlay_position[0]) / 100) * img.width)
-            y_coord = floor((int(overlay_position[1]) / 100) * img.height)
-        except ValueError as e:
-            raise ITSTransformError(
-                "Invalid arguments supplied to Overlay Transform." +
-                "Overlay takes overlay_image_pathxPXxPY, " +
-                "where overlay_image_path is the path to the overlay image and " +
-                "(PX, PY) are optional percentage parameters indicating where " +
-                "the top left corner of the overlay should be placed."
-            )
+        height = img.height
+        overlay_size = int(height * OVERLAY_PROPORTION)
+        resized_overlay = overlay_image.resize(
+            (overlay_size, overlay_size), Image.ANTIALIAS
+        )
 
         # Only the overlay has an alpha channel
-        if(img.mode != "RGBA"):
+        if img.mode != "RGBA":
             new_img = img.copy()
         else:
             # overlay and input img have alpha channels
@@ -66,28 +57,30 @@ class OverlayTransform(BaseTransform):
             new_img = Image.new("RGBA", img.size)
             new_img = Image.alpha_composite(new_img, img)
 
-        new_img.paste(overlay_image, box=[x_coord, y_coord], mask=overlay_image)
+        padding_top = int(height * 0.05)
+        padding_left = int(height * 0.05)
+        new_img.paste(
+            resized_overlay, (padding_top, padding_left), mask=resized_overlay
+        )
 
         img = new_img
         return img
 
-    def get_loader(OVERLAY_LOADER):
+    def get_loader(overlay_loader):
 
         loader_classes = BaseLoader.__subclasses__()
 
-        loader = [
-            loader for loader in loader_classes
-            if loader.slug == OVERLAY_LOADER]
+        loader = [loader for loader in loader_classes if loader.slug == overlay_loader]
 
-        if len(loader) == 1:
-            return loader
-        elif len(loader) == 0:
+        if not loader:
             raise ITSTransformError(
-                "Not Found Error: Overlay Image Loader " +
-                "with slug '%s' not found." % OVERLAY_LOADER
+                "Not Found Error: Overlay Image Loader "
+                + "with slug '%s' not found." % overlay_loader
             )
         elif len(loader) > 1:
             raise ITSTransformError(
-                "Configuration Error: Two or more Image Loaders " +
-                "have slug '%s'." % OVERLAY_LOADER
+                "Configuration Error: Two or more Image Loaders "
+                + "have slug '%s'." % overlay_loader
             )
+
+        return loader

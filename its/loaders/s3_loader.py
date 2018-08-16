@@ -1,10 +1,12 @@
-from .base import BaseLoader
-from ..errors import NotFoundError
-from PIL import Image
+from io import BytesIO
+
 import boto3
 from botocore.exceptions import ClientError
-from io import BytesIO
+from PIL import Image
+
+from ..errors import NotFoundError
 from ..settings import NAMESPACES
+from .base import BaseLoader
 
 
 class S3Loader(BaseLoader):
@@ -19,13 +21,15 @@ class S3Loader(BaseLoader):
         returns a file-like or bytes-like object.
         """
         # get the s3 resource
-        s3 = boto3.resource('s3')
+        s3_resource = boto3.resource("s3")
 
-        bucket = s3.Bucket(NAMESPACES[namespace][S3Loader.parameter_name])
+        bucket_name = NAMESPACES[namespace][S3Loader.parameter_name]
+        key = "{namespace}/{filename}".format(namespace=namespace, filename=filename)
+        s3_object = s3_resource.Object(bucket_name=bucket_name, key=key)
 
         # create an empty bytes object to store the image bytes in
         file_obj = BytesIO()
-        bucket.download_fileobj(filename, file_obj)
+        s3_object.download_fileobj(file_obj)
 
         return file_obj
 
@@ -36,9 +40,14 @@ class S3Loader(BaseLoader):
         """
         try:
             file_obj = S3Loader.get_fileobj(namespace, filename)
-            image = Image.open(file_obj)
+        except ClientError as error:
+            error_code = error.response["Error"]["Code"]
 
-        except ClientError as e:
-            raise NotFoundError("An error occurred: '%s'" % str(e))
+            if error_code == "404":
+                raise NotFoundError("An error occurred: '%s'" % str(error))
+
+            raise error
+
+        image = Image.open(file_obj)
 
         return image

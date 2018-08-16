@@ -1,14 +1,18 @@
-import unittest
-from unittest import TestCase
-from unittest.mock import patch
-from pathlib import Path
-from PIL import Image
 import itertools
-from io import BytesIO
 import os
 import tempfile
-from its.pipeline import process_transforms
+import unittest
+from io import BytesIO
+from pathlib import Path
+from unittest import TestCase
+from unittest.mock import patch
+
+from PIL import Image
+
+import its.errors
+from its.application import app
 from its.optimize import optimize
+from its.pipeline import process_transforms
 
 
 def get_pixels(image):
@@ -41,92 +45,144 @@ def compare_pixels(img1, img2):
 
 
 class TestFitTransform(TestCase):
-
     @classmethod
     def setUpClass(self):
         self.img_dir = Path(__file__).parent / "images"
 
-    @patch('its.transformations.fit.FitTransform.apply_transform')
+    @patch("its.transformations.fit.FitTransform.apply_transform")
     def test_default_fit_no_alpha(self, MockFitTransform):
         fit_transform = MockFitTransform()
         test_image = Image.open(self.img_dir / "middle.png")
-        test_image.info['filename'] = "middle.png"
-        query = {'fit': '100x100'}
+        test_image.info["filename"] = "middle.png"
+        query = {"fit": "100x100"}
         fit_transform.return_value = True
         fit_transform(test_image, query)
         fit_transform.assert_called_with(test_image, query)
 
-    @patch('its.transformations.fit.FitTransform.apply_transform')
+    @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_default_crop_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "middle.png")
+        test_image.info["filename"] = "middle.png"
+        query = {"crop": "100x100"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
+
+    @patch("its.transformations.fit.FitTransform.apply_transform")
     def test_focal_fit_no_alpha(self, MockFitTransform):
         fit_transform = MockFitTransform()
         test_image = Image.open(self.img_dir / "top_left.png")
-        test_image.info['filename'] = "top_left.png"
-        query = {'fit': '1x1x1x1'}
+        test_image.info["filename"] = "top_left.png"
+        query = {"fit": "1x1x1x1"}
         fit_transform.return_value = True
         fit_transform(test_image, query)
         fit_transform.assert_called_with(test_image, query)
 
-    @patch('its.transformations.fit.FitTransform.apply_transform')
+    @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_focal_crop_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "top_left.png")
+        test_image.info["filename"] = "top_left.png"
+        query = {"crop": "1x1x1x1"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
+
+    @patch("its.transformations.fit.FitTransform.apply_transform")
     def test_focal_1x1_no_alpha(self, MockFitTransform):
         fit_transform = MockFitTransform()
         test_image = Image.open(self.img_dir / "abstract.png")
-        test_image.info['filename'] = "abstract.png"
-        query = {'fit': '28x34x1x1'}
+        test_image.info["filename"] = "abstract.png"
+        query = {"fit": "28x34x1x1"}
         fit_transform.return_value = True
         fit_transform(test_image, query)
         fit_transform.assert_called_with(test_image, query)
 
-    @patch('its.transformations.fit.FitTransform.apply_transform')
+    @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_focalcrop_1x1_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "abstract.png")
+        test_image.info["filename"] = "abstract.png"
+        query = {"crop": "28x34x1x1"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
+
+    @patch("its.transformations.fit.FitTransform.apply_transform")
     def test_focal_100x100_no_alpha(self, MockFitTransform):
         fit_transform = MockFitTransform()
         test_image = Image.open(self.img_dir / "abstract.png")
-        test_image.info['filename'] = "abstract.png"
-        query = {'fit': '1x1x100x100'}
+        test_image.info["filename"] = "abstract.png"
+        query = {"fit": "1x1x100x100"}
         fit_transform.return_value = True
         fit_transform(test_image, query)
         fit_transform.assert_called_with(test_image, query)
 
-    @patch('its.transformations.fit.FitTransform.apply_transform')
+    @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_focalcrop_100x100_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "abstract.png")
+        test_image.info["filename"] = "abstract.png"
+        query = {"crop": "1x1x100x100"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
+
+    @patch("its.transformations.fit.FitTransform.apply_transform")
     def test_smart_70x1_no_alpha(self, MockFitTransform):
         fit_transform = MockFitTransform()
         test_image = Image.open(self.img_dir / "abstract_focus-70x1.png")
-        test_image.info['filename'] = "abstract_focus-70x1.png"
-        query = {'fit': '5x100'}
+        test_image.info["filename"] = "abstract_focus-70x1.png"
+        query = {"fit": "5x100"}
         fit_transform.return_value = True
         fit_transform(test_image, query)
         fit_transform.assert_called_with(test_image, query)
 
+    @patch("its.transformations.fit.FitTransform.apply_transform")
+    def test_smartcrop_70x1_no_alpha(self, MockFitTransform):
+        fit_transform = MockFitTransform()
+        test_image = Image.open(self.img_dir / "abstract_focus-70x1.png")
+        test_image.info["filename"] = "abstract_focus-70x1.png"
+        query = {"crop": "5x100"}
+        fit_transform.return_value = True
+        fit_transform(test_image, query)
+        fit_transform.assert_called_with(test_image, query)
 
-class TestOverlayTransform(TestCase):
+    def test_invalid_fit_size(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        test_image.info["filename"] = "test.png"
+        query = {"fit": "5x0"}
 
-    @classmethod
-    def setUpClass(self):
-        self.img_dir = Path(__file__).parent / "images"
-        self.overlays = {'five': 'images/five.png'}
-        self.threshold = 0.85
+        with self.assertRaises(its.errors.ITSClientError):
+            process_transforms(test_image, query)
 
-    def test_overlay(self):
-        print(self.img_dir)
+    def test_invalid_crop_size(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        test_image.info["filename"] = "test.png"
+        query = {"crop": "5x0"}
 
-        test_image = Image.open(self.img_dir / "abstract.png")
-        test_image.info['filename'] = "abstract.png"
-        query = {'overlay': '45x45x' + self.overlays['five']}
-        expected = Image.open(self.img_dir / "expected/abstract_overlay_five.png")
-        actual = process_transforms(test_image, query)
-        compare_pixels(expected, actual)
+        with self.assertRaises(its.errors.ITSClientError):
+            process_transforms(test_image, query)
 
-    def test_overlay_12x78(self):
-        test_image = Image.open(self.img_dir / "abstract.png")
-        test_image.info['filename'] = "abstract.png"
-        query = {'overlay': '12x78x' + self.overlays['five']}
-        expected = Image.open(self.img_dir / "expected/abstract_five_12x78.png")
-        actual = process_transforms(test_image, query)
-        comparison = compare_pixels(expected, actual)
-        self.assertGreaterEqual(comparison, self.threshold)
+    def test_invalid_focal_percentages(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        test_image.info["filename"] = "test.png"
+        query = {"fit": "100x100x150x150"}
+
+        with self.assertRaises(its.errors.ITSClientError):
+            process_transforms(test_image, query)
+
+    def test_invalid_crop_focal_percentages(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        test_image.info["filename"] = "test.png"
+        query = {"crop": "100x100x150x150"}
+
+        with self.assertRaises(its.errors.ITSClientError):
+            process_transforms(test_image, query)
 
 
 class TestResizeTransform(TestCase):
-
     @classmethod
     def setUpClass(self):
         # current directory / images
@@ -135,15 +191,15 @@ class TestResizeTransform(TestCase):
 
     def test_resize_size(self):
         test_image = Image.open(self.img_dir / "abstract.png")
-        test_image.info['filename'] = "abstract.png"
-        query = {'resize': '10x10'}
+        test_image.info["filename"] = "abstract.png"
+        query = {"resize": "10x10"}
         result = process_transforms(test_image, query)
         self.assertEqual(result.size, (10, 10))
 
     def test_resize_integrity_smaller(self):
         test_image = Image.open(self.img_dir / "test.png")
-        test_image.info['filename'] = "test.png"
-        query = {'resize': '100x100'}
+        test_image.info["filename"] = "test.png"
+        query = {"resize": "100x100"}
         expected = Image.open(self.img_dir / "expected/test_resize.png")
         actual = process_transforms(test_image, query)
         # can't use norm since resizing can cause noise
@@ -152,16 +208,30 @@ class TestResizeTransform(TestCase):
 
     def test_resize_integrity_larger(self):
         test_image = Image.open(self.img_dir / "test.png")
-        test_image.info['filename'] = "test.png"
-        query = {'resize': '700x550'}
+        test_image.info["filename"] = "test.png"
+        query = {"resize": "700x550"}
         expected = Image.open(self.img_dir / "expected/test_resize_700x550.png")
         actual = process_transforms(test_image, query)
         comparison = compare_pixels(expected, actual)
         self.assertGreaterEqual(comparison, self.threshold)
 
+    def test_invalid_resize(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        query = {"resize": "100"}
+
+        with self.assertRaises(its.errors.ITSClientError):
+            process_transforms(test_image, query)
+
+    def test_resize_format(self):
+        test_image = Image.open(self.img_dir / "test.png")
+        query = {"resize": "100x100", "format": "foo"}
+
+        with self.assertRaises(its.errors.ITSClientError):
+            result = process_transforms(test_image, query)
+            optimize(result, query)
+
 
 class TestImageResults(TestCase):
-
     @classmethod
     def setUpClass(self):
         # current directory / images
@@ -169,17 +239,17 @@ class TestImageResults(TestCase):
 
     def test_jpg_progressive(self):
         test_image = Image.open(self.img_dir / "middle.png")
-        result = optimize(test_image, {'format': 'jpg'})
-        self.assertEqual(result.info['progressive'], 1)
+        result = optimize(test_image, {"format": "jpg"})
+        self.assertEqual(result.info["progressive"], 1)
 
     def test_jpg_quality_vs_size(self):
         test_image = Image.open(self.img_dir / "middle.png")
-        quality_1 = optimize(test_image, {'quality': 1, 'format': 'jpg'})
+        quality_1 = optimize(test_image, {"quality": 1, "format": "jpg"})
         with tempfile.NamedTemporaryFile(dir=".", delete=True) as tmp_file_1:
             quality_1.save(tmp_file_1.name, format=quality_1.format)
             q1_size = os.stat(tmp_file_1.name).st_size
 
-        quality_10 = optimize(test_image, {'quality': 10, 'format': 'jpg'})
+        quality_10 = optimize(test_image, {"quality": 10, "format": "jpg"})
         with tempfile.NamedTemporaryFile(dir=".", delete=True) as tmp_file_2:
             quality_10.save(tmp_file_2.name, format=quality_10.format)
             q10_size = os.stat(tmp_file_2.name).st_size
@@ -188,28 +258,50 @@ class TestImageResults(TestCase):
 
     def test_png_quality_vs_size(self):
         test_image = Image.open(self.img_dir / "test.png")
-        quality_1 = optimize(test_image, {'quality': '1'})
+        quality_1 = optimize(test_image, {"quality": "1"})
         with tempfile.NamedTemporaryFile(dir=".", delete=True) as tmp_file_1:
             quality_1.save(tmp_file_1.name, format=quality_1.format)
             q1_size = os.stat(tmp_file_1.name).st_size
 
-        quality_10 = optimize(test_image, {'quality': '10'})
+        quality_10 = optimize(test_image, {"quality": "10"})
         with tempfile.NamedTemporaryFile(dir=".", delete=True) as tmp_file_2:
             quality_10.save(tmp_file_2.name, format=quality_10.format)
             q10_size = os.stat(tmp_file_2.name).st_size
 
         self.assertLessEqual(q1_size, q10_size)
 
+
+class TestPipelineEndToEnd(TestCase):
+    @classmethod
+    def setUpClass(self):
+        app.config["TESTING"] = True
+        self.client = app.test_client()
+        self.img_dir = Path(__file__).parent / "images"
+
+    def test_secret_png(self):
+        response = self.client.get("tests/images/secretly-a-png.jpg.resize.800x450.jpg")
+        assert response.status_code == 200
+
+    def test_cmyk_jpg_to_rgb_png(self):
+        response = self.client.get("/tests/images/cmyk.jpg.resize.380x190.png")
+        assert response.status_code == 200
+
     def test_svg_passthrough(self):
-        test_image = BytesIO(open(self.img_dir / "wikipedia_logo.svg", "rb").read())
-        query = {
-            'fit': '10x10', 'format': 'png',
-            'resize': '500x500', 'filename': "wikipedia_logo.svg"
-        }
-        result = process_transforms(test_image, query)
-        result = optimize(result, query)
-        self.assertEqual(isinstance(result, BytesIO), True)
+        reference_image = BytesIO(
+            open(self.img_dir / "wikipedia_logo.svg", "rb").read()
+        )
+        response = self.client.get(
+            "/tests/images/wikipedia_logo.svg?fit=10x10&format=png&resize=500x500"
+        )
+        assert response.status_code == 200
+        assert response.mimetype == "image/svg+xml"
+        assert response.data == reference_image.getvalue()
+
+    def test_grayscale_png_to_jpg(self):
+        response = self.client.get("tests/images/grayscale.png.fit.2048x876.jpg")
+        assert response.status_code == 200
+        assert response.mimetype == "image/jpeg"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

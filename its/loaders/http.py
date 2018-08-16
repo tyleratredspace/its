@@ -1,10 +1,12 @@
-from .base import BaseLoader
-from ..errors import NotFoundError
-from PIL import Image
 from io import BytesIO
-import re
-from ..settings import NAMESPACES
+
 import requests
+from PIL import Image
+
+from ..errors import ITSLoaderError, NotFoundError
+from ..settings import NAMESPACES
+from .base import BaseLoader
+
 
 class HTTPLoader(BaseLoader):
 
@@ -17,18 +19,37 @@ class HTTPLoader(BaseLoader):
         Given a namespace (or directory name) and a filename,
         returns a file-like or bytes-like object.
         """
-        prefixes = set(filename.rsplit('/', 1)[0].split('/')) # everything before the final slash
+        prefixes = set(
+            filename.rsplit("/", 1)[0].split("/")
+        )  # everything before the final slash
         params = NAMESPACES[namespace][HTTPLoader.parameter_name]
         intersect = set(params).intersection(prefixes)
 
-        if len(intersect) > 0:
-             # create an empty bytes object to store the image bytes in
-            file_obj = BytesIO(requests.get(filename).content)
-        else:
+        if not intersect:
             raise NotFoundError("Namespace {} is not configured.".format(namespace))
 
-    
-        return file_obj
+        if filename.startswith("http"):
+            url = filename
+        else:
+            url = "https://{}".format(filename)
+        response = requests.get(url)
+
+        if response.status_code in [403, 404]:
+            raise NotFoundError(
+                "404 from http backend for {namespace}/{filename}".format(
+                    namespace=namespace, filename=filename
+                )
+            )
+        elif response.status_code != 200:
+            raise ITSLoaderError(
+                "{code} from http backend for {namespace}/{filename}".format(
+                    code=response.status_code, namespace=namespace, filename=filename
+                ),
+                status_code=500,
+            )
+
+        # create an empty bytes object to store the image bytes in
+        return BytesIO(response.content)
 
     @staticmethod
     def load_image(namespace, filename):
@@ -39,7 +60,7 @@ class HTTPLoader(BaseLoader):
             file_obj = HTTPLoader.get_fileobj(namespace, filename)
             img = Image.open(file_obj)
 
-        except NotFoundError as e:
-            raise NotFoundError("An error occurred: '%s'" % str(e))
+        except NotFoundError as error:
+            raise NotFoundError("An error occurred: '%s'" % str(error))
 
-        return image
+        return img

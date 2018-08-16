@@ -1,44 +1,51 @@
 from math import floor
+
 from PIL import Image
+
+from ..errors import ITSClientError
 from .base import BaseTransform
-from ..errors import ITSTransformError
 
 
 class ResizeTransform(BaseTransform):
 
     slug = "resize"
 
-    def apply_transform(img, resize_size):
+    def apply_transform(img, parameters):
         """
         Resizes input image while maintaining aspect ratio.
         """
 
-        width, height = resize_size
+        if len(parameters) == 2:
+            width, height = parameters
+        else:
+            raise ITSClientError(
+                "Missing width or height. Both width and height are required"
+            )
 
         if img.width == 0 or img.height == 0:
-            raise ITSTransformError(
-                "Invalid arguments supplied to Resize Transform." +
+            raise ITSClientError(
+                "Invalid arguments supplied to Resize Transform."
                 "Input image cannot have zero width nor zero height."
-                )
+            )
 
         try:
-            width = int(width) if width != '' else None
-            height = int(height) if height != '' else None
-        except ValueError as e:
-            raise ITSTransformError(
-                "Invalid arguments supplied to Resize Transform." +
-                "Resize takes WWxHH, WWx, or xHH," +
-                " where WW is the requested width and " +
+            width = int(width) if width != "" else None
+            height = int(height) if height != "" else None
+        except ValueError:
+            raise ITSClientError(
+                "Invalid arguments supplied to Resize Transform. "
+                "Resize takes WWxHH, WWx, or xHH,"
+                " where WW is the requested width and "
                 "HH is the requested height. Both must be integers."
-                )
+            )
 
         if width is None and height is None:
-            raise ITSTransformError(
-                "Invalid arguments supplied to Resize Transform." +
-                "Resize takes WWxHH, WWx, or xHH," +
-                " where WW is the requested width and " +
+            raise ITSClientError(
+                "Invalid arguments supplied to Resize Transform."
+                "Resize takes WWxHH, WWx, or xHH,"
+                " where WW is the requested width and "
                 "HH is the requested height. Both must be integers."
-                )
+            )
 
         if width is None and height:
             width = floor((img.height / img.width) * height)
@@ -50,6 +57,8 @@ class ResizeTransform(BaseTransform):
         # calculate a resize ratio between them and the original sizes
 
         ratio = min(width / img.width, height / img.height)
-        img = img.resize([floor(img.width * ratio), floor(img.height * ratio)], Image.ANTIALIAS)
+        img = img.resize(
+            [floor(img.width * ratio), floor(img.height * ratio)], Image.ANTIALIAS
+        )
 
         return img

@@ -1,17 +1,20 @@
+from typing import Union
+
 
 class BaseLoader(object):
     """
     Generic file loader class
     """
-    slug = None
-    parameter_name = None
+
+    slug: Union[None, str] = None
+    parameter_name: Union[None, str] = None
 
     def __init__(self, arg):
         super(BaseLoader, self).__init__()
         self.arg = arg
 
     @staticmethod
-    def load_image(namespace, filename, loader_slug):
+    def load_image(namespace, filename):
         """
         Given a namespace (or directory name) and a filename, loads a file.
         """

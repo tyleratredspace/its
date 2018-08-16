@@ -1,0 +1,33 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    machine: true
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - run:
+          name: build docker image
+          command: |
+            docker build -t ci_build .
+
+      - run:
+          name: run tests
+          command: |
+            docker run --rm -e ITS_DEBUG=true ci_build pipenv run pytest its/tests
+
+      - run:
+          name: type checking
+          command: |
+            docker run --rm ci_build /opt/its/scripts/docker/server/type-check.sh
+
+      - run:
+          name: lint
+          command: |
+            docker run --rm ci_build /opt/its/scripts/docker/server/lint.sh

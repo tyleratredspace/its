@@ -1,0 +1,20 @@
+strictness: veryhigh
+max-line-length: 99
+
+pylint:
+  disable:
+    - too-few-public-methods
+    - no-self-argument
+    - arguments-differ
+    - invalid-name
+    - too-many-arguments
+    - pointless-string-statement
+
+pep8:
+  full: true
+  disable:
+    - N805
+
+ignore-paths:
+  - terraform
+  - scripts

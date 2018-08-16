@@ -1,0 +1,7 @@
+[template]
+src = "newrelic.ini.tmpl"
+dest = "/etc/its/newrelic.ini"
+keys = [
+    "/ITS_NEWRELIC_LICENSE",
+    "/ITS_NEWRELIC_APP_NAME"
+]

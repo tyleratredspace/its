@@ -1,15 +1,22 @@
+from typing import Sequence, Union
+
+from PIL import Image
+
 
 class BaseTransform(object):
 
     """
     Generic image transform type class
     """
-    slug = None  # unique string that identifies a given transform
+
+    slug: Union[None, str] = None  # unique string that identifies a given transform
 
     def __init__(self, arg):
         super(BaseTransform, self).__init__()
         self.arg = arg
 
-    def apply_transform(img, *args):
-
+    @staticmethod
+    def apply_transform(
+        img: Image.Image, parameters: Sequence[Union[str, int]]
+    ) -> Image.Image:
         raise NotImplementedError

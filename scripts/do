@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# A general script to run aliased commands
+# Taken loosely from https://gist.github.com/waylan/4080362
+
+PROGRAM_NAME=$(basename "${0}")
+IMAGE_REPO_ADDRESS="pbsd/its"
+
+
+sub_help(){
+    echo "Usage: ${PROGRAM_NAME} <subcommand>"
+    echo "Subcommands:"
+    echo "    tag       generate docker image tag"
+    echo "    publish   build and push image to docker hub"
+}
+
+sub_tag(){
+    local git_hash=$(git log --pretty=format:'%h' --no-merges -n 1)
+    echo "version-${git_hash}"
+}
+
+sub_publish(){
+    docker pull "$IMAGE_REPO_ADDRESS:latest" || >&2 echo "failed to pull latest image"
+    local tag=$(./scripts/do tag)
+    docker build \
+        --cache-from "$IMAGE_REPO_ADDRESS:latest" \
+        --tag "$IMAGE_REPO_ADDRESS:latest" \
+        --tag "$IMAGE_REPO_ADDRESS:$tag" \
+        .
+    docker push "$IMAGE_REPO_ADDRESS:$tag"
+    docker push "$IMAGE_REPO_ADDRESS:latest"
+}
+
+
+subcommand="${1:-}"
+case $subcommand in
+  "" | "-h" | "--help")
+    sub_help
+    ;;
+  *)
+    shift
+    "sub_${subcommand}" "$@"
+    if [ "${?}" = 127 ]; then
+      >&2 echo "Error: '$subcommand' is not a known subcommand." >&2
+      >&2 echo "       Run '${PROGRAM_NAME} --help' for a list of known subcommands." >&2
+      exit 1
+    fi
+  ;;
+esac

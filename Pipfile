@@ -1,0 +1,32 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+pillow = "*"
+"boto3" = "*"
+requests = "*"
+uwsgi = "*"
+larson = "*"
+raven = {extras = ["flask"]}
+newrelic = "*"
+pyyaml = ">=3.0,<4.0"  # this can change once there's a stable 4.x version: https://github.com/yaml/pyyaml/issues/192
+enforce = "*"
+
+[dev-packages]
+"flake8" = "*"
+pytest = "*"
+black = "*"
+isort = "*"
+prospector = "*"
+vcrpy = "*"
+pyannotate = "*"
+mypy = "*"
+
+[requires]
+python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true

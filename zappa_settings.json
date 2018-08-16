@@ -1,8 +1,0 @@
-{
-    "dev2": {
-        "app_function": "its.application.app",
-        "s3_bucket": "zappa-its-dev",
-        "manage_roles": false,
-        "role_name": "ZappaLambdaExecution"
-    }
-}

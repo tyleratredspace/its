@@ -1,0 +1,28 @@
+[{
+    "cpu": 256,
+    "entryPoint": [
+        "/bin/bash",
+        "-c",
+        "exec ./scripts/docker/server/run-server.sh"
+    ],
+    "essential": true,
+    "image": "${image_repo}:${image_tag}",
+    "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-group": "${log_group_name}",
+            "awslogs-region": "${log_group_region}"
+        }
+    },
+    "environment": [{
+        "name": "PARAMETER_PATH",
+        "value": "${parameter_path}"
+    }],
+    "memory": 1600,
+    "memoryReservation": 800,
+    "name": "web",
+    "portMappings": [{
+        "containerPort": 5000,
+        "hostPort": 0
+    }]
+}]
