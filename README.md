@@ -70,7 +70,7 @@ Applying `crop` with four parameters:
 
 ### _Smart Crop_
 
-Smart crop returns an image focused around a user-specified point in the original image of a user-specified size. To use this crop, the input image _filename_ must end in `_foucs-XXxYY.ext`, and then you can use the `crop` keyword with **two** arguments split by x's:
+Smart crop returns an image focused around a user-specified point in the original image of a user-specified size. To use this crop, the input image _filename_ must end in `_focus-XXxYY.ext`, and then you can use the `crop` keyword with **two** arguments split by x's:
 
 > https://image.pbs.org/path/to/file_focus-XXxYY.ext?crop=WWxHH
 
