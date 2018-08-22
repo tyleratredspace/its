@@ -24,6 +24,11 @@ if SENTRY_DSN:
 
 
 def process_request(namespace: str, query: Dict[str, str], filename: str) -> Response:
+    if namespace not in NAMESPACES:
+        abort(
+            400, "{namespace} is not a configured namespace".format(namespace=namespace)
+        )
+
     namespace_config = NAMESPACES[namespace]
     if namespace_config.get("redirect"):
         location = get_redirect_location(namespace, query, filename)
