@@ -302,6 +302,11 @@ class TestPipelineEndToEnd(TestCase):
         assert response.status_code == 200
         assert response.mimetype == "image/jpeg"
 
+    def test_jpg_to_webp(self):
+        response = self.client.get("tests/images/seagull.jpg?format=webp")
+        assert response.status_code == 200
+        assert response.mimetype == "image/webp"
+
 
 if __name__ == "__main__":
     unittest.main()

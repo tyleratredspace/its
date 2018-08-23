@@ -25,6 +25,7 @@ RUN apk add --no-cache \
     py-lxml \
     zlib-dev \
     python3-dev \
+    libwebp-dev \
   && rm /bin/sh \
   && ln -s /bin/bash /bin/sh
 
