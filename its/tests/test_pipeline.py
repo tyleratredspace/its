@@ -307,6 +307,11 @@ class TestPipelineEndToEnd(TestCase):
         assert response.status_code == 200
         assert response.mimetype == "image/webp"
 
+    def test_jpg_without_extension_to_png(self):
+        response = self.client.get("tests/images/seagull.resize.900x500.png")
+        assert response.status_code == 200
+        assert response.mimetype == "image/png"
+
 
 if __name__ == "__main__":
     unittest.main()

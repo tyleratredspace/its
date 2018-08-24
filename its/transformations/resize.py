@@ -57,8 +57,12 @@ class ResizeTransform(BaseTransform):
         # calculate a resize ratio between them and the original sizes
 
         ratio = min(width / img.width, height / img.height)
-        img = img.resize(
+
+        resized = img.resize(
             [floor(img.width * ratio), floor(img.height * ratio)], Image.ANTIALIAS
         )
 
-        return img
+        # make sure we don't lose format data
+        resized.format = img.format
+
+        return resized
