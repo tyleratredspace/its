@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from PIL import Image
@@ -6,6 +7,8 @@ from ..errors import ConfigError, ITSTransformError
 from ..loaders import BaseLoader
 from ..settings import NAMESPACES, OVERLAYS
 from .base import BaseTransform
+
+LOGGER = logging.getLogger(__name__)
 
 OVERLAY_PROPORTION = 0.2
 
@@ -22,7 +25,9 @@ class OverlayTransform(BaseTransform):
 
     def apply_transform(img, parameters):
         if len(parameters) > 1:
-            raise ValueError("overlay transform does not accept parameters")
+            LOGGER.error(
+                "overlay transform does not accept parameters, received %s", parameters
+            )
 
         overlay = parameters[0]
 
