@@ -5,6 +5,7 @@ from io import BytesIO
 from typing import Dict, Optional
 
 from flask import Flask, Response, abort, redirect, request
+from PIL import ImageFile
 from raven.contrib.flask import Sentry
 
 from its.errors import ITSClientError, NotFoundError
@@ -15,6 +16,9 @@ from its.settings import MIME_TYPES
 
 from .settings import NAMESPACES, SENTRY_DSN
 from .util import get_redirect_location
+
+# https://stackoverflow.com/questions/12984426/python-pil-ioerror-image-file-truncated-with-big-images
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 app = Flask(__name__)
 
