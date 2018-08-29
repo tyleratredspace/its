@@ -1,4 +1,4 @@
-![Stability](https://img.shields.io/badge/Stability-Under%20Active%20Development-Red.svg)
+[![Stability](https://img.shields.io/badge/Stability-Under%20Active%20Development-Red.svg)](https://github.com/pbs/its)
 
 # Warning: under active development
 
