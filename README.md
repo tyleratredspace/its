@@ -1,3 +1,5 @@
+![Stability](https://img.shields.io/badge/Stability-Under%20Active%20Development-Red.svg)
+
 # warning: under active development
 
 This application is under active development and likely to change further before stabilizing.
