@@ -1,12 +1,12 @@
 ![Stability](https://img.shields.io/badge/Stability-Under%20Active%20Development-Red.svg)
 
-# warning: under active development
+# Warning: under active development
 
 This application is under active development and likely to change further before stabilizing.
 
-# serverless-its
+# Image Transformation Service
 
-ITS (Image Transform Service) performs transformations on images by accepting transform requests in the form of query strings.
+ITS (Image Transform Service) performs transformations and optimizations on images by accepting transform requests in the form of query strings.
 
 ---
 
