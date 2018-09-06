@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Sequence
 
 from PIL import Image
 
@@ -23,11 +24,14 @@ class OverlayTransform(BaseTransform):
 
     slug = "overlay"
 
+    @staticmethod
+    def derive_parameters(query: str) -> Sequence[str]:
+        # overlay transform does not take parameters, so we don't split this
+        return [query]
+
     def apply_transform(img, parameters):
         if len(parameters) > 1:
-            LOGGER.error(
-                "overlay transform does not accept parameters, received %s", parameters
-            )
+            raise ValueError("overlay transform does not accept parameters")
 
         overlay = parameters[0]
 

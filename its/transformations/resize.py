@@ -1,14 +1,21 @@
+import re
 from math import floor
+from typing import Sequence
 
 from PIL import Image
 
 from ..errors import ITSClientError
+from ..settings import DELIMITERS_RE
 from .base import BaseTransform
 
 
 class ResizeTransform(BaseTransform):
 
     slug = "resize"
+
+    @staticmethod
+    def derive_parameters(query: str) -> Sequence[str]:
+        return re.split(DELIMITERS_RE, query)
 
     def apply_transform(img, parameters):
         """

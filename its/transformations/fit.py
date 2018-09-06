@@ -16,6 +16,10 @@ class FitTransform(BaseTransform):
     slug = "fit"
 
     @staticmethod
+    def derive_parameters(query: str) -> Sequence[str]:
+        return re.split(DELIMITERS_RE, query)
+
+    @staticmethod
     def apply_transform(
         img: Image.Image, parameters: Sequence[Union[str, int]]
     ) -> Image.Image:
