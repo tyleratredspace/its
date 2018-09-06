@@ -21,10 +21,6 @@ class TestRedirects(TestCase):
         response = self.client.get("/tests/images/test.png/?fit=10x0")
         assert response.status_code == 400
 
-    def test_too_many_fit_arguments(self):
-        response = self.client.get("/tests/images/test.png/?fit=100x100x1x1")
-        assert response.status_code == 400
-
     def test_strange_punctuation_legacy_resize(self):
         response = self.client.get("/tests/images/test.png.resize.78x34..png")
         assert response.status_code == 400
