@@ -4,7 +4,7 @@ from typing import Sequence
 
 from PIL import Image
 
-from ..errors import ConfigError, ITSTransformError
+from ..errors import ConfigError, ITSClientError, ITSTransformError
 from ..loaders import BaseLoader
 from ..settings import NAMESPACES, OVERLAYS
 from .base import BaseTransform
@@ -30,10 +30,15 @@ class OverlayTransform(BaseTransform):
         return [query]
 
     def apply_transform(img, parameters):
+        if not parameters:
+            raise ITSClientError("no overlay image supplied")
+
         if len(parameters) > 1:
             raise ValueError("overlay transform does not accept parameters")
 
         overlay = parameters[0]
+        if not overlay:
+            raise ITSClientError("no overlay image supplied")
 
         if "overlay" in NAMESPACES:
             loader = OverlayTransform.get_loader(NAMESPACES["overlay"]["loader"])
