@@ -11,6 +11,20 @@ from .base import BaseTransform
 LOGGER = logging.getLogger(__name__)
 
 
+def _fit_image(img, crop_width, crop_height, focal_x, focal_y):
+    focal_x_percentage = focal_x / 100
+    focal_y_percentage = focal_y / 100
+    fitted_image = ImageOps.fit(
+        img,
+        (crop_width, crop_height),
+        method=Image.ANTIALIAS,
+        centering=(focal_x_percentage, focal_y_percentage),
+    )
+    fitted_image.format = img.format
+
+    return fitted_image
+
+
 class FitTransform(BaseTransform):
 
     slug = "fit"
@@ -71,15 +85,9 @@ class FitTransform(BaseTransform):
 
         if focal_x in range(0, 101) and focal_y in range(0, 101) and crop_height != 0:
             try:
-                focal_x_percentage = focal_x / 100
-                focal_y_percentage = focal_y / 100
-                img = ImageOps.fit(
-                    img,
-                    (crop_width, crop_height),
-                    method=Image.ANTIALIAS,
-                    centering=(focal_x_percentage, focal_y_percentage),
+                fitted_image = _fit_image(
+                    img, crop_width, crop_height, focal_x, focal_y
                 )
-
             except ITSTransformError as error:
                 LOGGER.error(
                     "Fit Transform with requested size %sx%s"
@@ -98,4 +106,4 @@ class FitTransform(BaseTransform):
             # make sure focal args are percentages
             raise ITSClientError(error="Focus arguments should be between 0 and 100")
 
-        return img
+        return fitted_image

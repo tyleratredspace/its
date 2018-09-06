@@ -312,6 +312,11 @@ class TestPipelineEndToEnd(TestCase):
         assert response.status_code == 200
         assert response.mimetype == "image/png"
 
+    def test_jpg_without_extension_to_focalcrop(self):
+        response = self.client.get("tests/images/seagull.focalcrop.312x464.50.50.png")
+        assert response.status_code == 200
+        assert response.mimetype == "image/png"
+
 
 if __name__ == "__main__":
     unittest.main()
