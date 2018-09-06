@@ -22,6 +22,12 @@ class TestOverlay(TestCase):
         )
         assert response.status_code == 200
 
+    def test_empty_overlay(self):
+        response = self.client.get(
+            "tests/images/test.png?overlay="
+        )
+        assert response.status_code == 200
+
     def test_legacy_passport_resize_overlay(self):
         response = self.client.get(
             "tests/images/test.png.resize.1000x1000.passport.png"
