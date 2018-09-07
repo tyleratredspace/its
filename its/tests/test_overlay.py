@@ -1,10 +1,7 @@
 import os
 from unittest import TestCase
 
-import pytest
-
 from its.application import app
-from its.errors import ITSClientError
 
 
 class TestOverlay(TestCase):
@@ -26,9 +23,8 @@ class TestOverlay(TestCase):
         assert response.status_code == 200
 
     def test_empty_overlay(self):
-        with pytest.raises(ITSClientError):
-            response = self.client.get("tests/images/test.png?overlay=")
-            assert response.status_code == 400
+        response = self.client.get("tests/images/test.png?overlay=")
+        assert response.status_code == 400
 
     def test_legacy_passport_resize_overlay(self):
         response = self.client.get(
