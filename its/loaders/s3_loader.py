@@ -1,3 +1,4 @@
+import logging
 from io import BytesIO
 
 import boto3
@@ -7,6 +8,8 @@ from PIL import Image
 from ..errors import NotFoundError
 from ..settings import NAMESPACES
 from .base import BaseLoader
+
+LOGGER = logging.getLogger(__name__)
 
 
 class S3Loader(BaseLoader):
@@ -44,6 +47,16 @@ class S3Loader(BaseLoader):
             error_code = error.response["Error"]["Code"]
 
             if error_code == "404":
+                raise NotFoundError("An error occurred: '%s'" % str(error))
+
+            # S3 can return 403 errors if the application lacks ListBucket
+            # permissions for the relevant s3 bucket
+            # https://stackoverflow.com/questions/19037664/how-do-i-have-an-s3-bucket-return-404-instead-of-403-for-a-key-that-does-not-e
+            if error_code == "403":
+                LOGGER.warning(
+                    "403 from s3 bucket %s, the application probably lacks ListBucket permissions",
+                    NAMESPACES[namespace][S3Loader.parameter_name],
+                )
                 raise NotFoundError("An error occurred: '%s'" % str(error))
 
             raise error
