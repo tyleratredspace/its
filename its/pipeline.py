@@ -8,7 +8,6 @@ from typing import Dict, Union
 from PIL.JpegImagePlugin import JpegImageFile
 from PIL.PngImagePlugin import PngImageFile
 
-from .settings import DELIMITERS_RE
 from .transformations import FitTransform, OverlayTransform, ResizeTransform
 
 
@@ -35,7 +34,7 @@ def process_transforms(
     for transform in transform_order:
         slug = transform.slug
         if slug in query:
-            parameters = re.split(DELIMITERS_RE, query[slug])
+            parameters = transform.derive_parameters(query[slug])
             img = transform.apply_transform(img, parameters)
 
     if img.format is None and "filename" in img_info.keys():

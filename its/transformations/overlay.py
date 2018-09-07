@@ -1,9 +1,10 @@
 import logging
 from pathlib import Path
+from typing import Sequence
 
 from PIL import Image
 
-from ..errors import ConfigError, ITSTransformError
+from ..errors import ConfigError, ITSClientError, ITSTransformError
 from ..loaders import BaseLoader
 from ..settings import NAMESPACES, OVERLAYS
 from .base import BaseTransform
@@ -23,13 +24,21 @@ class OverlayTransform(BaseTransform):
 
     slug = "overlay"
 
+    @staticmethod
+    def derive_parameters(query: str) -> Sequence[str]:
+        # overlay transform does not take parameters, so we don't split this
+        return [query]
+
     def apply_transform(img, parameters):
+        if not parameters:
+            raise ITSClientError("no overlay image supplied")
+
         if len(parameters) > 1:
-            LOGGER.error(
-                "overlay transform does not accept parameters, received %s", parameters
-            )
+            raise ValueError("overlay transform does not accept parameters")
 
         overlay = parameters[0]
+        if not overlay:
+            raise ITSClientError("no overlay image supplied")
 
         if "overlay" in NAMESPACES:
             loader = OverlayTransform.get_loader(NAMESPACES["overlay"]["loader"])
