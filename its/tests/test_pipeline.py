@@ -331,7 +331,7 @@ class TestPipelineEndToEnd(TestCase):
         )
         self.assertGreaterEqual(comparison, self.threshold)
 
-        # case 1: resize and crop with query parameters and filename focus: filename focus wins
+        # case 2: resize and crop with query parameters and filename focus: filename focus wins
         ref_img_500_500_10_90 = Image.open(
             "{}/expected/seagull-500-500-10-90.jpg".format(self.img_dir)
         )
