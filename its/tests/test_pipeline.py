@@ -318,7 +318,7 @@ class TestPipelineEndToEnd(TestCase):
         assert response.status_code == 200
         assert response.mimetype == "image/png"
 
-    def test_focal_crop_filename_priority(self):
+    def test_focal_crop_without_filename_priority(self):
         # case 1: resize and crop with query parameters
         ref_img_500_500_50_10 = Image.open(
             "{}/expected/seagull-500-500-50-10.jpg".format(self.img_dir)
@@ -331,6 +331,7 @@ class TestPipelineEndToEnd(TestCase):
         )
         self.assertGreaterEqual(comparison, self.threshold)
 
+    def test_focal_crop_filename_priority(self):
         # case 2: resize and crop with query parameters and filename focus: filename focus wins
         ref_img_500_500_10_90 = Image.open(
             "{}/expected/seagull-500-500-10-90.jpg".format(self.img_dir)
@@ -344,6 +345,11 @@ class TestPipelineEndToEnd(TestCase):
             ref_img_500_500_10_90, Image.open(BytesIO(response.data))
         )
         self.assertGreaterEqual(comparison, self.threshold)
+
+    def test_small_vertical_resize(self):
+        response = self.client.get("tests/images/vertical-line.png.resize.710x399.png")
+        assert response.status_code == 200
+        assert response.mimetype == "image/png"
 
 
 if __name__ == "__main__":
