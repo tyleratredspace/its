@@ -317,6 +317,11 @@ class TestPipelineEndToEnd(TestCase):
         assert response.status_code == 200
         assert response.mimetype == "image/png"
 
+    def test_small_vertical_resize(self):
+        response = self.client.get("tests/images/vertical-line.png.resize.710x399.png")
+        assert response.status_code == 200
+        assert response.mimetype == "image/png"
+
 
 if __name__ == "__main__":
     unittest.main()

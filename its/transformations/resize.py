@@ -65,9 +65,11 @@ class ResizeTransform(BaseTransform):
 
         ratio = min(width / img.width, height / img.height)
 
-        resized = img.resize(
-            [floor(img.width * ratio), floor(img.height * ratio)], Image.ANTIALIAS
-        )
+        # make sure target is at least one pixel wide
+        tgt_width = max(floor(img.width * ratio), 1)
+        tgt_height = max(floor(img.height * ratio), 1)
+
+        resized = img.resize([tgt_width, tgt_height], Image.ANTIALIAS)
 
         # make sure we don't lose format data
         resized.format = img.format
