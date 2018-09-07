@@ -24,7 +24,9 @@ class TestOverlay(TestCase):
 
     def test_empty_overlay(self):
         response = self.client.get("tests/images/test.png?overlay=")
+        body = response.data.decode("utf-8")
         assert response.status_code == 400
+        assert "no overlay image supplied" in body
 
     def test_legacy_passport_resize_overlay(self):
         response = self.client.get(
