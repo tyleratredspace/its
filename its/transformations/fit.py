@@ -53,18 +53,18 @@ class FitTransform(BaseTransform):
         # match the file type and period in the filename
         file_ext_patten = r"(\.).+"
 
-        if not focal_point:
-            # if FOCUS_KEYWORD is present in filename, do smart crop
-            if filename.find(FOCUS_KEYWORD) >= 0:  # smart crop
-                # Match and remove the non-argument filename parts using the patterns defined above
-                filename = re.sub(
-                    pre_keyword_pattern, "", filename, flags=re.IGNORECASE
-                )
-                filename = re.sub(file_ext_patten, "", filename, flags=re.IGNORECASE)
-                filename_focal = re.split(DELIMITERS_RE, filename)
-                focal_point = filename_focal
-            else:  # default crop, focal point is the center so 50% on the x & y axes
-                focal_point = [50, 50]
+        # if FOCUS_KEYWORD is present in filename, do smart crop
+        if filename.find(FOCUS_KEYWORD) >= 0:  # smart crop
+            # Match and remove the non-argument filename parts using the patterns defined above
+            filename = re.sub(pre_keyword_pattern, "", filename, flags=re.IGNORECASE)
+            filename = re.sub(file_ext_patten, "", filename, flags=re.IGNORECASE)
+            filename_focal = re.split(DELIMITERS_RE, filename)
+            focal_point = filename_focal
+
+        elif (
+            not focal_point
+        ):  # default crop, focal point is the center so 50% on the x & y axes
+            focal_point = [50, 50]
 
         # convert all arguments to ints since they're strings
         try:
