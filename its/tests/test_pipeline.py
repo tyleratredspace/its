@@ -277,6 +277,7 @@ class TestPipelineEndToEnd(TestCase):
         app.config["TESTING"] = True
         self.client = app.test_client()
         self.img_dir = Path(__file__).parent / "images"
+        self.threshold = 0.99
 
     def test_secret_png(self):
         response = self.client.get("tests/images/secretly-a-png.jpg.resize.800x450.jpg")
@@ -316,6 +317,34 @@ class TestPipelineEndToEnd(TestCase):
         response = self.client.get("tests/images/seagull.focalcrop.312x464.50.50.png")
         assert response.status_code == 200
         assert response.mimetype == "image/png"
+
+    def test_focal_crop_without_filename_priority(self):
+        # case 1: resize and crop with query parameters
+        ref_img_500_500_50_10 = Image.open(
+            "{}/expected/seagull-500-500-50-10.jpg".format(self.img_dir)
+        )
+        response = self.client.get("/tests/images/seagull.jpg?fit=500x500x50x10")
+        assert response.status_code == 200
+        assert response.mimetype == "image/jpeg"
+        comparison = compare_pixels(
+            ref_img_500_500_50_10, Image.open(BytesIO(response.data))
+        )
+        self.assertGreaterEqual(comparison, self.threshold)
+
+    def test_focal_crop_filename_priority(self):
+        # case 2: resize and crop with query parameters and filename focus: filename focus wins
+        ref_img_500_500_10_90 = Image.open(
+            "{}/expected/seagull-500-500-10-90.jpg".format(self.img_dir)
+        )
+        response = self.client.get(
+            "/tests/images/seagull_focus-10x90.jpg?fit=500x500x50x10"
+        )
+        assert response.status_code == 200
+        assert response.mimetype == "image/jpeg"
+        comparison = compare_pixels(
+            ref_img_500_500_10_90, Image.open(BytesIO(response.data))
+        )
+        self.assertGreaterEqual(comparison, self.threshold)
 
     def test_small_vertical_resize(self):
         response = self.client.get("tests/images/vertical-line.png.resize.710x399.png")
