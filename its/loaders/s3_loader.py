@@ -26,8 +26,10 @@ class S3Loader(BaseLoader):
         # get the s3 resource
         s3_resource = boto3.resource("s3")
 
-        bucket_name = NAMESPACES[namespace][S3Loader.parameter_name]
-        key = "{namespace}/{filename}".format(namespace=namespace, filename=filename)
+        config = NAMESPACES[namespace]
+        path = config.get("path", namespace).strip("/")
+        key = "{path}/{filename}".format(path=path, filename=filename)
+        bucket_name = config[S3Loader.parameter_name]
         s3_object = s3_resource.Object(bucket_name=bucket_name, key=key)
 
         # create an empty bytes object to store the image bytes in
