@@ -8,7 +8,6 @@ pylint:
     - arguments-differ
     - invalid-name
     - too-many-arguments
-    - pointless-string-statement
 
 pep8:
   full: true
