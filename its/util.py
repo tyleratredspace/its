@@ -14,8 +14,8 @@ def get_redirect_location(namespace, query, filename):
         path=filename,
     )
     ext = query.pop("format", None)
-    for k, v in query.items():
-        redirect_url = redirect_url + ".{k}.{v}".format(k=k, v=v)
+    for key, val in query.items():
+        redirect_url = redirect_url + ".{key}.{val}".format(key=key, val=val)
 
     if ext:
         redirect_url = redirect_url + "." + ext

@@ -6,7 +6,7 @@ pylint:
     - too-few-public-methods
     - no-self-argument
     - arguments-differ
-    - invalid-name
+    # the focalcrop route makes it hard to lint too-many-arguments
     - too-many-arguments
 
 pep8:
