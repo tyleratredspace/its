@@ -16,6 +16,12 @@ class TestOverlay(TestCase):
         )
         assert response.status_code == 200
 
+    def test_overlay_with_leading_slash(self):
+        response = self.client.get(
+            "tests/images/test.png?overlay=/tests/images/five.png"
+        )
+        assert response.status_code == 200
+
     def test_simple_overlay_with_underscores(self):
         response = self.client.get(
             "tests/images/test.png?overlay=tests/images/five-something_with_underscores.png"

@@ -46,7 +46,7 @@ class OverlayTransform(BaseTransform):
             raise ConfigError("No Backend has been set up for overlays.")
 
         if overlay.lower() not in OVERLAYS:
-            namespace, *filename = overlay.split("/")
+            namespace, *filename = overlay.strip("/").split("/")
             filename = Path("/".join(filename))
             overlay_image = loader[0].load_image(namespace, filename)
         else:
