@@ -10,7 +10,7 @@ from unittest.mock import patch
 from PIL import Image
 
 import its.errors
-from its.application import app
+from its.application import APP
 from its.optimize import optimize
 from its.pipeline import process_transforms
 
@@ -274,8 +274,8 @@ class TestImageResults(TestCase):
 class TestPipelineEndToEnd(TestCase):
     @classmethod
     def setUpClass(self):
-        app.config["TESTING"] = True
-        self.client = app.test_client()
+        APP.config["TESTING"] = True
+        self.client = APP.test_client()
         self.img_dir = Path(__file__).parent / "images"
         self.threshold = 0.99
 

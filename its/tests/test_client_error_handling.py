@@ -1,13 +1,13 @@
 from unittest import TestCase
 
-from its.application import app
+from its.application import APP
 
 
 class TestClientErrorHandling(TestCase):
     @classmethod
     def setUpClass(self):
-        app.config["TESTING"] = True
-        self.client = app.test_client()
+        APP.config["TESTING"] = True
+        self.client = APP.test_client()
 
     def test_invalid_namespace(self):
         response = self.client.get("/invalid-namespace/image.jpg")
