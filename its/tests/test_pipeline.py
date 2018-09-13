@@ -351,6 +351,16 @@ class TestPipelineEndToEnd(TestCase):
         assert response.status_code == 200
         assert response.mimetype == "image/png"
 
+    def test_auto_format_flat_jpeg(self):
+        response = self.client.get("tests/images/test.jpeg?format=auto")
+        assert response.status_code == 200
+        assert response.mimetype == "image/png"
+
+    def test_auto_format_complex_jpeg(self):
+        response = self.client.get("tests/images/seagull?format=auto")
+        assert response.status_code == 200
+        assert response.mimetype == "image/jpeg"
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -160,7 +160,7 @@ Format returns the input image in the specified type, rather than being left as 
 Where:
 
 - format -- indicates that ITS should perform a format transform
-- ext -- the requested output type. Can only be `jpg`, `png` or `webp`
+- ext -- the requested output type. Can only be `jpg`, `png`, `webp` or `auto` (`auto` will examine the issue and return either a jpg or png depending on the image's complexity)
 - quality -- _optional_, allows user to specify the quality that they would like the output image to have. Currently, this parameter only works with the `jpg` format. Accepts a multiple 10 up to 100.
 
 Example

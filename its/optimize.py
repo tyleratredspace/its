@@ -16,10 +16,27 @@ from .errors import ITSClientError, ITSTransformError
 ImageFile.MAXBLOCK = 2 ** 20  # for JPG progressive saving
 
 
+def identify_best_format(img: Image.Image) -> str:
+    identical_pixel_threshold = 0.001
+    common_values_threshold = 50
+    hist = img.histogram()
+    total = sum(hist)
+    common_vals = [v / total for v in hist if v / total > identical_pixel_threshold]
+    if len(common_vals) < common_values_threshold:
+        return "png"
+
+    return "jpeg"
+
+
 def optimize(img: Image.Image, query: Dict[str, str]) -> Image.Image:
-    ext = (
-        query["format"] if "format" in query else img.format.lower()
-    )  # the return format
+    # the return format
+    if "format" not in query:
+        ext = img.format.lower()
+    elif query["format"] == "auto":
+        ext = identify_best_format(img)
+    else:
+        ext = query["format"]
+
     try:
         quality = int(query["quality"]) if "quality" in query else None
     except ValueError as error:
