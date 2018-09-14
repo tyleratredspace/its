@@ -2,11 +2,15 @@
 Script to validate images being submitted for transformation.
 """
 
+import logging
+
 from flask import request
 
-from .errors import ConfigError, ITSLoaderError
+from .errors import ConfigError, ITSClientError, ITSLoaderError
 from .loaders import BaseLoader
 from .settings import NAMESPACES
+
+LOGGER = logging.getLogger(__name__)
 
 
 def loader(namespace, filename):
@@ -46,4 +50,11 @@ def loader(namespace, filename):
     if filename.endswith(".svg"):
         return image_loader.get_fileobj(namespace, filename)
 
-    return image_loader.load_image(namespace, filename)
+    try:
+        image = image_loader.load_image(namespace, filename)
+    except OSError as error:
+        LOGGER.error(error)
+        raise ITSClientError(
+            "{ns}/{fn} is not an image file".format(ns=namespace, fn=filename)
+        )
+    return image
