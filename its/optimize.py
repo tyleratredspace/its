@@ -21,7 +21,7 @@ def identify_best_format(img: Image.Image) -> str:
     common_values_threshold = 50
     hist = img.histogram()
     total = sum(hist)
-    common_vals = [v / total for v in hist if v / total > identical_pixel_threshold]
+    common_vals = [v for v in hist if v / total > identical_pixel_threshold]
     if len(common_vals) < common_values_threshold:
         return "png"
 
