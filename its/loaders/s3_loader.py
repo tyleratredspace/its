@@ -7,6 +7,7 @@ from PIL import Image
 
 from ..errors import NotFoundError
 from ..settings import NAMESPACES
+from ..util import validate_image_type
 from .base import BaseLoader
 
 LOGGER = logging.getLogger(__name__)
@@ -64,5 +65,7 @@ class S3Loader(BaseLoader):
             raise error
 
         image = Image.open(file_obj)
+
+        validate_image_type(image)
 
         return image

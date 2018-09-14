@@ -54,6 +54,10 @@ class ITSLoaderError(ITSError):
     message: str = "ITSLoaderError: "
 
 
+class ITSInvalidImageFileError(ITSLoaderError):
+    pass
+
+
 class ITSTransformError(ITSError):
     """
     General class for errors occuring while applying transforms.

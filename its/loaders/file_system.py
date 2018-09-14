@@ -9,6 +9,7 @@ from PIL.PngImagePlugin import PngImageFile
 
 from ..errors import NotFoundError
 from ..settings import ENFORCE_TYPE_CHECKS
+from ..util import validate_image_type
 from .base import BaseLoader
 
 
@@ -35,6 +36,7 @@ class FileSystemLoader(BaseLoader):
             raise NotFoundError(
                 "File Not Found at %s" % (Path(namespace + "/" + filename))
             )
+        validate_image_type(image)
 
         return image
 

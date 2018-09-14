@@ -5,6 +5,7 @@ from PIL import Image
 
 from ..errors import ITSLoaderError, NotFoundError
 from ..settings import NAMESPACES
+from ..util import validate_image_type
 from .base import BaseLoader
 
 
@@ -62,5 +63,7 @@ class HTTPLoader(BaseLoader):
 
         except NotFoundError as error:
             raise NotFoundError("An error occurred: '%s'" % str(error))
+
+        validate_image_type(img)
 
         return img

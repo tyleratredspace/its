@@ -6,7 +6,12 @@ import logging
 
 from flask import request
 
-from .errors import ConfigError, ITSClientError, ITSLoaderError
+from .errors import (
+    ConfigError,
+    ITSClientError,
+    ITSInvalidImageFileError,
+    ITSLoaderError,
+)
 from .loaders import BaseLoader
 from .settings import NAMESPACES
 
@@ -57,4 +62,9 @@ def loader(namespace, filename):
         raise ITSClientError(
             "{ns}/{fn} is not an image file".format(ns=namespace, fn=filename)
         )
+    except ITSInvalidImageFileError:
+        raise ITSClientError(
+            "{ns}/{fn} is not a supported file type".format(ns=namespace, fn=filename)
+        )
+
     return image
