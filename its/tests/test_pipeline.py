@@ -33,13 +33,6 @@ def compare_pixels(img1, img2):
     for pixel_pair in zip(img1_pixels, img2_pixels):
         if pixel_pair[0] == pixel_pair[1]:
             matches += 1
-        else:
-            r1, g1, *b1 = pixel_pair[0]
-            r2, g2, *b2 = pixel_pair[1]
-            test = "%d %d %d vs %d %d %d" % (r1, g1, b1[0], r2, g2, b2[0])
-            print(test)
-            diff = "%d %d %d" % (abs(r1 - r2), abs(g1 - g2), abs(b1[0] - b2[0]))
-            print(diff)
 
     return matches / total
 
@@ -360,6 +353,19 @@ class TestPipelineEndToEnd(TestCase):
         response = self.client.get("tests/images/seagull?format=auto")
         assert response.status_code == 200
         assert response.mimetype == "image/jpeg"
+
+    def test_focalcrop_parity(self):
+        old_style_response = self.client.get(
+            "tests/images/test.png.focalcrop.767x421.50.10.png"
+        )
+        new_style_response = self.client.get(
+            "tests/images/test.png?focalcrop=767x421x50x10&format=png"
+        )
+        comparison = compare_pixels(
+            Image.open(BytesIO(old_style_response.data)),
+            Image.open(BytesIO(new_style_response.data)),
+        )
+        self.assertGreaterEqual(comparison, self.threshold)
 
 
 if __name__ == "__main__":

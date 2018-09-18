@@ -14,7 +14,7 @@ from its.optimize import optimize
 from its.pipeline import process_transforms
 from its.settings import MIME_TYPES
 
-from .settings import NAMESPACES, SENTRY_DSN
+from .settings import FIT_SYNONYMS, NAMESPACES, SENTRY_DSN
 from .util import get_redirect_location
 
 # https://stackoverflow.com/questions/12984426/python-pil-ioerror-image-file-truncated-with-big-images
@@ -28,6 +28,11 @@ if SENTRY_DSN:
 
 
 def process_request(namespace: str, query: Dict[str, str], filename: str) -> Response:
+    for fit_snynonym in FIT_SYNONYMS:
+        if fit_snynonym in query:
+            query["fit"] = query[fit_snynonym]
+            del query[fit_snynonym]
+
     if namespace not in NAMESPACES:
         abort(
             400, "{namespace} is not a configured namespace".format(namespace=namespace)
@@ -79,7 +84,7 @@ def process_old_request(
 
     query = {}
 
-    if transform in ["focalcrop", "crop", "fit"]:
+    if transform in FIT_SYNONYMS:
         transform = "fit"
 
     query[transform] = "x"
