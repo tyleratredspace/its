@@ -1,6 +1,7 @@
 from flask import request
 
-from .settings import NAMESPACES
+from .errors import ITSInvalidImageFileError
+from .settings import MIME_TYPES, NAMESPACES
 
 
 def get_redirect_location(namespace, query, filename):
@@ -21,3 +22,10 @@ def get_redirect_location(namespace, query, filename):
         redirect_url = redirect_url + "." + ext
 
     return redirect_url
+
+
+def validate_image_type(image):
+    if image.format.upper() not in MIME_TYPES:
+        raise ITSInvalidImageFileError("invalid image file")
+
+    return image
