@@ -28,6 +28,9 @@ if SENTRY_DSN:
 
 
 def process_request(namespace: str, query: Dict[str, str], filename: str) -> Response:
+    if len((set(FIT_SYNONYMS) | set(["fit"])) & set(query.keys())) > 1:
+        raise ITSClientError("use only one of these synonyms: fit, crop, focalcrop")
+
     for fit_snynonym in FIT_SYNONYMS:
         if fit_snynonym in query:
             query["fit"] = query[fit_snynonym]
