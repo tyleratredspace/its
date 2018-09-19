@@ -367,6 +367,11 @@ class TestPipelineEndToEnd(TestCase):
         )
         self.assertGreaterEqual(comparison, self.threshold)
 
+    def test_resize_without_height(self):
+        response = self.client.get("tests/images/seagull?resize=80x&format=png")
+        assert response.status_code == 200
+        assert response.mimetype == "image/png"
+
 
 if __name__ == "__main__":
     unittest.main()

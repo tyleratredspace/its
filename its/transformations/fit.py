@@ -82,6 +82,11 @@ class FitTransform(BaseTransform):
                 + "The focus point can either be defined in the query or in the image filename."
             )
 
+        if crop_width * crop_height > Image.MAX_IMAGE_PIXELS:
+            raise ITSClientError(
+                "{w}x{h} is too big".format(w=crop_width, h=crop_height)
+            )
+
         if focal_x in range(0, 101) and focal_y in range(0, 101) and crop_height != 0:
             try:
                 fitted_image = _fit_image(

@@ -42,3 +42,15 @@ class TestClientErrorHandling(TestCase):
         body = response.data.decode("utf-8")
         assert response.status_code == 400
         assert "tests/images/secretly-a-gif.jpg is not a supported file type" in body
+
+    def test_too_large_a_crop(self):
+        response = self.client.get("/tests/images/test.png.crop.640x276360.png")
+        assert response.status_code == 400
+        body = response.data.decode("utf-8")
+        assert "640x276360 is too big" in body
+
+    def test_too_large_a_resize(self):
+        response = self.client.get("/tests/images/test.png.resize.640x276360.png")
+        assert response.status_code == 400
+        body = response.data.decode("utf-8")
+        assert "640x276360 is too big" in body
