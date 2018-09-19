@@ -14,7 +14,7 @@ from its.optimize import optimize
 from its.pipeline import process_transforms
 from its.settings import MIME_TYPES
 
-from .settings import FIT_SYNONYMS, NAMESPACES, SENTRY_DSN
+from .settings import NAMESPACES, SENTRY_DSN
 from .util import get_redirect_location
 
 # https://stackoverflow.com/questions/12984426/python-pil-ioerror-image-file-truncated-with-big-images
@@ -28,10 +28,11 @@ if SENTRY_DSN:
 
 
 def process_request(namespace: str, query: Dict[str, str], filename: str) -> Response:
-    if len((set(FIT_SYNONYMS) | set(["fit"])) & set(query.keys())) > 1:
+    fit_synonyms = {"crop", "focalcrop"}
+    if len((fit_synonyms | {"fit"}) & set(query.keys())) > 1:
         raise ITSClientError("use only one of these synonyms: fit, crop, focalcrop")
 
-    for fit_snynonym in FIT_SYNONYMS:
+    for fit_snynonym in fit_synonyms:
         if fit_snynonym in query:
             query["fit"] = query[fit_snynonym]
             del query[fit_snynonym]
