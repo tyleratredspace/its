@@ -86,11 +86,8 @@ def process_old_request(
 ) -> Dict[str, str]:
 
     query = {}
-
-    if transform in FIT_SYNONYMS:
-        transform = "fit"
-
     query[transform] = "x"
+
     if width is not None:
         query[transform] = str(width) + query[transform]
 
