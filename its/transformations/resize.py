@@ -54,7 +54,7 @@ class ResizeTransform(BaseTransform):
                 "HH is the requested height. Both must be integers."
             )
 
-        if width * height > Image.MAX_IMAGE_PIXELS:
+        if width and height and width * height > Image.MAX_IMAGE_PIXELS:
             raise ITSClientError("{w}x{h} is too big".format(w=width, h=height))
 
         if width is None and height:
