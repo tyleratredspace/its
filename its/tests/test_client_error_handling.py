@@ -15,6 +15,14 @@ class TestClientErrorHandling(TestCase):
         assert response.status_code == 400
         assert "invalid-namespace is not a configured namespace" in body
 
+    def test_fit_synonyms(self):
+        response = self.client.get("tests/images/test.jpeg?fit=10x10&crop=20x20")
+        assert response.status_code == 400
+        assert (
+            "use only one of these synonyms: fit, crop, focalcrop"
+            in response.data.decode("utf-8")
+        )
+
     def test_non_image_file(self):
         response = self.client.get("/tests/images/not-an-image.jpg")
         body = response.data.decode("utf-8")

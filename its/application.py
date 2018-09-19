@@ -28,6 +28,15 @@ if SENTRY_DSN:
 
 
 def process_request(namespace: str, query: Dict[str, str], filename: str) -> Response:
+    fit_synonyms = {"crop", "focalcrop"}
+    if len((fit_synonyms | {"fit"}) & set(query.keys())) > 1:
+        raise ITSClientError("use only one of these synonyms: fit, crop, focalcrop")
+
+    for fit_snynonym in fit_synonyms:
+        if fit_snynonym in query:
+            query["fit"] = query[fit_snynonym]
+            del query[fit_snynonym]
+
     if namespace not in NAMESPACES:
         abort(
             400, "{namespace} is not a configured namespace".format(namespace=namespace)
@@ -78,11 +87,8 @@ def process_old_request(
 ) -> Dict[str, str]:
 
     query = {}
-
-    if transform in ["focalcrop", "crop", "fit"]:
-        transform = "fit"
-
     query[transform] = "x"
+
     if width is not None:
         query[transform] = str(width) + query[transform]
 

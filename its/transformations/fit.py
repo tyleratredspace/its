@@ -45,7 +45,6 @@ class FitTransform(BaseTransform):
         focal crop : image.png?crop=WWxHHxFXxFY
         smart crop : image_focus-FXxFY.png?crop=WWxHH
         """
-
         crop_width, crop_height, *focal_point = parameters
         filename = img.info["filename"]
         # match everything before and including the keyword
