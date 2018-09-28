@@ -189,6 +189,22 @@ class TestResizeTransform(TestCase):
         result = process_transforms(test_image, query)
         self.assertEqual(result.size, (10, 10))
 
+    def test_resize_without_height(self):
+        test_image = Image.open(self.img_dir / "abe.jpg")
+        test_image.info["filename"] = "abe.jpg"
+        query = {"resize": "100x"}
+        result = process_transforms(test_image, query)
+        self.assertEqual(result.width, 100)
+        self.assertEqual(result.height, 131)
+
+    def test_resize_without_width(self):
+        test_image = Image.open(self.img_dir / "abe.jpg")
+        test_image.info["filename"] = "abe.jpg"
+        query = {"resize": "x100"}
+        result = process_transforms(test_image, query)
+        self.assertEqual(result.width, 76)
+        self.assertEqual(result.height, 100)
+
     def test_resize_integrity_smaller(self):
         test_image = Image.open(self.img_dir / "test.png")
         test_image.info["filename"] = "test.png"
