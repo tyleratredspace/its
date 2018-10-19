@@ -9,9 +9,7 @@ set -u
 APP_CONFIG_PATH=/etc/its/env.json
 UWSGI_CONFIG_PATH=/opt/its/its.ini
 
-larson get-parameters \
-    --parameter-store-path $PARAMETER_PATH \
-    > $APP_CONFIG_PATH
+larson get-parameters $PARAMETER_PATH > $APP_CONFIG_PATH
 
 source larson_json_to_vars $APP_CONFIG_PATH
 
