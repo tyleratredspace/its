@@ -59,3 +59,9 @@ class TestClientErrorHandling(TestCase):
         assert response.status_code == 400
         body = response.data.decode("utf-8")
         assert "640x276360 is too big" in body
+
+    def test_crop_with_single_parameter(self):
+        response = self.client.get("/tests/images/test.png?crop=8000")
+        assert response.status_code == 400
+        body = response.data.decode("utf-8")
+        assert "crop requires width and height" in body

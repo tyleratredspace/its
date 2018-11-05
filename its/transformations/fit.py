@@ -25,6 +25,28 @@ def _fit_image(img, crop_width, crop_height, focal_x, focal_y):
     return fitted_image
 
 
+def _derive_focal_point(
+    img: Image.Image, query_parameters: Sequence[Union[str, int]]
+) -> Sequence[Union[str, int]]:
+    filename = img.info["filename"]
+    # if FOCUS_KEYWORD is present in filename, do smart crop
+    if filename.find(FOCUS_KEYWORD) >= 0:  # smart crop
+        # match everything before and including the keyword
+        pre_keyword_pattern = ".+?(" + FOCUS_KEYWORD + ")"
+        # match the file type and period in the filename
+        file_ext_patten = r"(\.).+"
+        # Match and remove the non-argument filename parts using the patterns defined above
+        filename = re.sub(pre_keyword_pattern, "", filename, flags=re.IGNORECASE)
+        filename = re.sub(file_ext_patten, "", filename, flags=re.IGNORECASE)
+        return re.split(DELIMITERS_RE, filename)
+
+    if not query_parameters:
+        # default crop, focal point is the center so 50% on the x & y axes
+        return [50, 50]
+
+    return query_parameters
+
+
 class FitTransform(BaseTransform):
 
     slug = "fit"
@@ -45,25 +67,11 @@ class FitTransform(BaseTransform):
         focal crop : image.png?crop=WWxHHxFXxFY
         smart crop : image_focus-FXxFY.png?crop=WWxHH
         """
-        crop_width, crop_height, *focal_point = parameters
-        filename = img.info["filename"]
-        # match everything before and including the keyword
-        pre_keyword_pattern = ".+?(" + FOCUS_KEYWORD + ")"
-        # match the file type and period in the filename
-        file_ext_patten = r"(\.).+"
+        if len(parameters) < 2:
+            raise ITSClientError(error="crop requires width and height")
 
-        # if FOCUS_KEYWORD is present in filename, do smart crop
-        if filename.find(FOCUS_KEYWORD) >= 0:  # smart crop
-            # Match and remove the non-argument filename parts using the patterns defined above
-            filename = re.sub(pre_keyword_pattern, "", filename, flags=re.IGNORECASE)
-            filename = re.sub(file_ext_patten, "", filename, flags=re.IGNORECASE)
-            filename_focal = re.split(DELIMITERS_RE, filename)
-            focal_point = filename_focal
-
-        elif (
-            not focal_point
-        ):  # default crop, focal point is the center so 50% on the x & y axes
-            focal_point = [50, 50]
+        crop_width, crop_height = parameters[:2]
+        focal_point = _derive_focal_point(img, query_parameters=parameters[2:])
 
         # convert all arguments to ints since they're strings
         try:
