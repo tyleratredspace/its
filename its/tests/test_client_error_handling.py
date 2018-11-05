@@ -29,6 +29,11 @@ class TestClientErrorHandling(TestCase):
         assert response.status_code == 400
         assert "tests/images/not-an-image.jpg is not an image file" in body
 
+    def test_no_cache_headers_on_400(self):
+        response = self.client.get("/tests/images/not-an-image.jpg")
+        assert response.status_code == 400
+        assert "Cache-Control" not in response.headers.keys()
+
     def test_gif_source_file(self):
         response = self.client.get("/tests/images/secretly-a-gif.jpg")
         body = response.data.decode("utf-8")

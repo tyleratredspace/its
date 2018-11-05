@@ -74,7 +74,15 @@ def process_request(namespace: str, query: Dict[str, str], filename: str) -> Res
         output = BytesIO()
         result.save(output, format=result.format.upper())
 
-    return Response(response=output.getvalue(), mimetype=mime_type)
+    # our images are cacheable for one year
+    # NOTE this would be the right place to do clever things like:
+    # allow developers to deactivate caching locally
+    # include validation tokens (etags)
+    resp_headers = {"Cache-Control": "max-age=31536000"}
+
+    return Response(
+        response=output.getvalue(), headers=resp_headers, mimetype=mime_type
+    )
 
 
 def process_old_request(
