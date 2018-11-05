@@ -16,7 +16,7 @@ pyyaml = ">=3.0,<4.0"  # this can change once there's a stable 4.x version: http
 enforce = "*"
 
 [dev-packages]
-"flake8" = "*"
+"flake8" = "<3.6.0"  # flake8 3.6.0 has dependency incompatibilities with prospector 1.1.4
 pytest = "*"
 black = "*"
 isort = "*"
