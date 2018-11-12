@@ -53,3 +53,9 @@ FOCUS_KEYWORD = os.environ.get("ITS_FOCUS_KEYWORD", "focus-")
 DELIMITERS_RE = os.environ.get("ITS_DELIMITERS_RE", "[x_,]")
 
 SENTRY_DSN = os.environ.get("ITS_SENTRY_DSN")
+
+# set the ITS_CORS_ORIGINS environment variable to a comma-delimited string of domains
+# for each domain in that list, ITS will respond to GET and HEAD requests with CORS headers
+CORS_ORIGINS = os.environ.get(
+    "ITS_CORS_ORIGINS", "www.example.com,another.example.com"
+).split(",")

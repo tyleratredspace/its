@@ -5,6 +5,7 @@ from io import BytesIO
 from typing import Dict, Optional
 
 from flask import Flask, Response, abort, redirect, request
+from flask_cors import CORS
 from PIL import ImageFile
 from raven.contrib.flask import Sentry
 
@@ -14,7 +15,7 @@ from its.optimize import optimize
 from its.pipeline import process_transforms
 from its.settings import MIME_TYPES
 
-from .settings import NAMESPACES, SENTRY_DSN
+from .settings import CORS_ORIGINS, NAMESPACES, SENTRY_DSN
 from .util import get_redirect_location
 
 # https://stackoverflow.com/questions/12984426/python-pil-ioerror-image-file-truncated-with-big-images
@@ -22,6 +23,9 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 APP = Flask(__name__)
 
+# enable cors headers on all routes
+# https://flask-cors.corydolphin.com/en/latest/api.html#extension
+CORS(APP, origins=CORS_ORIGINS)
 
 if SENTRY_DSN:
     SENTRY = Sentry(APP, dsn=SENTRY_DSN, logging=True, level=logging.ERROR)
