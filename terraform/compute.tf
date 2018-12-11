@@ -10,6 +10,7 @@ data "template_file" "web_task_def" {
   vars {
     log_group_region = "${var.aws_region}"
     log_group_name   = "${aws_cloudwatch_log_group.web.name}"
+    hostname         = "its-${var.environment}"
     image_repo       = "${var.image_repo}"
     image_tag        = "${var.image_tag}"
 
