@@ -24,14 +24,18 @@ def get_pixels(image):
     return pixels
 
 
-def compare_pixels(img1, img2):
+def compare_pixels(img1, img2, tolerance=0):
+    def pixel_matches(pixel1, pixel2, tolerance):
+        matching_vals = [abs(pixel1[i] - pixel2[i]) <= tolerance for i in range(3)]
+        return all(matching_vals)
+
     img1_pixels = get_pixels(img1)
     img2_pixels = get_pixels(img2)
     matches = 0
     total = len(img1_pixels)  # both images should have the same number of pixels
 
     for pixel_pair in zip(img1_pixels, img2_pixels):
-        if pixel_pair[0] == pixel_pair[1]:
+        if pixel_matches(pixel_pair[0], pixel_pair[1], tolerance):
             matches += 1
 
     return matches / total
@@ -336,9 +340,9 @@ class TestPipelineEndToEnd(TestCase):
         assert response.status_code == 200
         assert response.mimetype == "image/jpeg"
         comparison = compare_pixels(
-            ref_img_500_500_50_10, Image.open(BytesIO(response.data))
+            ref_img_500_500_50_10, Image.open(BytesIO(response.data)), tolerance=10
         )
-        self.assertGreaterEqual(comparison, self.threshold)
+        self.assertGreaterEqual(comparison, 0.95)
 
     def test_focal_crop_filename_priority(self):
         # case 2: resize and crop with query parameters and filename focus: filename focus wins
@@ -351,9 +355,9 @@ class TestPipelineEndToEnd(TestCase):
         assert response.status_code == 200
         assert response.mimetype == "image/jpeg"
         comparison = compare_pixels(
-            ref_img_500_500_10_90, Image.open(BytesIO(response.data))
+            ref_img_500_500_10_90, Image.open(BytesIO(response.data)), tolerance=10
         )
-        self.assertGreaterEqual(comparison, self.threshold)
+        self.assertGreaterEqual(comparison, 0.95)
 
     def test_small_vertical_resize(self):
         response = self.client.get("tests/images/vertical-line.png.resize.710x399.png")
